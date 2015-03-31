@@ -1,6 +1,7 @@
 /* eo.ooc */
 
-import structs/Stack
+import structs/[ArrayList, Stack]
+import text/[EscapeSequence, Shlex, StringTokenizer]
 
 EO_VERSION := "0.0.1"
 
@@ -16,6 +17,14 @@ EoString: class extends EoType {
 }
 
 /*****/
+
+tokenize: func(data: String) -> ArrayList<String> {
+    return Shlex split(data)  /* for now */
+}
+
+print_tokens: func(tokens: ArrayList<String>) {
+    tokens each(|token| "\"%s\"" format(EscapeSequence escape(token)) println() )
+}
 
 EoInterpreter: class {
     stack := Stack<EoType> new()
@@ -36,7 +45,9 @@ EoREPL: class {
         while (stdin hasNext?()) {
             stdout write(prompt)
             line := stdin readLine()
-            "[%s]" printfln(line)
+            parts := tokenize(line)
+            print_tokens(parts)
+            "\"%s\"" printfln(EscapeSequence escape(line))
         }
         println()
     }
