@@ -1,0 +1,6 @@
+Name: Eo
+Description: The Eo programming language/environment
+Version: 0.0.1
+SourcePath: source
+Main: eo
+
