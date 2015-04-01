@@ -1,10 +1,10 @@
 /* eo.ooc */
 
 import structs/[ArrayList, HashMap, Stack]
-import text/[EscapeSequence, Regexp, Shlex, StringTokenizer]
+import text/[EscapeSequence, Regexp]
 import patch
 
-EO_VERSION := "0.0.1"
+EO_VERSION := "0.0.2"
 
 /* monkey patching :-) */
 
@@ -117,17 +117,16 @@ parseToken: func(token: String) -> EoType {
 }
 
 EoInterpreter: class {
-    stack := Stack<EoType> new()
-    init: func
+    stack := Stack<EoType> new()  /* later: must be a "StackStack" */
+    rootNamespace := Namespace new()
+    userNamespace := Namespace new(rootNamespace)
 
-    push: func (x: EoType) {
-        stack push(x)
-    }
+    init: func
 
     execute: func (x: EoType) {
         match (x) {
-            case i: EoInteger => push(i)
-            case s: EoString => push(s)
+            case i: EoInteger => stack push(i)
+            case s: EoString => stack push(s)
             case sym: EoSymbol => "Not implemented yet" println()
             case => "Unknown" println()
         }
@@ -136,17 +135,6 @@ EoInterpreter: class {
     stackRepr: func -> String {
         strValues := stack data map(|x| (x as EoType) toString())
         return "[" + strValues join(" ") + "]"
-        /*
-        result := "["
-        strValues := stack data map(|x| (x as EoType) toString())
-        for ((index, s) in strValues) {
-            result append(s)
-            if (index < stack data size - 1)
-                result append(" ")
-        }
-        result append("]")
-        return result
-        */
     }
 }
 
