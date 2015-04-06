@@ -8,6 +8,17 @@ dup: func (interp: EoInterpreter) {
     interp stack push(x)
 }
 
+plus: func (interp: EoInterpreter) {
+    x := interp stack pop()
+    y := interp stack pop()
+    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
+        result := EoInteger new((x as EoInteger) value + (y as EoInteger) value)
+        interp stack push(result)
+    }
+    else 
+        Exception new("+ only works on numbers") throw()
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String, f: Func(EoInterpreter)) {
@@ -18,4 +29,5 @@ loadBuiltinWord: func (interp: EoInterpreter, name: String, f: Func(EoInterprete
 
 loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
+    loadBuiltinWord(interp, "+", plus)
 }

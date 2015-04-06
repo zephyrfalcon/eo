@@ -50,10 +50,10 @@ EoInterpreter: class {
                 value := userNamespace lookup(sym value)
                 if (value == null)
                     "Symbol not found: %s" printfln(sym toString())
+                    /* later: raise an exception? */
                 else
                     execute(value)
-            case bw: EoBuiltinWord =>
-                bw f(this)
+            case bw: EoBuiltinWord => bw f(this)
             case => "Unknown" println()
         }
     }
