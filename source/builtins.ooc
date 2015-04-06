@@ -3,6 +3,9 @@
 import eotypes, eo
 
 dup: func (interp: EoInterpreter) {
+    x := interp stack pop()
+    interp stack push(x)
+    interp stack push(x)
 }
 
 /* loading builtins */
