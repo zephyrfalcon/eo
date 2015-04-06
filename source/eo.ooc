@@ -46,7 +46,14 @@ EoInterpreter: class {
         match (x) {
             case i: EoInteger => stack push(i)
             case s: EoString => stack push(s)
-            case sym: EoSymbol => "Not implemented yet" println()
+            case sym: EoSymbol =>
+                value := userNamespace lookup(sym value)
+                if (value == null)
+                    "Symbol not found: %s" printfln(sym toString())
+                else
+                    execute(value)
+            case bw: EoBuiltinWord =>
+                bw f(this)
             case => "Unknown" println()
         }
     }
