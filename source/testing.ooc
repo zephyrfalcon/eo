@@ -1,0 +1,6 @@
+/* testing.ooc */
+
+TestRunner: class {
+
+}
+

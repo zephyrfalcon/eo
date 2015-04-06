@@ -4,6 +4,7 @@ import structs/[ArrayList, HashMap, Stack]
 import text/[EscapeSequence, Regexp]
 import patch
 import namespace, eotypes
+import builtins
 
 EO_VERSION := "0.0.2"
 
@@ -37,7 +38,9 @@ EoInterpreter: class {
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
 
-    init: func
+    init: func {
+        loadBuiltinWords(this)
+    }
 
     execute: func (x: EoType) {
         match (x) {
