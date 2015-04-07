@@ -2,6 +2,7 @@
 
 import structs/ArrayList
 import eo
+import namespace
 
 /*** base class ***/
 
@@ -38,6 +39,8 @@ EoWord: abstract class extends EoType {
 EoUserDefWord: class extends EoWord {
     words: ArrayList<String> // for now!
     name: String
+    namespace: Namespace
+    init: func (=words, =namespace)  // name is optional
     toString: func -> String { "u#<%s>" format(name) }
 }
 

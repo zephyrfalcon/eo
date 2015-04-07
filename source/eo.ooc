@@ -37,9 +37,25 @@ EoInterpreter: class {
     stack := Stack<EoType> new()  /* later: must be a "StackStack" */
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
+    currentWord := ArrayList<EoType> new()
 
     init: func {
         loadBuiltinWords(this)
+    }
+
+    parse: func (data: String) -> ArrayList<EoType> {
+        code := ArrayList<EoType> new()
+        tokens := tokenize(data)
+        for (token in tokens) {
+            match (token) {
+                //case "{" => ...
+                //case "}" => ...
+                case =>
+                    x := parseToken(token)
+                    code add(x)
+            }
+        }
+        return code
     }
 
     execute: func (x: EoType) {
@@ -54,6 +70,7 @@ EoInterpreter: class {
                 else
                     execute(value)
             case bw: EoBuiltinWord => bw f(this)
+            //case uw: EoUserDefWord => 
             case => "Unknown" println()
         }
     }
@@ -78,15 +95,9 @@ EoREPL: class {
         while (stdin hasNext?()) {
             stdout write(prompt)
             line := stdin readLine()
-            tokens := tokenize(line)
-            print_tokens(tokens)
-            //"\"%s\"" printfln(EscapeSequence escape(line))
-            tokens each(|token|
-                value := parseToken(token)
-                //"That's an %s with value %s!" printfln(value class name, value toString())
-                interpreter execute(value)
-                interpreter stackRepr() println()
-            )
+            code := interpreter parse(line)
+            for (c in code) interpreter execute(c)
+            interpreter stackRepr() println()
         }
         println()
     }

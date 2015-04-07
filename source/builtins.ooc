@@ -15,7 +15,7 @@ plus: func (interp: EoInterpreter) {
         result := EoInteger new((x as EoInteger) value + (y as EoInteger) value)
         interp stack push(result)
     }
-    else 
+    else
         Exception new("+ only works on numbers") throw()
 }
 
