@@ -60,7 +60,7 @@ EoList: class extends EoWord {
 
 EoBool: class extends EoWord {
     value: Bool
-    toString: func -> String { "to be implemented" }
+    toString: func -> String { value ? "true" : "false" }
     init: func(=value)
 }
 

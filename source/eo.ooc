@@ -43,6 +43,8 @@ EoInterpreter: class {
      * definitions... maybe using a stack? */
 
     init: func {
+        rootNamespace add("true", EoTrue)
+        rootNamespace add("false", EoFalse)
         loadBuiltinWords(this)
     }
 
@@ -65,6 +67,7 @@ EoInterpreter: class {
         match (x) {
             case i: EoInteger => stack push(i)
             case s: EoString => stack push(s)
+            case b: EoBool => stack push(b)
             case sym: EoSymbol =>
                 value := userNamespace lookup(sym value)
                 if (value == null)
