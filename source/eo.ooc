@@ -38,6 +38,9 @@ EoInterpreter: class {
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
     currentWord := ArrayList<EoType> new()
+    inWordDef := false
+    /* something not right here... we need to deal with nested { }
+     * definitions... maybe using a stack? */
 
     init: func {
         loadBuiltinWords(this)
