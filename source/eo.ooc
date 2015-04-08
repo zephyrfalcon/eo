@@ -55,12 +55,18 @@ EoInterpreter: class {
             match (token) {
                 case "{" =>
                     currentWordStack push(ArrayList<EoType> new())
-                //case "}" => ...
+                case "}" =>
+                    code: ArrayList<EoType> = currentWordStack pop()
+                    w := EoUserDefWord new(code)
+                    currentWordStack peek() add(w)
+                    /* namespace must be added later */
                 case =>
                     x := parseToken(token)
                     currentWordStack peek() add(x)
             }
         }
+        /* if the stack has more than 1 list on it, we're still inside a word
+         * definition. */
         return currentWordStack size == 1  /* done? */
     }
 
@@ -69,6 +75,7 @@ EoInterpreter: class {
             case i: EoInteger => stack push(i)
             case s: EoString => stack push(s)
             case b: EoBool => stack push(b)
+            case w: EoUserDefWord => stack push(w)
             case sym: EoSymbol =>
                 value := userNamespace lookup(sym value)
                 if (value == null)
@@ -76,8 +83,9 @@ EoInterpreter: class {
                     /* later: raise an exception? */
                 else
                     execute(value)
+                    /* this works, but how do we execute user-defined words?
+                       needs fixed. */
             case bw: EoBuiltinWord => bw f(this)
-            //case uw: EoUserDefWord =>
             case => "Unknown" println()
         }
     }

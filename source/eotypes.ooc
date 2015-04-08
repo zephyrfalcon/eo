@@ -41,6 +41,7 @@ EoUserDefWord: class extends EoWord {
     name: String
     namespace: Namespace
     init: func (=words, =namespace)  // name is optional
+    init: func ~plain (=words)
     toString: func -> String { "u#<%s>" format(name) }
 }
 
