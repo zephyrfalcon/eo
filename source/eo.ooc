@@ -71,22 +71,30 @@ EoInterpreter: class {
     }
 
     execute: func (x: EoType) {
+        /* Symbols are looked up, everything else get pushed onto the stack. */
         match (x) {
-            case i: EoInteger => stack push(i)
-            case s: EoString => stack push(s)
-            case b: EoBool => stack push(b)
-            case w: EoUserDefWord => stack push(w)
             case sym: EoSymbol =>
                 value := userNamespace lookup(sym value)
                 if (value == null)
                     "Symbol not found: %s" printfln(sym toString())
                     /* later: raise an exception? */
                 else
-                    execute(value)
+                    executeWord(value)
                     /* this works, but how do we execute user-defined words?
                        needs fixed. */
+            case uw: EoUserDefWord => stack push(uw)
+            /* FIXME: must add namespace to uw object */
+            case => stack push(x)
+        }
+    }
+
+    executeWord: func (x: EoType) {
+        match (x) {
             case bw: EoBuiltinWord => bw f(this)
-            case => "Unknown" println()
+            case uw: EoUserDefWord =>
+                for (c in uw words) execute(c)
+                /* FIXME: later, we'll use a code stack */
+            case => "Cannot execute: %s" printfln(x class name)
         }
     }
 

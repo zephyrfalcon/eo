@@ -19,6 +19,14 @@ plus: func (interp: EoInterpreter) {
         Exception new("+ only works on numbers") throw()
 }
 
+def: func (interp: EoInterpreter) {
+    /* ( lambda-word name -- ) */
+    name := interp stack pop() as EoString
+    word := interp stack pop() as EoUserDefWord
+    /* FIXME: this should be the "current" namespace instead */
+    interp userNamespace add(name value, word)
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String, f: Func(EoInterpreter)) {
@@ -30,4 +38,5 @@ loadBuiltinWord: func (interp: EoInterpreter, name: String, f: Func(EoInterprete
 loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
     loadBuiltinWord(interp, "+", plus)
+    loadBuiltinWord(interp, "def", def)
 }

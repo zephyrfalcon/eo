@@ -37,7 +37,7 @@ EoWord: abstract class extends EoType {
 }
 
 EoUserDefWord: class extends EoWord {
-    words: ArrayList<String> // for now!
+    words: ArrayList<EoType> 
     name: String
     namespace: Namespace
     init: func (=words, =namespace)  // name is optional
