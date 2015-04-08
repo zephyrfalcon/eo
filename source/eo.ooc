@@ -37,30 +37,31 @@ EoInterpreter: class {
     stack := Stack<EoType> new()  /* later: must be a "StackStack" */
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
-    currentWord := ArrayList<EoType> new()
+    currentWordStack := Stack<ArrayList<EoType>> new()
     inWordDef := false
     /* something not right here... we need to deal with nested { }
      * definitions... maybe using a stack? */
 
     init: func {
+        clear()
         rootNamespace add("true", EoTrue)
         rootNamespace add("false", EoFalse)
         loadBuiltinWords(this)
     }
 
-    parse: func (data: String) -> ArrayList<EoType> {
-        code := ArrayList<EoType> new()
+    parse: func (data: String) -> Bool {
         tokens := tokenize(data)
         for (token in tokens) {
             match (token) {
-                //case "{" => ...
+                case "{" =>
+                    currentWordStack push(ArrayList<EoType> new())
                 //case "}" => ...
                 case =>
                     x := parseToken(token)
-                    code add(x)
+                    currentWordStack peek() add(x)
             }
         }
-        return code
+        return currentWordStack size == 1  /* done? */
     }
 
     execute: func (x: EoType) {
@@ -76,7 +77,7 @@ EoInterpreter: class {
                 else
                     execute(value)
             case bw: EoBuiltinWord => bw f(this)
-            //case uw: EoUserDefWord => 
+            //case uw: EoUserDefWord =>
             case => "Unknown" println()
         }
     }
@@ -84,6 +85,12 @@ EoInterpreter: class {
     stackRepr: func -> String {
         strValues := stack data map(|x| (x as EoType) toString())
         return "[" + strValues join(" ") + "]"
+    }
+
+    /* clear the current word stack. */
+    clear: func {
+        currentWordStack clear()
+        currentWordStack push(ArrayList<EoType> new())
     }
 }
 
@@ -101,8 +108,12 @@ EoREPL: class {
         while (stdin hasNext?()) {
             stdout write(prompt)
             line := stdin readLine()
-            code := interpreter parse(line)
-            for (c in code) interpreter execute(c)
+            done := interpreter parse(line)
+            if (done) {
+                code: ArrayList<EoType> = interpreter currentWordStack pop()
+                for (c in code) interpreter execute(c)
+                interpreter clear()
+            }
             interpreter stackRepr() println()
         }
         println()
