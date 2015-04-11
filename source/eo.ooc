@@ -16,6 +16,19 @@ tokenize: func(data: String) -> ArrayList<String> {
     return re_word split(data)
 }
 
+expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
+    newTokens := ArrayList<String> new()
+    for (token in tokens) {
+        if (token startsWith?("->$") && token length() > 3) {
+            newTokens add("\"%s\"" format(token substring(2)))
+            newTokens add("defvar")
+        }
+        else
+            newTokens add(token)
+    }
+    return newTokens
+}
+
 print_tokens: func(tokens: ArrayList<String>) {
     tokens each(|token| token println())
 }
@@ -51,6 +64,7 @@ EoInterpreter: class {
 
     parse: func (data: String) -> Bool {
         tokens := tokenize(data)
+        tokens = expandMacros(tokens)
         for (token in tokens) {
             match (token) {
                 case "{" =>

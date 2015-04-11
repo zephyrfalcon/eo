@@ -31,6 +31,8 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     varname := interp stack pop() as EoString
     value := interp stack pop()
     assert (varname value startsWith?("$"))
+    /* NOTE: this is the only place where we enforce that variable names
+     * should start with a '$'. Otherwise it's treated as any other symbol. */
     realname := varname value substring(1)
     e := EoVariable new(realname, value)
     ns add(varname value, e)
