@@ -46,7 +46,7 @@ EoUserDefWord: class extends EoWord {
 }
 
 EoBuiltinWord: class extends EoWord {
-    f: Func(EoInterpreter)
+    f: Func(EoInterpreter, Namespace)
     name: String
     toString: func -> String { "#<%s>" format(name) }
     init: func (=name, =f)
@@ -68,6 +68,13 @@ EoBool: class extends EoWord {
 /* don't create EoBools, use these instead */
 EoTrue := EoBool new(true)
 EoFalse := EoBool new(false)
+
+EoVariable: class extends EoType {
+    value: EoType
+    name: String
+    init: func (=name, =value)
+    toString: func -> String { "$%s" format(name) }
+}
 
 /* we need an EoList, but not an EoStack; they're the same thing.
    Even structs/Stack is implemented with an ArrayList, so we can treat them

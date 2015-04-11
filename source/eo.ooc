@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes
 import builtins
 
-EO_VERSION := "0.0.2"
+EO_VERSION := "0.0.4"
 
 /*****/
 
@@ -31,16 +31,16 @@ parseToken: func(token: String) -> EoType {
         /* NOTE: ooc slicing != Python slicing. */
     }
     return EoSymbol new(token)
+    /* NOTE: symbols include variables. */
 }
 
 EoInterpreter: class {
     stack := Stack<EoType> new()  /* later: must be a "StackStack" */
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
+
+    /* stack to deal with nested word definitions */
     currentWordStack := Stack<ArrayList<EoType>> new()
-    inWordDef := false
-    /* something not right here... we need to deal with nested { }
-     * definitions... maybe using a stack? */
 
     init: func {
         clear()
@@ -70,29 +70,33 @@ EoInterpreter: class {
         return currentWordStack size == 1  /* done? */
     }
 
-    execute: func (x: EoType) {
+    execute: func (x: EoType, ns: Namespace) {
         /* Symbols are looked up, everything else get pushed onto the stack. */
         match (x) {
             case sym: EoSymbol =>
-                value := userNamespace lookup(sym value)
+                value := ns lookup(sym value)
                 if (value == null)
                     "Symbol not found: %s" printfln(sym toString())
                     /* later: raise an exception? */
+                else if (value instanceOf?(EoVariable))
+                    stack push((value as EoVariable) value)
                 else
-                    executeWord(value)
+                    executeWord(value, ns)
                     /* this works, but how do we execute user-defined words?
                        needs fixed. */
-            case uw: EoUserDefWord => stack push(uw)
-            /* FIXME: must add namespace to uw object */
+            case uw: EoUserDefWord => 
+                uw namespace = ns
+                stack push(uw)
             case => stack push(x)
         }
     }
 
-    executeWord: func (x: EoType) {
+    executeWord: func (x: EoType, ns: Namespace) {
         match (x) {
-            case bw: EoBuiltinWord => bw f(this)
+            case bw: EoBuiltinWord => bw f(this, ns)
             case uw: EoUserDefWord =>
-                for (c in uw words) execute(c)
+                newns := Namespace new(ns)
+                for (c in uw words) execute(c, newns)
                 /* FIXME: later, we'll use a code stack */
             case => "Cannot execute: %s" printfln(x class name)
         }
@@ -127,7 +131,8 @@ EoREPL: class {
             done := interpreter parse(line)
             if (done) {
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
-                for (c in code) interpreter execute(c)
+                for (c in code) 
+                    interpreter execute(c, interpreter userNamespace)
                 interpreter clear()
             }
             interpreter stackRepr() println()

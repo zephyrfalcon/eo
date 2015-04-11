@@ -1,14 +1,14 @@
 /* builtins.ooc */
 
-import eotypes, eo
+import eotypes, eo, namespace
 
-dup: func (interp: EoInterpreter) {
+dup: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
     interp stack push(x)
     interp stack push(x)
 }
 
-plus: func (interp: EoInterpreter) {
+plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
     y := interp stack pop()
     if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
@@ -19,17 +19,27 @@ plus: func (interp: EoInterpreter) {
         Exception new("+ only works on numbers") throw()
 }
 
-def: func (interp: EoInterpreter) {
+def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
     name := interp stack pop() as EoString
     word := interp stack pop() as EoUserDefWord
-    /* FIXME: this should be the "current" namespace instead */
-    interp userNamespace add(name value, word)
+    ns add(name value, word)
+}
+
+defvar: func (interp: EoInterpreter, ns: Namespace) {
+    /* ( value varname -- ) */
+    varname := interp stack pop() as EoString
+    value := interp stack pop()
+    assert (varname value startsWith?("$"))
+    realname := varname value substring(1)
+    e := EoVariable new(realname, value)
+    ns add(varname value, e)
 }
 
 /* loading builtins */
 
-loadBuiltinWord: func (interp: EoInterpreter, name: String, f: Func(EoInterpreter)) {
+loadBuiltinWord: func (interp: EoInterpreter, name: String,
+                       f: Func(EoInterpreter, Namespace)) {
     //"Loading builtin: %s" printfln(name)
     builtinWord := EoBuiltinWord new(name, f)
     interp rootNamespace add(name, builtinWord)
@@ -39,4 +49,5 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "def", def)
+    loadBuiltinWord(interp, "defvar", defvar)
 }
