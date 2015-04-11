@@ -47,8 +47,44 @@ parseToken: func(token: String) -> EoType {
     /* NOTE: symbols include variables. */
 }
 
+StackStack: class {
+    stacks := Stack<Stack<EoType>> new()
+    init: func {
+        stacks push(Stack<EoType> new())
+    }
+
+    /* methods that operate on the top stack */
+
+    push: func (x: EoType) {
+        stacks peek() push(x)
+    }
+    pop: func -> EoType {
+        (stacks peek() as Stack<EoType>) pop()
+    }
+    peek: func -> EoType {
+        (stacks peek() as Stack<EoType>) peek()
+    }
+    clear: func {
+        stacks peek() clear()
+    }
+
+    /* methods that operate on the whole stack of stacks */
+
+    popStack: func -> Stack<EoType> {
+        stacks pop()
+    }
+    pushStack: func (stk: Stack<EoType>) {
+        stacks push(stk)
+    }
+    peekStack: func -> Stack<EoType> {
+        stacks peek()
+    }
+    /* TODO: size of StackStack, vs size of top stack? */
+}
+
 EoInterpreter: class {
-    stack := Stack<EoType> new()  /* later: must be a "StackStack" */
+    //stack := Stack<EoType> new()  /* later: must be a "StackStack" */
+    stack := StackStack new()
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
 
@@ -98,7 +134,7 @@ EoInterpreter: class {
                     executeWord(value, ns)
                     /* this works, but how do we execute user-defined words?
                        needs fixed. */
-            case uw: EoUserDefWord => 
+            case uw: EoUserDefWord =>
                 uw namespace = ns
                 stack push(uw)
             case => stack push(x)
@@ -116,8 +152,9 @@ EoInterpreter: class {
         }
     }
 
+    /* Q: Do we display only the top stack, or all the stacks? */
     stackRepr: func -> String {
-        strValues := stack data map(|x| (x as EoType) toString())
+        strValues := (stack peek() as Stack<EoType>) data map(|x| (x as EoType) toString())
         return "[" + strValues join(" ") + "]"
     }
 
@@ -145,7 +182,7 @@ EoREPL: class {
             done := interpreter parse(line)
             if (done) {
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
-                for (c in code) 
+                for (c in code)
                     interpreter execute(c, interpreter userNamespace)
                 interpreter clear()
             }

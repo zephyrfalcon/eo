@@ -38,6 +38,7 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     ns add(varname value, e)
 }
 
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
