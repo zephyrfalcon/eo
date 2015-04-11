@@ -54,7 +54,10 @@ EoBuiltinWord: class extends EoWord {
 
 EoList: class extends EoWord {
     data: ArrayList<EoType>
-    toString: func -> String { "to be implemented" }
+    toString: func -> String {
+        strValues := data map(|x| x toString())
+        return "[" + strValues join(" ") + "]"
+    }
     init: func(=data)
     init: func ~empty { data := ArrayList<EoType> new() }
 }
@@ -75,6 +78,7 @@ EoVariable: class extends EoType {
     init: func (=name, =value)
     toString: func -> String { "$%s" format(name) }
 }
+
 
 /* we need an EoList, but not an EoStack; they're the same thing.
    Even structs/Stack is implemented with an ArrayList, so we can treat them

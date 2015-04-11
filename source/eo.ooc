@@ -154,12 +154,9 @@ EoInterpreter: class {
 
     /* Q: Do we display only the top stack, or all the stacks? */
     stackRepr: func -> String {
-        //strValues := (stack peek() as Stack<EoType>) data map(|x| (x as EoType) toString())
-        //return "[" + strValues join(" ") + "]"
         topStack: Stack<EoType>  = stack peekStack()
         strValues := (topStack data map(|x| (x as EoType) toString()))
         return "[" + strValues join(" ") + "]"
-        return "[]"
     }
 
     /* clear the current word stack. */

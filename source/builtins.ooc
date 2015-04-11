@@ -1,5 +1,6 @@
 /* builtins.ooc */
 
+import structs/[ArrayList, Stack]
 import eotypes, eo, namespace
 
 dup: func (interp: EoInterpreter, ns: Namespace) {
@@ -38,6 +39,17 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     ns add(varname value, e)
 }
 
+lbracket: func (interp: EoInterpreter, ns: Namespace) {
+    /* [ ( -- ) */
+    interp stack pushStack(Stack<EoType> new())
+}
+
+rbracket: func (interp: EoInterpreter, ns: Namespace) {
+    /* ] ( -- lst ) */
+    stk: Stack<EoType> = interp stack popStack()
+    lst := EoList new(stk data)
+    interp stack push(lst)
+}
 
 /* loading builtins */
 
@@ -53,4 +65,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
+    loadBuiltinWord(interp, "[", lbracket)
+    loadBuiltinWord(interp, "]", rbracket)
 }
