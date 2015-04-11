@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes
 import builtins
 
-EO_VERSION := "0.0.4"
+EO_VERSION := "0.0.5"
 
 /*****/
 
