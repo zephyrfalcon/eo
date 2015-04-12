@@ -17,6 +17,14 @@ StackStack: class {
     pop: func -> EoType {
         (stacks peek() as Stack<EoType>) pop()
     }
+    popCheck: func (type: Class) -> EoType {
+        x := (stacks peek() as Stack<EoType>) pop()
+        if (x class name != type name) 
+            "Type error: %s expected, got %s instead" \
+             printfln(type name, x class name)
+        /* FIXME: raise error or something */
+        return x
+    }
     peek: func -> EoType {
         (stacks peek() as Stack<EoType>) peek()
     }

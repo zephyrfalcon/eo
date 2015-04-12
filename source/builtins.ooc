@@ -56,7 +56,8 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
        Execute the string as if it was a regular symbol found in code.
        NOTE: Currently only expects and executes ONE token. Also see #22.
     */
-    token := interp stack pop() as EoString
+    //token := interp stack pop() as EoString
+    token := interp stack popCheck(EoString) as EoString
     x := parseToken(token value)
     interp execute(x, ns)
 }
