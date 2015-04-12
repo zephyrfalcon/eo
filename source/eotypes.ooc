@@ -79,6 +79,11 @@ EoVariable: class extends EoType {
     toString: func -> String { "$%s" format(name) }
 }
 
+EoModule: class extends EoType {
+    namespace: Namespace
+    init: func (=namespace)  /* will usually be based on userNamespace */
+    toString: func -> String { "module" } /* FIXME */
+}
 
 /* we need an EoList, but not an EoStack; they're the same thing.
    Even structs/Stack is implemented with an ArrayList, so we can treat them
