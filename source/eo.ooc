@@ -33,7 +33,9 @@ print_tokens: func(tokens: ArrayList<String>) {
     tokens each(|token| token println())
 }
 
-re_number := Regexp compile("\\d+")
+/* NOTE: Regular expressions must match the whole token, not part of it;
+ * therefore they should start with '^' and end with '$'. */
+re_number := Regexp compile("^-?\\d+$")
 
 parseToken: func(token: String) -> EoType {
     if (re_number matches(token)) {

@@ -51,6 +51,16 @@ rbracket: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(lst)
 }
 
+exec: func (interp: EoInterpreter, ns: Namespace) {
+    /* exec ( string -- ? )
+       Execute the string as if it was a regular symbol found in code.
+       NOTE: Currently only expects and executes ONE token. Also see #22.
+    */
+    token := interp stack pop() as EoString
+    x := parseToken(token value)
+    interp execute(x, ns)
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -67,4 +77,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "defvar", defvar)
     loadBuiltinWord(interp, "[", lbracket)
     loadBuiltinWord(interp, "]", rbracket)
+    loadBuiltinWord(interp, "exec", exec)
 }
+
