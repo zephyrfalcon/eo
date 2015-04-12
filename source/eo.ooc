@@ -156,7 +156,9 @@ EoInterpreter: class {
     stackRepr: func -> String {
         topStack: Stack<EoType>  = stack peekStack()
         strValues := (topStack data map(|x| (x as EoType) toString()))
-        return "[" + strValues join(" ") + "]"
+        numPrevStacks := stack stacks getSize() - 1
+        prefix := numPrevStacks ? "(%d) " format(numPrevStacks) : ""
+        return prefix + "[" + strValues join(" ") + "]"
     }
 
     /* clear the current word stack. */
