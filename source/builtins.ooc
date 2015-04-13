@@ -2,6 +2,7 @@
 
 import structs/[ArrayList, Stack]
 import eotypes, eo, namespace
+import builtins_str
 
 dup: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -71,6 +72,12 @@ loadBuiltinWord: func (interp: EoInterpreter, name: String,
     interp rootNamespace add(name, builtinWord)
 }
 
+loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
+                               f: Func(EoInterpreter, Namespace)) {
+    builtinWord := EoBuiltinWord new(name, f)
+    targetNs add(name, builtinWord)
+}
+
 loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
     loadBuiltinWord(interp, "+", plus)
@@ -79,5 +86,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "[", lbracket)
     loadBuiltinWord(interp, "]", rbracket)
     loadBuiltinWord(interp, "exec", exec)
+
+    str_loadBuiltinWords(interp)
 }
 
