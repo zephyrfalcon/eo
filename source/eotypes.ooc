@@ -80,10 +80,10 @@ EoVariable: class extends EoType {
 }
 
 EoModule: class extends EoType {
-    name, path: String
+    name := "unknown"; path := ""  // override when loading module
     namespace: Namespace
     init: func (=namespace)  /* will usually be based on userNamespace */
-    toString: func -> String { "module" } /* FIXME */
+    toString: func -> String { "#module<%s>" format(name) }
 }
 
 

@@ -63,6 +63,23 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
     interp execute(x, ns)
 }
 
+// execns
+
+lookup: func (interp: EoInterpreter, ns: Namespace) {
+    /* lookup ( module name -- value ) */
+    /* for now, only works for modules, but other types will probably be added
+     * later. */
+    name := interp stack popCheck(EoString) as EoString
+    module := interp stack pop() // later: can be other things as well
+    match (module) {
+        case (m: EoModule) =>
+            value := m namespace lookup(name value)
+            interp stack push(value)
+        case => "Cannot look up in object of type (%s)" \
+                printfln(module class name)
+    }
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -86,6 +103,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "[", lbracket)
     loadBuiltinWord(interp, "]", rbracket)
     loadBuiltinWord(interp, "exec", exec)
+    loadBuiltinWord(interp, "lookup", lookup)
 
     str_loadBuiltinWords(interp)
 }
