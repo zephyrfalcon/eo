@@ -53,17 +53,33 @@ rbracket: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 exec: func (interp: EoInterpreter, ns: Namespace) {
-    /* exec ( string -- ? )
+    /* exec ( string|executable -- ? )
        Execute the string as if it was a regular symbol found in code.
        NOTE: Currently only expects and executes ONE token. Also see #22.
     */
-    //token := interp stack pop() as EoString
-    token := interp stack popCheck(EoString) as EoString
-    x := parseToken(token value)
-    interp execute(x, ns)
+    x := interp stack pop()  /* string or executable */
+    match (x) {
+        case (s: EoString) => {
+            sv := parseToken((s as EoString) value)
+            interp execute(sv, ns) 
+        }
+        case => interp executeWord(x, ns)
+    }
 }
 
 // execns
+// is really the same as `lookup exec`, assuming `exec` accepts words and
+// such, nespa? could be in stdlib, but let's keep it built-in instead, at
+// least for now.
+
+execns: func (interp: EoInterpreter, ns: Namespace) {
+    /* execns ( module name -- ? )
+       Lookup name in module/namespace/etc and execute it. */
+    //name := interp stack popCheck(EoString) as EoString
+    //mod := interp stack pop()
+    lookup(interp, ns)
+    exec(interp, ns)
+}
 
 lookup: func (interp: EoInterpreter, ns: Namespace) {
     /* lookup ( module name -- value ) */
@@ -104,6 +120,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "]", rbracket)
     loadBuiltinWord(interp, "exec", exec)
     loadBuiltinWord(interp, "lookup", lookup)
+    loadBuiltinWord(interp, "execns", execns)
 
     str_loadBuiltinWords(interp)
 }

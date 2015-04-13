@@ -1,12 +1,12 @@
 /* eo.ooc */
 
 import structs/[ArrayList, HashMap, Stack]
-import text/[EscapeSequence, Regexp]
+import text/[EscapeSequence, Regexp, StringTokenizer]
 import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.7"
+EO_VERSION := "0.0.8"
 
 /*****/
 
@@ -22,6 +22,16 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
         if (token startsWith?("->$") && token length() > 3) {
             newTokens add("\"%s\"" format(token substring(2)))
             newTokens add("defvar")
+        }
+        else if (token contains?(":") && !(token startsWith?(":")) \
+                 && !(token endsWith?(":"))) {
+            /* split foo:bar and replace with `foo "bar" execns` */
+            parts := token split(":")
+            newTokens add(parts[0])
+            for (part in parts[1..-1]) {
+                newTokens add("\"%s\"" format(part))
+                newTokens add("execns")
+            }
         }
         else
             newTokens add(token)
