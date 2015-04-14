@@ -1,7 +1,8 @@
 *sw?
 .libs
 eo
-eo.dSYM
+test-all
+*.dSYM
 rock_tmp
 .sam-cache
 
