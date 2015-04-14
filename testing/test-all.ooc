@@ -1,11 +1,15 @@
 
 import structs/ArrayList
-import testrunner
+import testing/testrunner
+import source/eo
 
 tr := TestRunner new()
 
-tr addTest("check that 1 equals 1", func {
-        test(1==1)
+
+tr addTest("test eo.tokenize", func {
+        test(tokenize("1 a") == (["1", "a"] as ArrayList<String>))
+        /* is in need of a testEquals or something, but that is not always
+         * easy in ooc... :-/ */
     })
 
 tr addTest("check that 1+1 equals 2", func {

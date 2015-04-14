@@ -172,7 +172,3 @@ EoREPL: class {
         println()
     }
 }
-
-repl := EoREPL new()
-repl run()
-

@@ -1,6 +1,9 @@
 Name: Eo Test Suite
 Description: Test Suite for the Eo programming language/environment
 Version: 1
-SourcePath: .
-Main: test-all
 
+# HACK to make this work. We pretend the source path is '..'; if we used '.',
+# the files in testing/ cannot reach the ones in eo/. This does mean that we
+# have to qualify the imports differently.
+SourcePath: ..
+Main: testing/test-all
