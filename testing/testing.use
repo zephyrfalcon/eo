@@ -1,0 +1,6 @@
+Name: Eo Test Suite
+Description: Test Suite for the Eo programming language/environment
+Version: 1
+SourcePath: .
+Main: test-all
+
