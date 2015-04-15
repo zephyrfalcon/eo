@@ -3,11 +3,15 @@
 import structs/ArrayList
 
 TestError: class extends Exception {
-    init: func
+    //message: String
+    init: func (=message)
 }
 
 test: func (cond: Bool) {
-    if (!cond) TestError new() throw()
+    test(cond, "")
+}
+test: func ~withMessage (cond: Bool, message: String) {
+    if (!cond) TestError new(message) throw()
 }
 
 Test: class {
@@ -32,6 +36,7 @@ TestRunner: class {
                 test testFunction()
             } catch (e: TestError) {
                 "FAILED" println()
+                if (e message != "") e message println()
                 continue
             } catch (e: Exception) {
                 "ERROR" println()

@@ -1,0 +1,4 @@
+pushd testing
+rock -v && ./test-all
+popd 
+
