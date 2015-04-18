@@ -59,6 +59,13 @@ parseToken: func(token: String) -> EoType {
     /* NOTE: symbols include variables. */
 }
 
+StackFrame: class {
+    code: EoType
+    counter := 0
+    namespace: Namespace
+    init: func (=code, =namespace)
+}
+
 EoInterpreter: class {
     //stack := Stack<EoType> new()  /* later: must be a "StackStack" */
     stack := StackStack new()
@@ -67,6 +74,9 @@ EoInterpreter: class {
 
     /* stack to deal with nested word definitions */
     currentWordStack := Stack<ArrayList<EoType>> new()
+
+    /* call stack to execute code */
+    callStack := Stack<StackFrame> new()
 
     init: func {
         clear()

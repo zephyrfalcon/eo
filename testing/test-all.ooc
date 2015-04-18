@@ -20,7 +20,7 @@ extend ArrayList<String> {
     }
 }
 
-/* TODO: patch ArrayList<EoType> */
+/* TODO: implement this for ArrayList<EoType> */
 
 tr addTest("test ArrayList<String> equals", func {
     a := ["a", "b", "c"] as ArrayList<String>
@@ -34,7 +34,7 @@ tr addTest("test eo.tokenize", func {
 })
 
 tr addTest("check that 1+1 equals 2", func {
-    test(1==2)
+    test(1==2, "intentional failure")
 })
 
 tr addTest("messy test", func {
