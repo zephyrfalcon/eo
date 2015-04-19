@@ -145,18 +145,6 @@ EoInterpreter: class {
 
     /*** execution using call stack ***/
 
-    pushToCallStack: func (frame: EoStackFrame) {
-        callStack push(frame)
-    }
-
-    /* XXX there is a problem here:
-       we need to distinguish between code block "literals" and code blocks
-       that are pushed onto the call stack when we want to execute a built-in
-       word!
-       right now if we say `{ }` it wants to execute the code immediately,
-       which is not correct.
-       maybe have two objects, EoCodeBlock vs EoUserDefWord?
-    */
     executeStep: func {
         frame := callStack peek()
         match (frame code) {
@@ -179,7 +167,7 @@ EoInterpreter: class {
                         /* user-defined words go on the call stack. */
                         newFrame := EoStackFrame new(uw, frame namespace)
                         /* not sure about the namespace... */
-                        pushToCallStack(newFrame)
+                        callStack push(newFrame)
                     case =>
                         "Symbol cannot be executed: %s with value %s" \
                          printfln(frame code class name, frame code toString())
@@ -194,7 +182,7 @@ EoInterpreter: class {
                 bw f(this, frame namespace)  /* is this the right namespace? */
             case uw: EoUserDefWord =>
                 /* next step in executing user-defined word? */
-                "not implemented yet" println()
+                "executing built-in words is not implemented yet" println()
                 callStack pop()
             case =>
                 stack push(frame code)
@@ -243,7 +231,7 @@ EoREPL: class {
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
                 for (c in code) {
                     frame := EoStackFrame new(c, interpreter userNamespace)
-                    interpreter pushToCallStack(frame)
+                    interpreter callStack push(frame)
                     interpreter executeAll()
                 }
                 interpreter clear()

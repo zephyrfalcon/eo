@@ -36,6 +36,12 @@ EoSymbol: class extends EoType {
 EoWord: abstract class extends EoType {
 }
 
+/* Code blocks vs user-defined words:
+   We need to distinguish between the two when they're on the call stack.
+   A code block on the call stack will be pushed on the (data) stack.
+   A user-defined word on the call stack will be executed.
+*/
+
 EoCodeBlock: class extends EoWord {
     words: ArrayList<EoType>
     namespace: Namespace

@@ -63,13 +63,12 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
         case (s: EoString) => {
             sv := parseToken((s as EoString) value)
             frame := EoStackFrame new(sv, ns)
-            interp pushToCallStack(frame)
-            /* XXX will this suffice? it should be picked up by the execution
-             * loop... */
+            interp callStack push(frame)
+            /* this should be picked up by the execution loop */
         }
         case =>
             frame := EoStackFrame new(x, ns)
-            interp pushToCallStack(frame)
+            interp callStack push(frame)
     }
 }
 
