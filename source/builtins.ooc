@@ -24,7 +24,8 @@ plus: func (interp: EoInterpreter, ns: Namespace) {
 def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
     name := interp stack pop() as EoString
-    word := interp stack pop() as EoUserDefWord
+    blk := interp stack pop() as EoCodeBlock //EoUserDefWord
+    word := EoUserDefWord new(blk)  /* block already has a namespace */
     ns add(name value, word)
 }
 

@@ -19,7 +19,8 @@ str_loadBuiltinWords: func (interp: EoInterpreter) {
     /* add builtin word 'str' that returns the module */
     words := ArrayList<EoType> new()
     words add(strmod)
-    strword := EoUserDefWord new(words, interp userNamespace)
+    blk := EoCodeBlock new(words, interp userNamespace)
+    strword := EoUserDefWord new(blk)
     interp userNamespace add("str", strword)
 
     /* builtin words in the module */

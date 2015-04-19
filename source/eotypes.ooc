@@ -36,12 +36,20 @@ EoSymbol: class extends EoType {
 EoWord: abstract class extends EoType {
 }
 
-EoUserDefWord: class extends EoWord {
+EoCodeBlock: class extends EoWord {
     words: ArrayList<EoType>
-    name: String
     namespace: Namespace
-    init: func (=words, =namespace)  // name is optional
+    init: func (=words, =namespace)
     init: func ~plain (=words)
+    toString: func -> String { "#code{}" }
+    /* later: maybe toString() should actually show the code? */
+}
+
+EoUserDefWord: class extends EoWord {
+    code: EoCodeBlock
+    name: String
+    init: func (=code, =name)  // name is optional
+    init: func ~plain (=code)
     toString: func -> String { "u#<%s>" format(name) }
 }
 

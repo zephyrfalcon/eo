@@ -96,8 +96,9 @@ EoInterpreter: class {
                     currentWordStack push(ArrayList<EoType> new())
                 case "}" =>
                     code: ArrayList<EoType> = currentWordStack pop()
-                    w := EoUserDefWord new(code)
-                    currentWordStack peek() add(w)
+                    blk := EoCodeBlock new(code)
+                    //w := EoUserDefWord new(code)
+                    currentWordStack peek() add(blk)
                     /* namespace must be added later */
                 case =>
                     x := parseToken(token)
@@ -125,7 +126,7 @@ EoInterpreter: class {
                        needs fixed. */
             case uw: EoUserDefWord =>
                 /* code block */
-                uw namespace = ns
+                uw code namespace = ns
                 stack push(uw)
             case => stack push(x)
         }
@@ -136,7 +137,7 @@ EoInterpreter: class {
             case bw: EoBuiltinWord => bw f(this, ns)
             case uw: EoUserDefWord =>
                 newns := Namespace new(ns)
-                for (c in uw words) ZZZexecute(c, newns)
+                for (c in uw code words) ZZZexecute(c, newns)
                 /* FIXME: later, we'll use a code stack */
             case => "Cannot execute: %s" printfln(x class name)
         }
@@ -162,19 +163,33 @@ EoInterpreter: class {
             case sym: EoSymbol =>
                 value := frame namespace lookup(sym value)
                 callStack pop()  /* always remove in this case */
-                if (value == null)
-                    "Symbol not found: %s" printfln(sym toString())
-                    /* later: raise an exception? */
-                else if (value instanceOf?(EoVariable))
-                    stack push((value as EoVariable) value)
-                else if (value instanceOf?(EoBuiltinWord))
-                    bw f(this, frame namespace)  /* is this the right namespace? */
-                else if (value instanceOf?(EoUserDefinedWord))
-                    "not implemented yet" println()
-                else
-                    "Symbol cannot be executed: %s with value %s" \
-                     printfln(frame code class name, frame code toString())
+                match (value) {
+                    case null =>
+                        "Symbol not found: %s" printfln(sym toString())
+                        /* later: raise an exception? */
+                    case (v: EoVariable) =>
+                        stack push(v)
+                    case (bw: EoBuiltinWord) =>
+                        /* does not need to go on the call stack; built-in
+                         * words are (expected to be) atomic, and if they're
+                         * not, they can manipulate the call stack themselves.
+                         * */
+                        bw f(this, frame namespace)
+                    case (uw: EoUserDefWord) =>
+                        /* user-defined words go on the call stack. */
+                        newFrame := EoStackFrame new(uw, frame namespace)
+                        /* not sure about the namespace... */
+                        pushToCallStack(newFrame)
+                    case =>
+                        "Symbol cannot be executed: %s with value %s" \
+                         printfln(frame code class name, frame code toString())
+                }
+            case blk: EoCodeBlock =>
+                blk namespace = frame namespace
+                stack push(blk)
+                callStack pop()
             case bw: EoBuiltinWord =>
+                /* REDUNDANCY? */
                 callStack pop()
                 bw f(this, frame namespace)  /* is this the right namespace? */
             case uw: EoUserDefWord =>
