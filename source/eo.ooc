@@ -59,7 +59,9 @@ parseToken: func(token: String) -> EoType {
     /* NOTE: symbols include variables. */
 }
 
-StackFrame: class {
+EoStackFrame: class {
+    /* called EoStackFrame so it doesn't collide with ooc's built-in
+     * StackFrame. */
     code: EoType
     counter := 0
     namespace: Namespace
@@ -76,7 +78,7 @@ EoInterpreter: class {
     currentWordStack := Stack<ArrayList<EoType>> new()
 
     /* call stack to execute code */
-    callStack := Stack<StackFrame> new()
+    callStack := Stack<EoStackFrame> new()
 
     init: func {
         clear()
@@ -107,7 +109,7 @@ EoInterpreter: class {
         return currentWordStack size == 1  /* done? */
     }
 
-    execute: func (x: EoType, ns: Namespace) {
+    ZZZexecute: func (x: EoType, ns: Namespace) {
         /* Symbols are looked up, everything else get pushed onto the stack. */
         match (x) {
             case sym: EoSymbol =>
@@ -118,7 +120,7 @@ EoInterpreter: class {
                 else if (value instanceOf?(EoVariable))
                     stack push((value as EoVariable) value)
                 else
-                    executeWord(value, ns)
+                    ZZZexecuteWord(value, ns)
                     /* this works, but how do we execute user-defined words?
                        needs fixed. */
             case uw: EoUserDefWord =>
@@ -129,16 +131,67 @@ EoInterpreter: class {
         }
     }
 
-    executeWord: func (x: EoType, ns: Namespace) {
+    ZZZexecuteWord: func (x: EoType, ns: Namespace) {
         match (x) {
             case bw: EoBuiltinWord => bw f(this, ns)
             case uw: EoUserDefWord =>
                 newns := Namespace new(ns)
-                for (c in uw words) execute(c, newns)
+                for (c in uw words) ZZZexecute(c, newns)
                 /* FIXME: later, we'll use a code stack */
             case => "Cannot execute: %s" printfln(x class name)
         }
     }
+
+    /*** execution using call stack ***/
+
+    pushToCallStack: func (frame: EoStackFrame) {
+        callStack push(frame)
+    }
+
+    /* XXX there is a problem here:
+       we need to distinguish between code block "literals" and code blocks
+       that are pushed onto the call stack when we want to execute a built-in
+       word!
+       right now if we say `{ }` it wants to execute the code immediately,
+       which is not correct.
+       maybe have two objects, EoCodeBlock vs EoUserDefWord?
+    */
+    executeStep: func {
+        frame := callStack peek()
+        match (frame code) {
+            case sym: EoSymbol =>
+                value := frame namespace lookup(sym value)
+                callStack pop()  /* always remove in this case */
+                if (value == null)
+                    "Symbol not found: %s" printfln(sym toString())
+                    /* later: raise an exception? */
+                else if (value instanceOf?(EoVariable))
+                    stack push((value as EoVariable) value)
+                else if (value instanceOf?(EoBuiltinWord))
+                    bw f(this, frame namespace)  /* is this the right namespace? */
+                else if (value instanceOf?(EoUserDefinedWord))
+                    "not implemented yet" println()
+                else
+                    "Symbol cannot be executed: %s with value %s" \
+                     printfln(frame code class name, frame code toString())
+            case bw: EoBuiltinWord =>
+                callStack pop()
+                bw f(this, frame namespace)  /* is this the right namespace? */
+            case uw: EoUserDefWord =>
+                /* next step in executing user-defined word? */
+                "not implemented yet" println()
+                callStack pop()
+            case =>
+                stack push(frame code)
+                callStack pop()
+        }
+    }
+
+    executeAll: func {
+        while (!(callStack empty?())) executeStep()
+    }
+
+    /***/
 
     /* Q: Do we display only the top stack, or all the stacks? */
     stackRepr: func -> String {
@@ -173,8 +226,11 @@ EoREPL: class {
             done := interpreter parse(line)
             if (done) {
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
-                for (c in code)
-                    interpreter execute(c, interpreter userNamespace)
+                for (c in code) {
+                    frame := EoStackFrame new(c, interpreter userNamespace)
+                    interpreter pushToCallStack(frame)
+                    interpreter executeAll()
+                }
                 interpreter clear()
             }
             interpreter stackRepr() println()

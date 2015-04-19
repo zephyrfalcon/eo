@@ -61,9 +61,14 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
     match (x) {
         case (s: EoString) => {
             sv := parseToken((s as EoString) value)
-            interp execute(sv, ns) 
+            frame := EoStackFrame new(sv, ns)
+            interp pushToCallStack(frame)
+            /* XXX will this suffice? it should be picked up by the execution
+             * loop... */
         }
-        case => interp executeWord(x, ns)
+        case =>
+            frame := EoStackFrame new(x, ns)
+            interp pushToCallStack(frame)
     }
 }
 
