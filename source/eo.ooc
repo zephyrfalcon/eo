@@ -156,7 +156,7 @@ EoInterpreter: class {
                         "Symbol not found: %s" printfln(sym toString())
                         /* later: raise an exception? */
                     case (v: EoVariable) =>
-                        stack push(v)
+                        stack push(v value)
                     case (bw: EoBuiltinWord) =>
                         /* does not need to go on the call stack; built-in
                          * words are (expected to be) atomic, and if they're
@@ -173,17 +173,25 @@ EoInterpreter: class {
                          printfln(frame code class name, frame code toString())
                 }
             case blk: EoCodeBlock =>
-                blk namespace = frame namespace
+                newns := Namespace new(frame namespace)
+                blk namespace = newns
                 stack push(blk)
                 callStack pop()
             case bw: EoBuiltinWord =>
-                /* REDUNDANCY? */
+                /* REDUNDANT? yet this will execute things like `str:upper` */
                 callStack pop()
                 bw f(this, frame namespace)  /* is this the right namespace? */
             case uw: EoUserDefWord =>
-                /* next step in executing user-defined word? */
-                "executing built-in words is not implemented yet" println()
-                callStack pop()
+                /* next step in executing user-defined word */
+                if (frame counter >= uw code words size)
+                    callStack pop()  /* done */
+                else {
+                    wordTBE := uw code words[frame counter]
+                    frame counter += 1
+                    newFrame := EoStackFrame new(wordTBE, uw code namespace)
+                    callStack push(newFrame)
+                }
+                /* TODO: optimization opportunity here */
             case =>
                 stack push(frame code)
                 callStack pop()

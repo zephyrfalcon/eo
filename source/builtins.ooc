@@ -89,7 +89,7 @@ execns: func (interp: EoInterpreter, ns: Namespace) {
 lookup: func (interp: EoInterpreter, ns: Namespace) {
     /* lookup ( module name -- value ) */
     /* for now, only works for modules, but other types will probably be added
-     * later. */
+     * later (e.g. namespaces, dictionaries). */
     name := interp stack popCheck(EoString) as EoString
     module := interp stack pop() // later: can be other things as well
     match (module) {
