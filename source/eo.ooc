@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.8"
+EO_VERSION := "0.0.9"
 
 /*****/
 
@@ -69,7 +69,6 @@ EoStackFrame: class {
 }
 
 EoInterpreter: class {
-    //stack := Stack<EoType> new()  /* later: must be a "StackStack" */
     stack := StackStack new()
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
