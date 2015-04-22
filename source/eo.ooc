@@ -10,9 +10,14 @@ EO_VERSION := "0.0.9"
 
 /*****/
 
+DebugSettings: class {
+
+    init: func
+}
+
 re_word := Regexp compile("(\"[^\"]*\")|(\\S+)")
 
-tokenize: func(data: String) -> ArrayList<String> {
+tokenize: func (data: String) -> ArrayList<String> {
     return re_word split(data)
 }
 
@@ -109,39 +114,6 @@ EoInterpreter: class {
         return currentWordStack size == 1  /* done? */
     }
 
-    ZZZexecute: func (x: EoType, ns: Namespace) {
-        /* Symbols are looked up, everything else get pushed onto the stack. */
-        match (x) {
-            case sym: EoSymbol =>
-                value := ns lookup(sym value)
-                if (value == null)
-                    "Symbol not found: %s" printfln(sym toString())
-                    /* later: raise an exception? */
-                else if (value instanceOf?(EoVariable))
-                    stack push((value as EoVariable) value)
-                else
-                    ZZZexecuteWord(value, ns)
-                    /* this works, but how do we execute user-defined words?
-                       needs fixed. */
-            case uw: EoUserDefWord =>
-                /* code block */
-                uw code namespace = ns
-                stack push(uw)
-            case => stack push(x)
-        }
-    }
-
-    ZZZexecuteWord: func (x: EoType, ns: Namespace) {
-        match (x) {
-            case bw: EoBuiltinWord => bw f(this, ns)
-            case uw: EoUserDefWord =>
-                newns := Namespace new(ns)
-                for (c in uw code words) ZZZexecute(c, newns)
-                /* FIXME: later, we'll use a code stack */
-            case => "Cannot execute: %s" printfln(x class name)
-        }
-    }
-
     /*** execution using call stack ***/
 
     executeStep: func {
@@ -149,6 +121,7 @@ EoInterpreter: class {
         match (frame code) {
             case sym: EoSymbol =>
                 value := frame namespace lookup(sym value)
+                /* the value found must be a variable or a word */
                 callStack pop()  /* always remove in this case */
                 match (value) {
                     case null =>

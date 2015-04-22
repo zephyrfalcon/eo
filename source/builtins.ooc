@@ -57,6 +57,7 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
     /* exec ( string|executable -- ? )
        Execute the string as if it was a regular symbol found in code.
        NOTE: Currently only expects and executes ONE token. Also see #22.
+       TODO: Should this execute different things as well, like code blocks?
     */
     x := interp stack pop()  /* string or executable */
     match (x) {
