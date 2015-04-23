@@ -2,6 +2,7 @@
 
 import eo
 import structs/ArrayList
+import testing
 
 main: func (args: ArrayList<String>) {
     runTests := (args size > 1 && args[1] == "--test")
