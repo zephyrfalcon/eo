@@ -1,6 +1,6 @@
 # tests for Eo
 
-# title: dup
+# dup
 3 dup
 => [3 3]
 
