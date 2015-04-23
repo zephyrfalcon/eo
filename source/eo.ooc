@@ -101,9 +101,9 @@ EoInterpreter: class {
                 case "}" =>
                     code: ArrayList<EoType> = currentWordStack pop()
                     blk := EoCodeBlock new(code)
-                    //w := EoUserDefWord new(code)
                     currentWordStack peek() add(blk)
-                    /* namespace must be added later */
+                    /* namespace is added later, when the code block goes on
+                     * the stack */
                 case =>
                     x := parseToken(token)
                     currentWordStack peek() add(x)
