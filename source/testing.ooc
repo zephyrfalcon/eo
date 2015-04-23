@@ -7,9 +7,10 @@ import structs/ArrayList
 EoTestResult: enum { SUCCESS, FAILURE, ERROR }
 
 EoTest: class {
-    input: String
-    output: String
+    description, input, output: String
+    // TODO: setting that indicates whether we start with a fresh interpreter?
     init: func (=input, =output)
+    init: func ~withDesc (=input, =output, =description)
 
     run: func -> (EoTestResult, String) {
         // blah...
@@ -34,4 +35,6 @@ EoTestRunner: class {
         }
     }
 }
+
+// TODO: read tests from files
 

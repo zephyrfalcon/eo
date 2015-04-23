@@ -1,0 +1,7 @@
+# tests for Eo
+
+# title: dup
+3 dup
+=> [3 3]
+
+
