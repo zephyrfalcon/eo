@@ -1,5 +1,8 @@
 /* eo-main.ooc */
 
+/* `eo-main` is supposed to be run interactively, and does so by default,
+    but you can run `eo-main --test` to run the test suite. */
+
 import eo
 import structs/ArrayList
 import testing

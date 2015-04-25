@@ -9,10 +9,10 @@ import text/StringTokenizer
 EoTestResult: enum { SUCCESS, FAILURE, ERROR }
 
 EoTest: class {
-    description, input, output: String
+    description, input, output, source: String
     // TODO: setting that indicates whether we start with a fresh interpreter?
     init: func (=input, =output)
-    init: func ~withDesc (=input, =output, =description)
+    init: func ~withDesc (=input, =output, =description, =source)
 
     run: func (interp: EoInterpreter) -> (EoTestResult, String) {
         // blah...
@@ -33,7 +33,7 @@ EoTestRunner: class {
     readFromFile: func (filename: String) {
         data := File new(filename) read()
         lines := data split("\n")
-        source := ""
+        code := ""
         title := ""
         for (line in lines) {
             if (line startsWith?("#")) {
@@ -42,15 +42,15 @@ EoTestRunner: class {
             }
             else if (line startsWith?("=>")) {
                 result := line substring(3) trim()
-                source = source trim()
-                if (title == "") title = source
-                tst := EoTest new(source, result, title)
+                code = code trim()
+                if (title == "") title = code
+                tst := EoTest new(code, result, title, filename)
                 tests add(tst)
-                source = title = ""
+                code = title = ""
             }
             else {
                 if (line trim() == "") continue // skip empty lines
-                source = source + "\n" + line
+                code = code + "\n" + line
             }
         }
     }
@@ -61,7 +61,7 @@ EoTestRunner: class {
         interp := EoInterpreter new()
         for (t in tests) {
             "%s... " printf(t description)
-            (result, message) := t run(interp)  // FIXME
+            (result, message) := t run(interp)
             match (result) {
                 case EoTestResult SUCCESS => "OK" println()
                 case => "?!" println()
@@ -70,12 +70,18 @@ EoTestRunner: class {
     }
 }
 
-// TODO: read tests from files
+/*** read tests from files ***/
 
 runEoTests: func (path: String) {
-    // FIXME: look for all .txt files in this path
+    testFiles := ArrayList<String> new()
+    for (fn in File new(path) getChildren()) {
+        if (fn path endsWith?(".txt"))
+            testFiles add(fn path)
+            fn path println()
+    }
     runner := EoTestRunner new()
-    runner readFromFile(path + "/abc.txt")
+    for (fn in testFiles)
+        runner readFromFile(fn)
     runner run()
 }
 
