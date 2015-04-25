@@ -15,8 +15,14 @@ EoTest: class {
     init: func ~withDesc (=input, =output, =description, =source)
 
     run: func (interp: EoInterpreter) -> (EoTestResult, String) {
-        // blah...
-        return (EoTestResult SUCCESS, "")
+        interp runCode(input)
+        sr := interp stackRepr()
+        if (sr == output)
+            return (EoTestResult SUCCESS, "")
+        else {
+            failMsg := "Expected: %s, got %s instead" format(output, sr)
+            return (EoTestResult FAILURE, failMsg)
+    }
     }
 }
 
@@ -57,13 +63,16 @@ EoTestRunner: class {
 
     run: func {
         passed = failed = error = 0
-        // set up EoInterpreter...
         interp := EoInterpreter new()
         for (t in tests) {
+            interp stack clearStack()
             "%s... " printf(t description)
             (result, message) := t run(interp)
             match (result) {
                 case EoTestResult SUCCESS => "OK" println()
+                case EoTestResult FAILURE =>
+                    "FAIL" println()
+                    "  %s" printfln(message)
                 case => "?!" println()
             }
         }

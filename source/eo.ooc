@@ -176,6 +176,20 @@ EoInterpreter: class {
 
     /***/
 
+    runCode: func (data: String) {
+        done := parse(data)
+        if (done) {
+            code: ArrayList<EoType> = currentWordStack pop()
+            for (c in code) {
+                frame := EoStackFrame new(c, userNamespace)
+                callStack push(frame)
+                executeAll()
+            }
+            clear()
+        }
+        else Exception new("Error: Incomplete code!") throw()
+    }
+
     /* Q: Do we display only the top stack, or all the stacks? */
     stackRepr: func -> String {
         topStack: Stack<EoType>  = stack peekStack()
@@ -216,6 +230,7 @@ EoREPL: class {
                 }
                 interpreter clear()
             }
+            // FIXME: some code duplication here with EoInterpreter.runCode
             interpreter stackRepr() println()
         }
         println()
