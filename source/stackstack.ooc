@@ -43,6 +43,13 @@ StackStack: class {
     peekStack: func -> Stack<EoType> {
         stacks peek()
     }
+    clearStack: func {
+        while (stacks size > 0) popStack()
+        stacks push(Stack<EoType> new())
+        //stacks = Stack<Stack<EoType>> new()
+        //init: func {
+            //stacks push(Stack<EoType> new())
+    }
     /* TODO: size of StackStack, vs size of top stack? */
 }
 
