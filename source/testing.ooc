@@ -14,7 +14,7 @@ EoTest: class {
     init: func (=input, =output)
     init: func ~withDesc (=input, =output, =description)
 
-    run: func -> (EoTestResult, String) {
+    run: func (interp: EoInterpreter) -> (EoTestResult, String) {
         // blah...
         return (EoTestResult SUCCESS, "")
     }
@@ -38,7 +38,7 @@ EoTestRunner: class {
         for (line in lines) {
             if (line startsWith?("#")) {
                 // the last comment will make up the title of the test
-                title := line substring(2)
+                title = line substring(2)
             }
             else if (line startsWith?("=>")) {
                 result := line substring(3) trim()
@@ -58,17 +58,24 @@ EoTestRunner: class {
     run: func {
         passed = failed = error = 0
         // set up EoInterpreter...
+        interp := EoInterpreter new()
         for (t in tests) {
-            t run()  // FIXME
+            "%s... " printf(t description)
+            (result, message) := t run(interp)  // FIXME
+            match (result) {
+                case EoTestResult SUCCESS => "OK" println()
+                case => "?!" println()
+            }
         }
     }
 }
 
 // TODO: read tests from files
 
-runEoTests: func {
+runEoTests: func (path: String) {
+    // FIXME: look for all .txt files in this path
     runner := EoTestRunner new()
-    runner readFromFile("tests/abc.txt") // FIXME: better path handling
+    runner readFromFile(path + "/abc.txt")
     runner run()
 }
 
