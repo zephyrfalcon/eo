@@ -60,6 +60,10 @@ parseToken: func(token: String) -> EoType {
         return EoString new(token[1..-2]) /* TODO: (un)escaping */
         /* NOTE: ooc slicing != Python slicing. */
     }
+    /* true and false are special symbols that evaluate to themselves */
+    if (token == "true") return EoTrue
+    if (token == "false") return EoFalse
+
     return EoSymbol new(token)
     /* NOTE: symbols include variables. */
 }
@@ -86,9 +90,11 @@ EoInterpreter: class {
 
     init: func {
         clear()
+        /* true and false are special names that evaluate to themselves */
         rootNamespace add("true", EoTrue)
         rootNamespace add("false", EoFalse)
         loadBuiltinWords(this)
+        loadStdlib()
     }
 
     parse: func (data: String) -> Bool {
@@ -127,8 +133,8 @@ EoInterpreter: class {
                     case null =>
                         "Symbol not found: %s" printfln(sym toString())
                         /* later: raise an exception? */
-                    case (b: EoBool) =>
-                        stack push(b)
+                    /* NOTE: anything in this block should be an "executable",
+                     * i.e. a word or a variable. */
                     case (v: EoVariable) =>
                         stack push(v value)
                     case (bw: EoBuiltinWord) =>
@@ -190,6 +196,11 @@ EoInterpreter: class {
             clear()
         }
         else Exception new("Error: Incomplete code!") throw()
+    }
+
+    loadStdlib: func {
+        /* look for .eo files in autoload/ and load them. at this point we
+         * don't care about the order of the files. */
     }
 
     /* Q: Do we display only the top stack, or all the stacks? */
