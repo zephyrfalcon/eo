@@ -15,14 +15,20 @@ EoTest: class {
     init: func ~withDesc (=input, =output, =description, =source)
 
     run: func (interp: EoInterpreter) -> (EoTestResult, String) {
-        interp runCode(input)
+        try {
+            interp runCode(input)
+        }
+        catch (e: Exception) {
+            return (EoTestResult ERROR, e message)
+        }
+
         sr := interp stackRepr()
         if (sr == output)
             return (EoTestResult SUCCESS, "")
         else {
             failMsg := "Expected: %s, got %s instead" format(output, sr)
             return (EoTestResult FAILURE, failMsg)
-    }
+        }
     }
 }
 
@@ -72,6 +78,9 @@ EoTestRunner: class {
                 case EoTestResult SUCCESS => "OK" println()
                 case EoTestResult FAILURE =>
                     "FAIL" println()
+                    "  %s" printfln(message)
+                case EoTestResult ERROR =>
+                    "ERROR" println()
                     "  %s" printfln(message)
                 case => "?!" println()
             }
