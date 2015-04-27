@@ -49,6 +49,10 @@ EoCodeBlock: class extends EoWord {
     init: func ~plain (=words)
     toString: func -> String { "#code{}" }
     /* later: maybe toString() should actually show the code? */
+
+    asEoUserDefWord: func -> EoUserDefWord {
+        return EoUserDefWord new(this)
+    }
 }
 
 EoUserDefWord: class extends EoWord {

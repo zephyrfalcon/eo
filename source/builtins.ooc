@@ -102,6 +102,17 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+_if: func (interp: EoInterpreter, ns: Namespace) {
+    /* if ( cond code-if-true code-if-false -- ) */
+    codeIfFalse := interp stack popCheck(EoCodeBlock) as EoCodeBlock
+    codeIfTrue := interp stack popCheck(EoCodeBlock) as EoCodeBlock
+    cond := interp stack popCheck(EoBool) as EoBool
+    blk := cond value ? codeIfTrue : codeIfFalse
+    anonWord := blk asEoUserDefWord()
+    frame := EoStackFrame new(anonWord, ns)
+    interp callStack push(frame)
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -127,6 +138,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "exec", exec)
     loadBuiltinWord(interp, "lookup", lookup)
     loadBuiltinWord(interp, "execns", execns)
+    loadBuiltinWord(interp, "if", _if)
 
     str_loadBuiltinWords(interp)
 }

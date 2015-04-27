@@ -127,6 +127,8 @@ EoInterpreter: class {
                     case null =>
                         "Symbol not found: %s" printfln(sym toString())
                         /* later: raise an exception? */
+                    case (b: EoBool) =>
+                        stack push(b)
                     case (v: EoVariable) =>
                         stack push(v value)
                     case (bw: EoBuiltinWord) =>
