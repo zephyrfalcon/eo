@@ -10,7 +10,11 @@ EO_VERSION := "0.0.10"
 
 /*****/
 
+/* XXX there can be interpreter settings as well... is there a clear
+ * difference between debug settings and interpreter settings? If not, we can
+ * just use the same class. Or a dictionary... */
 DebugSettings: class {
+    showCallStack := false
 
     init: func
 }
@@ -42,10 +46,6 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
             newTokens add(token)
     }
     return newTokens
-}
-
-print_tokens: func(tokens: ArrayList<String>) {
-    tokens each(|token| token println())
 }
 
 /* NOTE: Regular expressions must match the whole token, not part of it;
@@ -98,6 +98,7 @@ EoInterpreter: class {
     }
 
     parse: func (data: String) -> Bool {
+        // NOTE: assumes that currentWordStack is non-empty.
         tokens := tokenize(data)
         tokens = expandMacros(tokens)
         for (token in tokens) {
@@ -184,12 +185,16 @@ EoInterpreter: class {
 
     /***/
 
-    runCode: func (data: String) {
+    runCode: func (data: String, ns: Namespace) {
+        // make sure currentWordStack is not empty
+        if (currentWordStack empty?())
+            currentWordStack push(ArrayList<EoType> new())
+
         done := parse(data)
         if (done) {
             code: ArrayList<EoType> = currentWordStack pop()
             for (c in code) {
-                frame := EoStackFrame new(c, userNamespace)
+                frame := EoStackFrame new(c, ns)
                 callStack push(frame)
                 executeAll()
             }

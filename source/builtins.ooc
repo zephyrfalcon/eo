@@ -1,6 +1,7 @@
 /* builtins.ooc */
 
 import structs/[ArrayList, Stack]
+import io/File
 import eotypes, eo, namespace
 import builtins_str
 
@@ -113,6 +114,26 @@ _if: func (interp: EoInterpreter, ns: Namespace) {
     interp callStack push(frame)
 }
 
+_include: func (interp: EoInterpreter, ns: Namespace) {
+    /* include ( filename -- ) */
+    filename := interp stack popCheck(EoString) as EoString
+    data := File new(filename value) read()
+    interp runCode(data, ns)
+}
+
+_print: func (interp: EoInterpreter, ns: Namespace) {
+    /* ( x -- ) */
+    x := interp stack pop()
+    x toString() print()
+}
+
+emit: func (interp: EoInterpreter, ns: Namespace) {
+    /* ( charcode -- ) */
+    charCode := interp stack popCheck(EoInteger) as EoInteger
+    "%c" printf(charCode value)
+    // output character...
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -139,6 +160,9 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "lookup", lookup)
     loadBuiltinWord(interp, "execns", execns)
     loadBuiltinWord(interp, "if", _if)
+    loadBuiltinWord(interp, "include", _include)
+    loadBuiltinWord(interp, "print", _print)
+    loadBuiltinWord(interp, "emit", emit)
 
     str_loadBuiltinWords(interp)
 }

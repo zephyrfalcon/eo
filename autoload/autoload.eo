@@ -1,0 +1,6 @@
+{ 10 emit } "cr" def
+{ 13 emit } "lf" def
+{ 7 emit } "bel" def
+
+{ print cr } "println" def
+
