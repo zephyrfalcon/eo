@@ -65,6 +65,8 @@ parseToken: func(token: String) -> EoType {
     if (re_octal_number matches(token)) {
         return EoInteger fromOctalString(token)
     }
+    if (re_binary_number matches(token))
+        return EoInteger fromBinaryString(token)
     if (token startsWith?("\"") && token endsWith?("\"")) {
         return EoString new(token[1..-2]) /* TODO: (un)escaping */
         /* NOTE: ooc slicing != Python slicing. */

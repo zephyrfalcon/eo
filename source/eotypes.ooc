@@ -64,6 +64,25 @@ EoInteger: class extends EoType {
         if (negative) value = -value
         return EoInteger new(value)
     }
+
+    fromBinaryString: static func (token: String) -> EoInteger {
+        negative := false
+        if (token startsWith?("-")) {
+            negative = true
+            token = token substring(1)
+        }
+        if (token startsWith?("0b") || token startsWith?("0B"))
+            token = token substring(2)
+        value := 0
+        for (c in token) {
+            if (c >= '0' && c <= '1') {
+                x := c - '0'
+                value = value * 2 + x
+            }
+        }
+        if (negative) value = -value
+        return EoInteger new(value)
+    }
 }
 
 EoString: class extends EoType {
