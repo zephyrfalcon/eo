@@ -45,6 +45,25 @@ EoInteger: class extends EoType {
         if (negative) value = -value
         return EoInteger new(value)
     }
+
+    fromOctalString: static func (token: String) -> EoInteger {
+        negative := false
+        if (token startsWith?("-")) {
+            negative = true
+            token = token substring(1)
+        }
+        if (token startsWith?("0o") || token startsWith?("0O"))
+            token = token substring(2)
+        value := 0
+        for (c in token) {
+            if (c >= '0' && c <= '7') {
+                x := c - '0'
+                value = value * 8 + x
+            }
+        }
+        if (negative) value = -value
+        return EoInteger new(value)
+    }
 }
 
 EoString: class extends EoType {

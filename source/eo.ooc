@@ -62,6 +62,9 @@ parseToken: func(token: String) -> EoType {
     if (re_hex_number matches(token)) {
         return EoInteger fromHexString(token)
     }
+    if (re_octal_number matches(token)) {
+        return EoInteger fromOctalString(token)
+    }
     if (token startsWith?("\"") && token endsWith?("\"")) {
         return EoString new(token[1..-2]) /* TODO: (un)escaping */
         /* NOTE: ooc slicing != Python slicing. */
