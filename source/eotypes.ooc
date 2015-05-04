@@ -16,6 +16,35 @@ EoInteger: class extends EoType {
     value: Int
     init: func(=value)
     toString: func -> String { value toString() }
+
+    fromHexString: static func (s: String) -> EoInteger {
+        /* parse hexadecimal literal to integer value. the input string may be
+         * negative and/or start with "0x". */
+        negative := false
+        if (s startsWith?("-")) {
+            negative = true
+            s = s substring(1)
+        }
+        if (s startsWith?("0x") || s startsWith?("0X"))
+            s = s substring(2)
+        value := 0
+        for (c in s) {
+            if (c >= '0' && c <= '9') {
+                x := c - '0'
+                value = value * 16 + x
+            }
+            else if (c >= 'a' && c <= 'f') {
+                x := c - 'a'
+                value = value * 16 + 10 + x
+            }
+            else if (c >= 'A' && c <= 'F') {
+                x := c - 'A'
+                value = value * 16 + 10 + x
+            }
+        }
+        if (negative) value = -value
+        return EoInteger new(value)
+    }
 }
 
 EoString: class extends EoType {

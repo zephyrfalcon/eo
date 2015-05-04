@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.10"
+EO_VERSION := "0.0.11"
 
 /*****/
 
@@ -51,10 +51,16 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
 /* NOTE: Regular expressions must match the whole token, not part of it;
  * therefore they should start with '^' and end with '$'. */
 re_number := Regexp compile("^-?\\d+$")
+re_hex_number := Regexp compile("^-?0[xX][0-9a-fA-F]+$")
+re_octal_number := Regexp compile("^-?0[oO][0-7]+$")
+re_binary_number := Regexp compile("^-?0[bB][01]+$")
 
 parseToken: func(token: String) -> EoType {
     if (re_number matches(token)) {
         return EoInteger new(token toInt())
+    }
+    if (re_hex_number matches(token)) {
+        return EoInteger fromHexString(token)
     }
     if (token startsWith?("\"") && token endsWith?("\"")) {
         return EoString new(token[1..-2]) /* TODO: (un)escaping */
