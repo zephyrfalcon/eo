@@ -18,6 +18,7 @@ DebugSettings: class {
 
     init: func
 }
+
 // comment | string | word
 re_word := Regexp compile("(--.*?(\\n|$))|(\"[^\"]*\")|(\\S+)")
 

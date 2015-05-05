@@ -75,16 +75,22 @@ EoTestRunner: class {
             "%s... " printf(t description)
             (result, message) := t run(interp)
             match (result) {
-                case EoTestResult SUCCESS => "OK" println()
+                case EoTestResult SUCCESS =>
+                    "OK" println()
+                    passed += 1
                 case EoTestResult FAILURE =>
                     "FAIL" println()
                     "  %s" printfln(message)
+                    failed += 1
                 case EoTestResult ERROR =>
                     "ERROR" println()
                     "  %s" printfln(message)
+                    error += 1
                 case => "?!" println()
             }
         }
+        "Ran %d tests. Passed: %d. Failed: %d. Error: %d." printfln( \
+            tests size, passed, failed, error)
     }
 }
 
