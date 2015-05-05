@@ -1,10 +1,10 @@
-# tests for Eo
+-- tests for Eo
 
-# dup
+-- dup
 3 dup
 => [3 3]
 
-# addition
+-- addition
 3 4 +
 => [7]
 

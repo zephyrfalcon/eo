@@ -48,9 +48,9 @@ EoTestRunner: class {
         code := ""
         title := ""
         for (line in lines) {
-            if (line startsWith?("#")) {
+            if (line startsWith?("--")) {
                 // the last comment will make up the title of the test
-                title = line substring(2)
+                title = line substring(3)
             }
             else if (line startsWith?("=>")) {
                 result := line substring(3) trim()
