@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.12"
+EO_VERSION := "0.0.13"
 
 /*****/
 
@@ -18,11 +18,12 @@ DebugSettings: class {
 
     init: func
 }
-
-re_word := Regexp compile("(\"[^\"]*\")|(\\S+)")
+// comment | string | word
+re_word := Regexp compile("(--.*?(\\n|$))|(\"[^\"]*\")|(\\S+)")
 
 tokenize: func (data: String) -> ArrayList<String> {
-    return re_word split(data)
+    results := re_word split(data)
+    return results filter(|token| !(token startsWith?("--"))) as ArrayList<String>
 }
 
 expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
