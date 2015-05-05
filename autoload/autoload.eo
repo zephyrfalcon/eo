@@ -1,3 +1,5 @@
+-- simple printing words
+
 { 10 emit } "nl" def
 { 7 emit } "bel" def
 
