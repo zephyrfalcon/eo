@@ -1,6 +1,7 @@
 /* Eo built-in types */
 
 import structs/ArrayList
+import text/EscapeSequence
 import eo
 import namespace
 
@@ -89,9 +90,8 @@ EoInteger: class extends EoType {
 EoString: class extends EoType {
     value: String
     init: func(=value)
-    toString: func -> String { "\"" + value + "\"" }
-    valueAsString: func -> String { value } // FIXME
-    // FIXME: (un)escaping etc
+    toString: func -> String { "\"" + EscapeSequence escape(value) + "\"" }
+    valueAsString: func -> String { value }
 }
 
 EoSymbol: class extends EoType {

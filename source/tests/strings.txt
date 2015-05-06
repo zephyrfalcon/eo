@@ -10,6 +10,12 @@
 => ["3"]
 
 "abc" repr
-=> [""abc""]
--- ^ for now; FIXME later
+=> ["\"abc\""]
+-- includes the double quotes
+
+-- escaping control characters
+"abc\n"
+=> ["abc\n"]
+"abc\\n"
+=> ["abc\\n"]
 

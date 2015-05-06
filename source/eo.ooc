@@ -6,7 +6,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.14"
+EO_VERSION := "0.0.15"
 
 /*****/
 
@@ -70,7 +70,8 @@ parseToken: func(token: String) -> EoType {
     if (re_binary_number matches(token))
         return EoInteger fromBinaryString(token)
     if (token startsWith?("\"") && token endsWith?("\"")) {
-        return EoString new(token[1..-2]) /* TODO: (un)escaping */
+        s := EscapeSequence unescape(token[1..-2])
+        return EoString new(s)
         /* NOTE: ooc slicing != Python slicing. */
     }
     /* true and false are special symbols that evaluate to themselves */
