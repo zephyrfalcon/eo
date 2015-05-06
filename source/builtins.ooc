@@ -124,7 +124,18 @@ _include: func (interp: EoInterpreter, ns: Namespace) {
 _print: func (interp: EoInterpreter, ns: Namespace) {
     /* ( x -- ) */
     x := interp stack pop()
-    x toString() print()
+    //x toString() print()
+    x valueAsString() print()
+}
+
+repr: func (interp: EoInterpreter, ns: Namespace) {
+    x := interp stack pop()
+    interp stack push(EoString new(x toString()))
+}
+
+to_str: func (interp: EoInterpreter, ns: Namespace) {
+    x := interp stack pop()
+    interp stack push(EoString new(x valueAsString()))
 }
 
 emit: func (interp: EoInterpreter, ns: Namespace) {
@@ -162,6 +173,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "if", _if)
     loadBuiltinWord(interp, "include", _include)
     loadBuiltinWord(interp, "print", _print)
+    loadBuiltinWord(interp, "repr", repr)
+    loadBuiltinWord(interp, "->string", to_str)
     loadBuiltinWord(interp, "emit", emit)
 
     str_loadBuiltinWords(interp)

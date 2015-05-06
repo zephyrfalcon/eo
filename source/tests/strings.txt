@@ -1,0 +1,15 @@
+-- miscellaneous string tests
+
+-- test str:upper
+"abc" str:upper
+=> ["ABC"]
+
+"abc" ->string
+=> ["abc"]
+3 ->string
+=> ["3"]
+
+"abc" repr
+=> [""abc""]
+-- ^ for now; FIXME later
+

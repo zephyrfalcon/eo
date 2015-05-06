@@ -8,6 +8,7 @@ import namespace
 
 EoType: abstract class {
     toString: abstract func -> String
+    valueAsString: func -> String { this toString() }
 }
 
 /*** atoms ***/
@@ -89,7 +90,8 @@ EoString: class extends EoType {
     value: String
     init: func(=value)
     toString: func -> String { "\"" + value + "\"" }
-    /* difference between str and repr? */
+    valueAsString: func -> String { value } // FIXME
+    // FIXME: (un)escaping etc
 }
 
 EoSymbol: class extends EoType {
