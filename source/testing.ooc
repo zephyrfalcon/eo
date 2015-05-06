@@ -50,7 +50,7 @@ EoTestRunner: class {
         for (line in lines) {
             if (line startsWith?("--")) {
                 // the last comment will make up the title of the test
-                title = line substring(3)
+                title = line substring(2) trim()
             }
             else if (line startsWith?("=>")) {
                 result := line substring(3) trim()
@@ -101,7 +101,7 @@ runEoTests: func (path: String) {
     for (fn in File new(path) getChildren()) {
         if (fn path endsWith?(".txt"))
             testFiles add(fn path)
-            fn path println()
+            "Loading: %s" printfln(fn path)
     }
     runner := EoTestRunner new()
     for (fn in testFiles)
