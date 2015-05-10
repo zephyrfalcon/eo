@@ -16,7 +16,7 @@ Namespace: class {
 
     // alternatively, we could just use null to mean "no result", in which
     // case this would map straightforwardly to HashMap.get
-    lookup: func(key: String) -> EoType {
+    lookup: func (key: String) -> EoType {
         result := data get(key)
         match (result) {
             case null =>
@@ -31,7 +31,7 @@ Namespace: class {
         return null
     }
 
-    lookup_with_source: func(key: String) -> (EoType, Namespace) {
+    lookup_with_source: func (key: String) -> (EoType, Namespace) {
         result := data get(key)
         if (result == null) {
             if (parent == null) {

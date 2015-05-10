@@ -42,6 +42,20 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     ns add(varname value, e)
 }
 
+update: func (interp: EoInterpreter, ns: Namespace) {
+    /* update ( value varname -- )
+       Updates an existing variable. */
+    eovar: EoVariable
+    varns: Namespace
+    varname := interp stack popCheck(EoString) as EoString
+    value := interp stack pop()
+    assert (varname value startsWith?("$"))
+    /* note: we reuse the existing EoVariable object */
+    (eovar, varns) = ns lookup_with_source(varname value)
+    /* FIXME: segfaults if variable doesn't exist */
+    eovar value = value
+}
+
 lbracket: func (interp: EoInterpreter, ns: Namespace) {
     /* [ ( -- ) */
     interp stack pushStack(Stack<EoType> new())
@@ -199,6 +213,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "->string", to_str)
     loadBuiltinWord(interp, "emit", emit)
     loadBuiltinWord(interp, "import", _import)
+    loadBuiltinWord(interp, "update", update)
 
     str_loadBuiltinWords(interp)
 }
