@@ -16,9 +16,10 @@ whereAmI: func (executableName: String) -> String {
 main: func (args: ArrayList<String>) {
     runTests := (args size > 1 && args[1] == "--test")
     executablePath := whereAmI(args[0])
+    // later: have proper command line handling :-/
     //"Executable is in: %s" printfln(executablePath)
 
-    repl := EoREPL new()
+    repl := EoREPL new(executablePath)
     if (runTests) {
         testPath := File join(executablePath, "source", "tests")
         "Tests are in: %s" printfln(testPath)

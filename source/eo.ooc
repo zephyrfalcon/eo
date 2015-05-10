@@ -1,12 +1,13 @@
 /* eo.ooc */
 
+import io/File
 import structs/[ArrayList, HashMap, Stack]
 import text/[EscapeSequence, Regexp, StringTokenizer]
 import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.16"
+EO_VERSION := "0.0.17"
 
 /*****/
 
@@ -96,6 +97,10 @@ EoInterpreter: class {
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
 
+    rootDir := "."
+    /* can/must be overridden to contain the directory where the executable
+       is located */
+
     /* stack to deal with nested word definitions */
     currentWordStack := Stack<ArrayList<EoType>> new()
 
@@ -109,6 +114,10 @@ EoInterpreter: class {
         rootNamespace add("false", EoFalse)
         loadBuiltinWords(this)
         loadStdlib()
+    }
+
+    init: func ~withRoot (=rootDir) {
+        init()
     }
 
     parse: func (data: String) -> Bool {
@@ -218,8 +227,13 @@ EoInterpreter: class {
     }
 
     loadStdlib: func {
-        /* look for .eo files in autoload/ and load them. at this point we
-         * don't care about the order of the files. */
+        /* look for autoload/autoload.eo and load it. any other files should
+           be loaded by autoload.eo itself. */
+        autoloadfile := File join(rootDir, "autoload", "autoload.eo")
+        "Loading: %s... " printf(autoloadfile)
+        data := File new(autoloadfile) read()
+        runCode(data, userNamespace)
+        "OK" println()
     }
 
     /* Q: Do we display only the top stack, or all the stacks? */
@@ -239,13 +253,16 @@ EoInterpreter: class {
 }
 
 EoREPL: class {
-    interpreter := EoInterpreter new()
+    interpreter: EoInterpreter
     prompt := "> "
     greeting: String  /* apparently cannot be initialized with "" + format */
+    rootDir := "."
 
     init: func() {
         greeting = "Welcome to Eo version %s." format(EO_VERSION)
+        interpreter = EoInterpreter new(rootDir)
     }
+    init: func ~withRoot (=rootDir) { init() }
 
     run: func() {
         greeting println()
