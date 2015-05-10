@@ -2,7 +2,7 @@
 
 import structs/[ArrayList, Stack]
 import io/File
-import eotypes, eo, namespace
+import eotypes, eo, namespace, tools
 import builtins_str
 
 dup: func (interp: EoInterpreter, ns: Namespace) {
@@ -121,6 +121,28 @@ _include: func (interp: EoInterpreter, ns: Namespace) {
     interp runCode(data, ns)
 }
 
+_import: func (interp: EoInterpreter, ns: Namespace) {
+    /* import ( filename -- )
+       Produces a module that is placed in the caller's namespace. */
+    filename := interp stack popCheck(EoString) as EoString
+    path := File new(filename value) getAbsolutePath()
+    //"Absolute path: %s" printfln(path)
+    shortName := getShortName(path)
+    //"Shortname: %s" printfln(shortName)
+
+    data := File new(filename value) read()
+    newns := Namespace new(interp userNamespace)
+    interp runCode(data, newns)
+    // XXX need the name! derive from filename
+    mod := EoModule new(newns) // FIXME: add name, path
+    mod name = shortName; mod path = path
+    // XXX maybe use absolute path for filename?
+    // then create a WORD with that name that pushes the module
+    w := makeWordThatReturns(interp, mod)
+    // then place in current namespace (ns)
+    ns add(shortName, w)
+}
+
 _print: func (interp: EoInterpreter, ns: Namespace) {
     /* ( x -- ) */
     x := interp stack pop()
@@ -176,6 +198,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "repr", repr)
     loadBuiltinWord(interp, "->string", to_str)
     loadBuiltinWord(interp, "emit", emit)
+    loadBuiltinWord(interp, "import", _import)
 
     str_loadBuiltinWords(interp)
 }

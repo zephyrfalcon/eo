@@ -1,0 +1,4 @@
+-- sample module
+
+{ "Hello, world!" println } "hello" def
+
