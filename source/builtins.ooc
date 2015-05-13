@@ -186,7 +186,7 @@ emit: func (interp: EoInterpreter, ns: Namespace) {
 words: func (interp: EoInterpreter, ns: Namespace) {
     /* words ( -- ) */
     names := interp userNamespace all_names()
-    names sort(|s1, s2| s1 cmp(s2) > 0)
+    names sort(|s1, s2| s1 > s2)
     for (name in names) "%s " printf(name)
     println()
 }
