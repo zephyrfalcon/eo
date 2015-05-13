@@ -1,6 +1,6 @@
 /* namespace.ooc */
 
-import structs/HashMap
+import structs/[ArrayList, HashMap]
 import eotypes
 
 Namespace: class {
@@ -51,6 +51,21 @@ Namespace: class {
         } else {
             ns add(key, new_value)
         }
+    }
+
+    names: func -> ArrayList<String> {
+        return data getKeys()
+    }
+
+    all_names: func -> ArrayList<String> {
+        currns := this
+        names := HashMap<String, Int> new()
+        for (name in this names()) names put(name, 0)
+        while (currns parent != null) {
+            currns = currns parent
+            for (name in currns names()) names put(name, 0)
+        }
+        return names getKeys()
     }
 }
 

@@ -2,6 +2,11 @@
    Miscellaneous monkey patching. :-)
 */
 
+/* TODO:
+   - ArrayList needs better sorting algorithm >=(
+   - We need a way to compare Strings (`>` compares pointers, I think)
+*/
+
 import text/Regexp
 import structs/ArrayList
 
@@ -22,4 +27,26 @@ extend Regexp {
     }
 }
 
+/* ooc does not seem to have a way to tell if a string is "greater" or
+ * "smaller" than another (like C's strcmp() or Python's cmp()), so I'm adding
+ * a version here.
+ */
+
+extend String {
+    cmp: func (other: String) -> Int {
+        for (i in 0..size) {
+            if (i >= other size) return -1
+            if (this[i] < other[i]) return -1
+            if (this[i] > other[i]) return 1
+            //if (this[i] == other[i]) continue
+            //return this[i] toInt() - other[i] toInt()
+        }
+        if (other size > this size) return 1
+        return 0
+    }
+}
+
+/* add different functions (non-methods) of cmp here: */
+cmp: func ~withStrings (s1, s2: String) -> Int { s1 cmp(s2) }
+cmp: func ~withInts (s1, s2: Int) -> Int { s1 - s2 }
 

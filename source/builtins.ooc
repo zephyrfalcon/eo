@@ -1,5 +1,6 @@
 /* builtins.ooc */
 
+import patch
 import structs/[ArrayList, Stack]
 import io/File
 import eotypes, eo, namespace, tools
@@ -181,6 +182,15 @@ emit: func (interp: EoInterpreter, ns: Namespace) {
     // output character...
 }
 
+/* FIXME: can later be written in pure Eo */
+words: func (interp: EoInterpreter, ns: Namespace) {
+    /* words ( -- ) */
+    names := interp userNamespace all_names()
+    names sort(|s1, s2| s1 cmp(s2) > 0)
+    for (name in names) "%s " printf(name)
+    println()
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -214,6 +224,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "emit", emit)
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
+    loadBuiltinWord(interp, "words", words)
 
     str_loadBuiltinWords(interp)
 }
