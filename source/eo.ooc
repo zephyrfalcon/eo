@@ -104,6 +104,7 @@ EoInterpreter: class {
     stack := StackStack new()
     rootNamespace := Namespace new()
     userNamespace := Namespace new(rootNamespace)
+    debugSettings := DebugSettings new()
 
     rootDir := "."
     /* can/must be overridden to contain the directory where the executable
@@ -155,6 +156,8 @@ EoInterpreter: class {
     /*** execution using call stack ***/
 
     executeStep: func {
+        if (debugSettings showCallStack)
+            showCallStack()
         frame := callStack peek()
         match (frame code) {
             case sym: EoSymbol =>
@@ -251,6 +254,14 @@ EoInterpreter: class {
         numPrevStacks := stack stacks getSize() - 1
         prefix := numPrevStacks ? "(%d) " format(numPrevStacks) : ""
         return prefix + "[" + strValues join(" ") + "]"
+    }
+
+    showCallStack: func {
+        frames := callStack data as ArrayList<EoStackFrame> // workaround
+        "call stack: "print()
+        strValues := (frames map(|f| f code toString()))
+        s := "[" + strValues join(" ") + "]"
+        s println()
     }
 
     /* clear the current word stack. */

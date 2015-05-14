@@ -191,6 +191,13 @@ words: func (interp: EoInterpreter, ns: Namespace) {
     println()
 }
 
+_perc_show_call_stack: func (interp: EoInterpreter, ns: Namespace) {
+    /* %show-call-stack ( <bool> -- )
+       Show the contents of the call stack at every execution step. */
+    onoff := interp stack popCheck(EoBool) as EoBool
+    interp debugSettings showCallStack = onoff value
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -225,6 +232,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
     loadBuiltinWord(interp, "words", words)
+    loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
 
     str_loadBuiltinWords(interp)
 }
