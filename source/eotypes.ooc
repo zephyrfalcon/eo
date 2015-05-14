@@ -129,7 +129,7 @@ EoUserDefWord: class extends EoWord {
     name: String
     init: func (=code, =name)  // name is optional
     init: func ~plain (=code)
-    toString: func -> String { "u#<%s>" format(name) }
+    toString: func -> String { "u#<%s>" format(name == null ? "" : name) }
 }
 
 EoBuiltinWord: class extends EoWord {
