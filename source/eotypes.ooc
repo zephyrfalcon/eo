@@ -102,16 +102,13 @@ EoSymbol: class extends EoType {
 
 /*** words ***/
 
-EoWord: abstract class extends EoType {
-}
-
 /* Code blocks vs user-defined words:
    We need to distinguish between the two when they're on the call stack.
    A code block on the call stack will be pushed on the (data) stack.
    A user-defined word on the call stack will be executed.
 */
 
-EoCodeBlock: class extends EoWord {
+EoCodeBlock: class extends EoType /* EoWord */ {
     words: ArrayList<EoType>
     namespace: Namespace
     init: func (=words, =namespace)
@@ -122,6 +119,9 @@ EoCodeBlock: class extends EoWord {
     asEoUserDefWord: func -> EoUserDefWord {
         return EoUserDefWord new(this)
     }
+}
+
+EoWord: abstract class extends EoType {
 }
 
 EoUserDefWord: class extends EoWord {
@@ -139,7 +139,7 @@ EoBuiltinWord: class extends EoWord {
     init: func (=name, =f)
 }
 
-EoList: class extends EoWord {
+EoList: class extends EoType {
     data: ArrayList<EoType>
     toString: func -> String {
         strValues := data map(|x| x toString())
@@ -149,7 +149,7 @@ EoList: class extends EoWord {
     init: func ~empty { data := ArrayList<EoType> new() }
 }
 
-EoBool: class extends EoWord {
+EoBool: class extends EoType {
     value: Bool
     toString: func -> String { value ? "true" : "false" }
     init: func(=value)
