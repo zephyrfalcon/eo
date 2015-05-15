@@ -109,6 +109,11 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
             interp callStack push(frame)
             /* this should be picked up by the execution loop */
         }
+        case (blk: EoCodeBlock) => {
+            uw := blk asEoUserDefWord()
+            frame := EoStackFrame new(uw, ns)
+            interp callStack push(frame)
+        }
         case =>
             frame := EoStackFrame new(x, ns)
             interp callStack push(frame)
