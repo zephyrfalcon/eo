@@ -200,13 +200,19 @@ EoInterpreter: class {
                 /* next step in executing user-defined word */
                 if (frame counter >= uw code words size)
                     callStack pop()  /* done */
+                    /* ^ does this still happen? */
                 else {
+                    /* if we are at the last instruction of the code, we can
+                     * remove the existing top frame (tail call optimization)
+                     * to prevent the call stack from growing too much when
+                     * recursion is used. */
+                    if (frame counter >= uw code words size - 1)
+                        callStack pop()  /* TCO */
                     wordTBE := uw code words[frame counter]
                     frame counter += 1
                     newFrame := EoStackFrame new(wordTBE, uw code namespace)
                     callStack push(newFrame)
                 }
-                /* TODO: optimization opportunity here */
             case =>
                 stack push(frame code)
                 callStack pop()
