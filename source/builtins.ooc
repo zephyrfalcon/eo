@@ -32,8 +32,22 @@ minus: func (interp: EoInterpreter, ns: Namespace) {
         interp stack push(result)
     }
     else
-        Exception new("+ only works on numbers") throw()
+        Exception new("- only works on numbers") throw()
 }
+
+/* lots of boilerplate here too; also, future versions of `>` will likely
+ * support more types, like strings */
+_gt: func (interp: EoInterpreter, ns: Namespace) {
+    x := interp stack pop()
+    y := interp stack pop()
+    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
+        result := ((y as EoInteger) value > (x as EoInteger) value)
+        interp stack push(result ? EoTrue : EoFalse)
+    }
+    else
+        Exception new("> only works on numbers") throw()
+}
+
 
 def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
@@ -229,6 +243,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "-", minus)
+    loadBuiltinWord(interp, ">", _gt)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
     loadBuiltinWord(interp, "[", lbracket)
