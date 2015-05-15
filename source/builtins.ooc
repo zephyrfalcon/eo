@@ -16,7 +16,19 @@ plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
     y := interp stack pop()
     if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
-        result := EoInteger new((x as EoInteger) value + (y as EoInteger) value)
+        result := EoInteger new((y as EoInteger) value + (x as EoInteger) value)
+        interp stack push(result)
+    }
+    else
+        Exception new("+ only works on numbers") throw()
+}
+
+/* lots of boilerplate in here; needs fixed */
+minus: func (interp: EoInterpreter, ns: Namespace) {
+    x := interp stack pop()
+    y := interp stack pop()
+    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
+        result := EoInteger new((y as EoInteger) value - (x as EoInteger) value)
         interp stack push(result)
     }
     else
@@ -216,6 +228,7 @@ loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
 loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
     loadBuiltinWord(interp, "+", plus)
+    loadBuiltinWord(interp, "-", minus)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
     loadBuiltinWord(interp, "[", lbracket)
