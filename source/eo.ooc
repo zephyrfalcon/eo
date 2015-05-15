@@ -16,6 +16,9 @@ EO_VERSION := "0.0.21"
  * just use the same class. Or a dictionary... */
 DebugSettings: class {
     showCallStack := false
+    countCycles := false
+
+    cycles := 0  /* will be incremented if countCycles is true */
 
     init: func
 }
@@ -156,6 +159,8 @@ EoInterpreter: class {
     /*** execution using call stack ***/
 
     executeStep: func {
+        if (debugSettings countCycles)
+            debugSettings cycles += 1
         if (debugSettings showCallStack)
             showCallStack()
         frame := callStack peek()
@@ -220,7 +225,11 @@ EoInterpreter: class {
     }
 
     executeAll: func {
+        if (debugSettings countCycles)
+            debugSettings cycles = 0
         while (!(callStack empty?())) executeStep()
+        if (debugSettings countCycles)
+            "Cycles: %d" printfln(debugSettings cycles)
     }
 
     /***/

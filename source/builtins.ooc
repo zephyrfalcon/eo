@@ -229,6 +229,13 @@ _perc_show_call_stack: func (interp: EoInterpreter, ns: Namespace) {
     interp debugSettings showCallStack = onoff value
 }
 
+_perc_count_cycles: func (interp: EoInterpreter, ns: Namespace) {
+    /* %count-cycles ( <bool> -- )
+       Turn on cycle counting. */
+    onoff := interp stack popCheck(EoBool) as EoBool
+    interp debugSettings countCycles = onoff value
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -266,6 +273,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "update", update)
     loadBuiltinWord(interp, "words", words)
     loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
+    loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
 
     str_loadBuiltinWords(interp)
 }
