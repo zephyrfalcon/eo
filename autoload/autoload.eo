@@ -5,3 +5,23 @@
 
 { print nl } "println" def
 
+-- when ( condition block -- )
+-- if condition is true, execute the block, otherwise do nothing.
+{ { } if } !when
+
+-- experimental
+-- do-times ( block n -- )
+-- execute the given block n times.
+{ !$n !$block
+  $n 0 > {
+    $block exec               -- execute the code
+    $block $n 1 - do-times    -- recurse with n-1
+  } when
+} !do-times
+
+-- ^ we need:
+-- - minus operator
+-- - when
+-- - > operator
+-- - make sure exec can execute blocks
+
