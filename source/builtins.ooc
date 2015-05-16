@@ -269,6 +269,17 @@ length: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+add_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* add! ( list item -- )
+       Add the given item to the list, changing the list in-place. */
+    // TODO: there should also be a plain `add` that creates a new list and
+    // leaves the original one alone, but this is less efficient with
+    // ooc-style lists.
+    item := interp stack pop()
+    list := interp stack popCheck(EoList) as EoList
+    list data add(item)
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -309,6 +320,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
+    loadBuiltinWord(interp, "add!", add_excl)
 
     str_loadBuiltinWords(interp)
 }

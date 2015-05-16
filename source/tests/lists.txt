@@ -10,3 +10,9 @@
 [ ] length
 => [0]
 
+-- adding in-place
+[ 1 2 3 ] !$x
+$x 4 add!
+$x
+=> [[1 2 3 4]]
+
