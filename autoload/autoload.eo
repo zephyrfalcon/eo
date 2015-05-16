@@ -21,8 +21,9 @@
 -- each ( list block -- )
 -- execute the code block for each item in the list. (i.e. each item in the
 -- list is pushed, then the block is executed to do something with it.)
-{ $!block $!list
-  { $!block $!list $!index
+{ !$block !$list
+  -- each-aux ( list block index -- )
+  { !$index !$block !$list
     -- if index falls within the list, process that item
     $list length $index > {
       $list $index index            -- push list[index] onto the stack
