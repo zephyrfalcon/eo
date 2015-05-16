@@ -43,13 +43,13 @@
 -- stack, which will be added to the result list.
 { !$block !$list
   -- map-aux (list block index acc -- )
-  { !$list !$block !$index !$acc
+  { !$acc !$index !$block !$list
     $list length $index >    -- if we're still in the list...
-    { $list index index         -- push list[index] on the stack
+    { $list $index index         -- push list[index] on the stack
       $block exec               -- execute block
       !$item                    -- take the result and call it $item
-      $acc $item add            -- add it to the accumulator (in-place)
-      $acc $index 1 + $block $list map-aux  -- recurse
+      $acc $item add!           -- add it to the accumulator (in-place)
+      $list $block $index 1 + $acc map-aux  -- recurse
     }
     { $acc }                 -- otherwise push $acc, the result list
     if
