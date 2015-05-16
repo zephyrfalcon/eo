@@ -1,0 +1,12 @@
+-- miscellanous list tests
+
+-- indexing
+[ "a" "b" "c" ] 0 index
+=> ["a"]
+
+-- length
+[ 1 2 3 ] length
+=> [3]
+[ ] length
+=> [0]
+

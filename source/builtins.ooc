@@ -48,7 +48,6 @@ _gt: func (interp: EoInterpreter, ns: Namespace) {
         Exception new("> only works on numbers") throw()
 }
 
-
 def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
     name := interp stack pop() as EoString
@@ -236,6 +235,40 @@ _perc_count_cycles: func (interp: EoInterpreter, ns: Namespace) {
     interp debugSettings countCycles = onoff value
 }
 
+index: func (interp: EoInterpreter, ns: Namespace) {
+    /* index ( list n -- list[n] )
+       Get the item at position n of the list (indexing starts at 0).
+    */
+   // TODO: should work for strings as well
+   // TODO: also support negative indexes
+   // TODO: handle out-of-bounds indexen
+   n := interp stack popCheck(EoInteger) as EoInteger
+   indexable := interp stack pop()
+   match indexable {
+       case (list: EoList) => {
+           elem := list data[n value]
+           interp stack push(elem)
+       }
+       case =>
+           "Error: index not supported on objects of type %s" \
+             printfln(indexable class name)
+   }
+}
+
+length: func (interp: EoInterpreter, ns: Namespace) {
+    /* length ( list -- length )
+       Get the length of a list. */
+    // TODO: should also work with strings and possibly other types
+    obj := interp stack pop()
+    match obj {
+        case (list: EoList) =>
+            interp stack push(EoInteger new(list data size))
+        case =>
+            "Error: length not supported on objects of type %s" \
+              printfln(obj class name)
+    }
+}
+
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -274,6 +307,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "words", words)
     loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
     loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
+    loadBuiltinWord(interp, "index", index)
+    loadBuiltinWord(interp, "length", length)
 
     str_loadBuiltinWords(interp)
 }
