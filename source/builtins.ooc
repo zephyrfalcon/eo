@@ -13,6 +13,10 @@ dup: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(x)
 }
 
+drop: func (interp: EoInterpreter, ns: Namespace) {
+    interp stack pop()
+}
+
 plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
     y := interp stack pop()
@@ -292,7 +296,26 @@ add_excl_doc := \
 "add! ( list item -- )
 Add the given item to the (end of the) list, changing the list in-place."
 
-/* loading builtins */
+doc: func (interp: EoInterpreter, ns: Namespace) {
+    obj := interp stack pop()
+    //doc: String = withDefault(obj description, "")
+    doc := obj description == null ? "" : obj description
+    interp stack push(EoString new(doc))
+}
+doc_doc := \
+"doc ( obj -- docstring )
+Get the docstring of the given object. Return an empty string if it has none."
+
+doc_excl: func (interp: EoInterpreter, ns: Namespace) {
+    docstring := interp stack popCheck(EoString) as EoString
+    obj := interp stack pop()
+    obj description = docstring value
+}
+doc_excl_doc := \
+"doc! ( obj docstring -- )
+Set the docstring for the given object."
+
+/*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
                        f: Func(EoInterpreter, Namespace),
@@ -313,6 +336,7 @@ loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
 
 loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "dup", dup)
+    loadBuiltinWord(interp, "drop", drop)
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "-", minus)
     loadBuiltinWord(interp, ">", _gt)
@@ -338,6 +362,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
+    loadBuiltinWord(interp, "doc", doc, doc_doc)
+    loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
 
     str_loadBuiltinWords(interp)
 }

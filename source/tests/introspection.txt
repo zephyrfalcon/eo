@@ -4,3 +4,11 @@
 2 "dup" lookup-here exec
 => [2 2]
 
+-- docstrings, getting and setting
+42 !$magic
+"$magic" lookup-here doc
+=> [""]
+"$magic" lookup-here "it's magic!" doc!
+"$magic" lookup-here doc
+=> ["it\'s magic!"]
+
