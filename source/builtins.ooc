@@ -305,7 +305,6 @@ doc: func (interp: EoInterpreter, ns: Namespace) {
 doc_doc := \
 "doc ( obj -- docstring )
 Get the docstring of the given object. Return an empty string if it has none."
-
 doc_excl: func (interp: EoInterpreter, ns: Namespace) {
     docstring := interp stack popCheck(EoString) as EoString
     obj := interp stack pop()
