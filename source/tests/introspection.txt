@@ -1,0 +1,6 @@
+-- introspection
+
+-- look up "dup" and execute it
+2 "dup" lookup-here exec
+=> [2 2]
+

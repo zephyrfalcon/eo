@@ -5,9 +5,19 @@ import text/EscapeSequence
 import eo
 import namespace
 
+/*** helper classes ***/
+Arity: class {
+    in, out: Int
+    init: func (=in, =out)
+}
+
 /*** base class ***/
 
 EoType: abstract class {
+    /* all objects can have a description and tags. */
+    description: String
+    tags: ArrayList<String>
+
     toString: abstract func -> String
     valueAsString: func -> String { this toString() }
 }
@@ -122,6 +132,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 }
 
 EoWord: abstract class extends EoType {
+    arity: Arity
 }
 
 EoUserDefWord: class extends EoWord {

@@ -45,7 +45,7 @@
   -- map-aux (list block index acc -- )
   { !$acc !$index !$block !$list
     $list length $index >    -- if we're still in the list...
-    { $list $index index         -- push list[index] on the stack
+    { $list $index index        -- push list[index] on the stack
       $block exec               -- execute block
       !$item                    -- take the result and call it $item
       $acc $item add!           -- add it to the accumulator (in-place)

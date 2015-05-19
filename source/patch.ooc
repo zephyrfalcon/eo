@@ -4,7 +4,6 @@
 
 /* TODO:
    - ArrayList needs better sorting algorithm >=(
-   - We need a way to compare Strings (`>` compares pointers, I think)
 */
 
 import text/Regexp

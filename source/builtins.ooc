@@ -2,6 +2,7 @@
 
 import patch
 import structs/[ArrayList, Stack]
+import text/StringTokenizer
 import io/File
 import eotypes, eo, namespace, tools
 import builtins_str
@@ -148,6 +149,16 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+lookup_here: func (interp: EoInterpreter, ns: Namespace) {
+    name := interp stack popCheck(EoString) as EoString
+    obj := ns lookup(name value)
+    interp stack push(obj)
+}
+lookup_here_doc := \
+"lookup-here ( name -- obj )
+Look up the given string in the current namespace, and push the object
+associated with it. This can be anything, including words."
+
 _if: func (interp: EoInterpreter, ns: Namespace) {
     /* if ( cond code-if-true code-if-false -- ) */
     codeIfFalse := interp stack popCheck(EoCodeBlock) as EoCodeBlock
@@ -270,8 +281,6 @@ length: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 add_excl: func (interp: EoInterpreter, ns: Namespace) {
-    /* add! ( list item -- )
-       Add the given item to the list, changing the list in-place. */
     // TODO: there should also be a plain `add` that creates a new list and
     // leaves the original one alone, but this is less efficient with
     // ooc-style lists.
@@ -279,19 +288,26 @@ add_excl: func (interp: EoInterpreter, ns: Namespace) {
     list := interp stack popCheck(EoList) as EoList
     list data add(item)
 }
+add_excl_doc := \
+"add! ( list item -- )
+Add the given item to the (end of the) list, changing the list in-place."
 
 /* loading builtins */
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
-                       f: Func(EoInterpreter, Namespace)) {
+                       f: Func(EoInterpreter, Namespace),
+                       description := "") {
     //"Loading builtin: %s" printfln(name)
     builtinWord := EoBuiltinWord new(name, f)
+    builtinWord description = description
     interp rootNamespace add(name, builtinWord)
 }
 
 loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
-                               f: Func(EoInterpreter, Namespace)) {
+                               f: Func(EoInterpreter, Namespace),
+                               description := "") {
     builtinWord := EoBuiltinWord new(name, f)
+    builtinWord description = description
     targetNs add(name, builtinWord)
 }
 
@@ -306,6 +322,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "]", rbracket)
     loadBuiltinWord(interp, "exec", exec)
     loadBuiltinWord(interp, "lookup", lookup)
+    loadBuiltinWord(interp, "lookup-here", lookup_here, lookup_here_doc)
     loadBuiltinWord(interp, "execns", execns)
     loadBuiltinWord(interp, "if", _if)
     loadBuiltinWord(interp, "include", _include)
@@ -320,7 +337,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
-    loadBuiltinWord(interp, "add!", add_excl)
+    loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
 
     str_loadBuiltinWords(interp)
 }

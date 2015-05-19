@@ -7,7 +7,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.21"
+EO_VERSION := "0.0.22"
 
 /*****/
 
@@ -258,7 +258,7 @@ EoInterpreter: class {
         autoloadfile := File join(rootDir, "autoload", "autoload.eo")
         "Loading: %s... " printf(autoloadfile)
         data := File new(autoloadfile) read()
-        runCode(data, userNamespace)
+        runCode(data, rootNamespace)
         "OK" println()
     }
 

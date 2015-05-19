@@ -9,6 +9,11 @@ upper: func (interp: EoInterpreter, ns: Namespace) {
     s := interp stack popCheck(EoString) as EoString
     interp stack push(EoString new(s value toUpper()))
 }
+upper_doc := \
+"upper ( string -- string' )
+Converts a string to uppercase."
+upper_tags := ["string"]
+upper_arity := Arity new(1, 1)
 
 str_loadBuiltinWords: func (interp: EoInterpreter) {
     strmod := EoModule new(interp userNamespace)
@@ -24,7 +29,7 @@ str_loadBuiltinWords: func (interp: EoInterpreter) {
     interp userNamespace add("str", strword)
 
     /* builtin words in the module */
-    loadBuiltinWordInModule(strns, "upper", upper)
+    loadBuiltinWordInModule(strns, "upper", upper, upper_doc)
 }
 
 
