@@ -182,7 +182,7 @@ _include: func (interp: EoInterpreter, ns: Namespace) {
     /* include ( filename -- ) */
     filename := interp stack popCheck(EoString) as EoString
     data := File new(filename value) read()
-    interp runCode(data, ns)
+    interp runCodeViaStack(data, ns)
 }
 
 _import: func (interp: EoInterpreter, ns: Namespace) {
@@ -197,6 +197,7 @@ _import: func (interp: EoInterpreter, ns: Namespace) {
     data := File new(filename value) read()
     newns := Namespace new(interp userNamespace)
     interp runCode(data, newns)
+    // FIXME: not correct! this is not atomic.
     // XXX need the name! derive from filename
     mod := EoModule new(newns) // FIXME: add name, path
     mod name = shortName; mod path = path

@@ -240,6 +240,7 @@ EoInterpreter: class {
 
     /***/
 
+    /* run code directly. */
     runCode: func (data: String, ns: Namespace) {
         // make sure currentWordStack is not empty
         if (currentWordStack empty?())
@@ -253,6 +254,25 @@ EoInterpreter: class {
                 callStack push(frame)
                 executeAll()
             }
+            clear()
+        }
+        else Exception new("Error: Incomplete code!") throw()
+    }
+
+    /* run code by putting it on the call stack and letting the interpreter do
+     * its work when execute() is called. */
+    runCodeViaStack: func (data: String, ns: Namespace) {
+        // make sure currentWordStack is not empty
+        if (currentWordStack empty?())
+            currentWordStack push(ArrayList<EoType> new())
+
+        done := parse(data)
+        if (done) {
+            code: ArrayList<EoType> = currentWordStack pop()
+            blk := EoCodeBlock new(code, ns)
+            uw := blk asEoUserDefWord()
+            frame := EoStackFrame new(uw, ns)
+            callStack push(frame)
             clear()
         }
         else Exception new("Error: Incomplete code!") throw()
