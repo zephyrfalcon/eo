@@ -196,16 +196,18 @@ _import: func (interp: EoInterpreter, ns: Namespace) {
 
     data := File new(filename value) read()
     newns := Namespace new(interp userNamespace)
-    interp runCode(data, newns)
-    // FIXME: not correct! this is not atomic.
     // XXX need the name! derive from filename
     mod := EoModule new(newns) // FIXME: add name, path
     mod name = shortName; mod path = path
-    // XXX maybe use absolute path for filename?
-    // then create a WORD with that name that pushes the module
+    // FIXME: use absolute path for filename?
+
+    // create a WORD with that name that pushes the module
     w := makeWordThatReturns(interp, mod)
-    // then place in current namespace (ns)
+    // place this word in current namespace (ns)
     ns add(shortName, w)
+
+    // lastly: run code in module's namespace via usual mechanism
+    interp runCodeViaStack(data, newns)
 }
 
 _print: func (interp: EoInterpreter, ns: Namespace) {
