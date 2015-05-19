@@ -57,3 +57,11 @@
   $list $block 0 [ ] map-aux
 } !map
 
+--
+-- stack manipulation
+
+-- dip ( block x -- x )
+-- Take x, execute the code block, put x back.
+-- Borrowed from Cat.
+{ !$temp exec $temp } !dip
+
