@@ -7,7 +7,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.23"
+EO_VERSION := "0.0.24"
 
 /*****/
 
@@ -55,6 +55,12 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 newTokens add("\"%s\"" format(part))
                 newTokens add("execns")
             }
+        }
+        else if (token startsWith?("?") && token length() > 1) {
+            newTokens add("\"%s\"" format(token substring(1)))
+            newTokens add("lookup-here")
+            newTokens add("doc")
+            newTokens add("println")
         }
         else
             newTokens add(token)

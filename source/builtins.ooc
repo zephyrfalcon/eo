@@ -156,7 +156,11 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
 lookup_here: func (interp: EoInterpreter, ns: Namespace) {
     name := interp stack popCheck(EoString) as EoString
     obj := ns lookup(name value)
-    interp stack push(obj)
+    if (obj == null)
+        "Symbol not found: %s" printfln(name value)
+        // FIXME: raise exception; this clashes with the `?` reader macro
+    else
+        interp stack push(obj)
 }
 lookup_here_doc := \
 "lookup-here ( name -- obj )
