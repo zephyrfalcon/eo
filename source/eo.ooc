@@ -126,6 +126,9 @@ EoInterpreter: class {
     callStack := Stack<EoStackFrame> new()
 
     init: func {
+        /* redirect ooc's borked stderr */
+        stderr = FStream open("/dev/null", "w")
+
         clear()
         /* true and false are special names that evaluate to themselves */
         rootNamespace add("true", EoTrue)
