@@ -1,0 +1,24 @@
+-- ansi.eo
+
+-- ANSI escape sequences
+{ "\x1b[" } !csi  -- command ANSI escape sequence
+{ "\x1b]" } !osc  -- operating system command
+
+-- colors
+{ 0 } !black
+{ 1 } !red
+{ 2 } !green
+{ 3 } !yellow
+{ 3 } !brown
+{ 4 } !blue
+{ 5 } !magenta
+{ 6 } !cyan
+{ 7 } !white
+
+-- fg ( color -- fgcolor )
+-- create a foreground color code, e.g. `black fg` => 30
+{ 30 + } !fg
+
+-- ditto for background
+{ 40 + } !bg
+
