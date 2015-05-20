@@ -18,4 +18,7 @@
 => ["abc\n"]
 "abc\\n"
 => ["abc\\n"]
+-- test if \x escaping is allowed
+"a\x40b"
+=> ["a@b"]
 

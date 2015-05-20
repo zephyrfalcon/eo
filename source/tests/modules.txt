@@ -1,0 +1,14 @@
+-- test modules, importing, etc
+
+-- import standard library
+"ansi" import
+ansi
+=> [#module<ansi>]
+
+ansi "red" lookup exec
+=> [1]
+ansi:red
+=> [1]
+ansi:red ansi:fg
+=> [31]
+

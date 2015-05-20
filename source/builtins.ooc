@@ -193,25 +193,37 @@ _include: func (interp: EoInterpreter, ns: Namespace) {
 _import: func (interp: EoInterpreter, ns: Namespace) {
     /* import ( filename -- )
        Produces a module that is placed in the caller's namespace. */
+    /* XXX For now:
+       - ONLY accepts single filenames (so no paths)
+       - filenames are expected to be relative to libRootDir (i.e., in lib/)
+       LATER: add support for paths and possibly absolute paths to import
+       files are not in the lib directory.
+    */
     filename := interp stack popCheck(EoString) as EoString
-    path := File new(filename value) getAbsolutePath()
+    fn := filename value
+    if (!fn endsWith?(".eo")) fn += ".eo"
+
+    path := File join(interp libRootDir, fn)
+    if (!File new(path) exists?())
+        Exception new("Cannot import %s: file does not exist" format(path)) \
+                  throw()
     //"Absolute path: %s" printfln(path)
-    shortName := getShortName(path)
+    shortName := getShortName(path) /* also strips extension */
     //"Shortname: %s" printfln(shortName)
 
-    data := File new(filename value) read()
+    data := File new(path) read()
+    /* create a namespace for the module, then a module object that uses this
+     * namespace */
     newns := Namespace new(interp userNamespace)
-    // XXX need the name! derive from filename
-    mod := EoModule new(newns) // FIXME: add name, path
+    mod := EoModule new(newns) 
     mod name = shortName; mod path = path
-    // FIXME: use absolute path for filename?
 
-    // create a WORD with that name that pushes the module
+    /* create a WORD with the shortname that pushes the module */
     w := makeWordThatReturns(interp, mod)
-    // place this word in current namespace (ns)
+    /* place this word in current namespace (ns) */
     ns add(shortName, w)
 
-    // lastly: run code in module's namespace via usual mechanism
+    /* lastly: run code in module's namespace via usual mechanism */
     interp runCodeViaStack(data, newns)
 }
 
