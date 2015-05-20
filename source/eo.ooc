@@ -118,6 +118,7 @@ EoInterpreter: class {
     rootDir := "."
     /* can/must be overridden to contain the directory where the executable
        is located */
+    libRootDir := rootDir + "/lib" 
 
     /* stack to deal with nested word definitions */
     currentWordStack := Stack<ArrayList<EoType>> new()
@@ -129,12 +130,16 @@ EoInterpreter: class {
         /* redirect ooc's borked stderr */
         stderr = FStream open("/dev/null", "w")
 
+        /* if we have a fully qualified root dir (and we should), determine
+         * the stdlib dir */
+        libRootDir = File join(rootDir, "lib")
+
         clear()
         /* true and false are special names that evaluate to themselves */
         rootNamespace add("true", EoTrue)
         rootNamespace add("false", EoFalse)
         loadBuiltinWords(this)
-        loadStdlib()
+        autoload()
     }
 
     init: func ~withRoot (=rootDir) {
@@ -289,7 +294,7 @@ EoInterpreter: class {
         else Exception new("Error: Incomplete code!") throw()
     }
 
-    loadStdlib: func {
+    autoload: func {
         /* look for autoload/autoload.eo and load it. any other files should
            be loaded by autoload.eo itself. */
         autoloadfile := File join(rootDir, "autoload", "autoload.eo")
