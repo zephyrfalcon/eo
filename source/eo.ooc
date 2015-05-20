@@ -233,14 +233,22 @@ EoInterpreter: class {
     executeAll: func {
         if (debugSettings countCycles)
             debugSettings cycles = 0
-        while (!(callStack empty?())) executeStep()
+        while (!(callStack empty?())) {
+            try {
+                executeStep()
+            } catch (e: Exception) {
+                "Error: %s" printfln(e message)
+                callStack clear()
+                return
+            }
+        }
         if (debugSettings countCycles)
             "Cycles: %d" printfln(debugSettings cycles)
     }
 
     /***/
 
-    /* run code directly. */
+    /* DEPRECATED -- run code directly. */
     runCode: func (data: String, ns: Namespace) {
         // make sure currentWordStack is not empty
         if (currentWordStack empty?())
@@ -331,12 +339,13 @@ EoREPL: class {
             line := stdin readLine()
             done := interpreter parse(line)
             if (done) {
+                /* treat input like it was all entered in one code block */
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
-                for (c in code) {
-                    frame := EoStackFrame new(c, interpreter userNamespace)
-                    interpreter callStack push(frame)
-                    interpreter executeAll()
-                }
+                blk := EoCodeBlock new(code, interpreter userNamespace)
+                uw := blk asEoUserDefWord()
+                frame := EoStackFrame new(uw, interpreter userNamespace)
+                interpreter callStack push(frame)
+                interpreter executeAll()
                 interpreter clear()
             }
             // FIXME: some code duplication here with EoInterpreter.runCode

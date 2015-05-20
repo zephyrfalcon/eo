@@ -6,6 +6,7 @@ import eo
 import namespace
 
 /*** helper classes ***/
+
 Arity: class {
     in, out: Int
     init: func (=in, =out)

@@ -100,10 +100,12 @@ rbracket: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 exec: func (interp: EoInterpreter, ns: Namespace) {
-    /* exec ( string|executable -- ? )
+    /* exec ( string|executable -- )
        Execute the string as if it was a regular symbol found in code.
        NOTE: Currently only expects and executes ONE token. Also see #22.
-       TODO: Should this execute different things as well, like code blocks?
+       NOTE: Work correctly with word objects that happen to be on the stack
+       (for example, after having been placed there by `lookup-here`).
+       TODO: run strings with arbitrary code.
     */
     x := interp stack pop()  /* string or executable */
     match (x) {
@@ -119,6 +121,7 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
             interp callStack push(frame)
         }
         case =>
+            /* this handles both words and non-executables correctly */
             frame := EoStackFrame new(x, ns)
             interp callStack push(frame)
     }
@@ -147,7 +150,10 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
     match (module) {
         case (m: EoModule) =>
             value := m namespace lookup(name value)
-            interp stack push(value)
+            if (value == null)
+                Exception new("Symbol not found: %s" format(name value)) throw()
+            else
+                interp stack push(value)
         case => "Cannot look up in object of type (%s)" \
                 printfln(module class name)
     }
@@ -157,8 +163,7 @@ lookup_here: func (interp: EoInterpreter, ns: Namespace) {
     name := interp stack popCheck(EoString) as EoString
     obj := ns lookup(name value)
     if (obj == null)
-        "Symbol not found: %s" printfln(name value)
-        // FIXME: raise exception; this clashes with the `?` reader macro
+        Exception new("Symbol not found: %s" format(name value)) throw()
     else
         interp stack push(obj)
 }
