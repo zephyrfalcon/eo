@@ -125,9 +125,11 @@ EoInterpreter: class {
 
     /* call stack to execute code */
     callStack := Stack<EoStackFrame> new()
+    _oldStderr: FStream
 
     init: func {
         /* redirect ooc's borked stderr */
+        _oldStderr = stderr
         stderr = FStream open("/dev/null", "w")
 
         /* if we have a fully qualified root dir (and we should), determine

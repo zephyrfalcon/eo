@@ -14,12 +14,23 @@ whereAmI: func (executableName: String) -> String {
 }
 
 main: func (args: ArrayList<String>) {
-    runTests := (args size > 1 && args[1] == "--test")
+    runTests := false
+    allowStderr := false
+
+    if (args size > 1)
+        for (arg in args slice(1..-1)) {
+            match (arg) {
+                case "--test" => runTests = true
+                case "--allow-stderr" => allowStderr = true
+                case => "Unknown option: %s" printfln(arg)
+            }
+        }
+
     executablePath := whereAmI(args[0])
-    // later: have proper command line handling :-/
-    //"Executable is in: %s" printfln(executablePath)
 
     repl := EoREPL new(executablePath)
+    if (allowStderr)
+        stderr = repl interpreter _oldStderr
     if (runTests) {
         testPath := File join(executablePath, "source", "tests")
         "Tests are in: %s" printfln(testPath)
