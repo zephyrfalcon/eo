@@ -187,8 +187,8 @@ EoInterpreter: class {
                 callStack pop()  /* always remove in this case */
                 match (value) {
                     case null =>
-                        "Symbol not found: %s" printfln(sym toString())
-                        /* later: raise an exception? */
+                        Exception new("Symbol not found: %s" \
+                          format(sym toString())) throw()
                     /* NOTE: anything in this block should be an "executable",
                      * i.e. a word or a variable. */
                     case (v: EoVariable) =>

@@ -83,7 +83,8 @@ update: func (interp: EoInterpreter, ns: Namespace) {
     assert (varname value startsWith?("$"))
     /* note: we reuse the existing EoVariable object */
     (eovar, varns) = ns lookup_with_source(varname value)
-    /* FIXME: segfaults if variable doesn't exist */
+    if (eovar == null || varns == null)
+        Exception new("Symbol not found: %s" format(varname value)) throw()
     eovar value = value
 }
 
