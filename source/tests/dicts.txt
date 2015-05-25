@@ -1,0 +1,17 @@
+-- dictionary tests
+
+dict empty?
+=> [true]
+
+dict !$dict
+$dict empty?
+=> [true]
+$dict "United States" 1776 put!
+$dict length
+=> [1]
+$dict "United States" get
+=> [1776]
+$dict "Netherlands" 1648 put!
+$dict length
+=> [2]
+

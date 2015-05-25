@@ -1,6 +1,6 @@
 /* Eo built-in types */
 
-import structs/ArrayList
+import structs/[ArrayList, HashMap]
 import text/EscapeSequence
 import eo
 import namespace
@@ -21,6 +21,8 @@ EoType: abstract class {
 
     toString: abstract func -> String
     valueAsString: func -> String { this toString() }
+    mutable?: func -> Bool { false }
+    equals?: func (other: EoType) -> Bool { false }
 }
 
 /*** atoms ***/
@@ -103,6 +105,9 @@ EoString: class extends EoType {
     init: func(=value)
     toString: func -> String { "\"" + EscapeSequence escape(value) + "\"" }
     valueAsString: func -> String { value }
+    equals?: func (other: EoString) -> Bool {
+        return this value == other value
+    }
 }
 
 EoSymbol: class extends EoType {
@@ -126,6 +131,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     init: func ~plain (=words)
     toString: func -> String { "#code{}" }
     /* later: maybe toString() should actually show the code? */
+    mutable?: func -> Bool { true }
 
     asEoUserDefWord: func -> EoUserDefWord {
         return EoUserDefWord new(this)
@@ -134,6 +140,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 
 EoWord: abstract class extends EoType {
     arity: Arity
+    mutable?: func -> Bool { true }
 }
 
 EoUserDefWord: class extends EoWord {
@@ -159,6 +166,7 @@ EoList: class extends EoType {
     }
     init: func(=data)
     init: func ~empty { data := ArrayList<EoType> new() }
+    mutable?: func -> Bool { true }
 }
 
 EoBool: class extends EoType {
@@ -176,6 +184,7 @@ EoVariable: class extends EoType {
     name: String
     init: func (=name, =value)
     toString: func -> String { "$%s" format(name) }
+    mutable?: func -> Bool { true }
 }
 
 EoModule: class extends EoType {
@@ -183,7 +192,38 @@ EoModule: class extends EoType {
     namespace: Namespace
     init: func (=namespace)  /* will usually be based on userNamespace */
     toString: func -> String { "#module<%s>" format(name) }
+    mutable?: func -> Bool { true }
 }
 
+/* custom equality test, needed for HashMaps */
+eoEquals: func<K> (a, b: K) -> Bool {
+    c := a as EoType
+    d := b as EoType
+    assert (c instanceOf?(EoType))
+    assert (d instanceOf?(EoType))
+    if (c class != d class) return false
+    return c equals?(d)
+}
 
+/* we wrap eoEquals in this (see ooc source: sdk/structs/HashMap.ooc */
+eoStandardEquals: func<T> (T: Class) -> Func<T> (T, T) -> Bool {
+    return eoEquals
+}
+
+EoDict: class extends EoType {
+    data := HashMap<EoType, EoType> new()
+    toString: func -> String { "#dict" } /* FIXME */
+    mutable?: func -> Bool { true }
+
+    init: func {
+        data keyEquals = eoStandardEquals(EoType)
+        /* XXX needs to return a FUNCTION that does the comparison */
+    }
+
+    add: func (key, value: EoType) {
+        if (key.mutable?())
+            Exception new("Mutable objects cannot be used as keys") throw()
+        data put(key, value)
+    }
+}
 

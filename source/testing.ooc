@@ -5,6 +5,7 @@ import eo, eotypes
 import structs/ArrayList
 import io/File
 import text/StringTokenizer
+import os/Terminal
 
 EoTestResult: enum { SUCCESS, FAILURE, ERROR }
 
@@ -79,11 +80,15 @@ EoTestRunner: class {
                     "OK" println()
                     passed += 1
                 case EoTestResult FAILURE =>
+                    Terminal setFgColor(Color red)
                     "FAIL" println()
+                    Terminal reset()
                     "  %s" printfln(message)
                     failed += 1
                 case EoTestResult ERROR =>
+                    Terminal setFgColor(Color red)
                     "ERROR" println()
+                    Terminal reset()
                     "  %s" printfln(message)
                     error += 1
                 case => "?!" println()

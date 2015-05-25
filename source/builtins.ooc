@@ -6,6 +6,7 @@ import text/StringTokenizer
 import io/File
 import eotypes, eo, namespace, tools
 import builtins_str
+import builtins_dict
 
 dup: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -38,6 +39,14 @@ minus: func (interp: EoInterpreter, ns: Namespace) {
     }
     else
         Exception new("- only works on numbers") throw()
+}
+
+_equals: func (interp: EoInterpreter, ns: Namespace) {
+    /* ( = a b -- bool ) */
+    x := interp stack popCheck(EoInteger) as EoInteger
+    y := interp stack popCheck(EoInteger) as EoInteger
+    result := (x value == y value) ? EoTrue : EoFalse
+    interp stack push(result)
 }
 
 /* lots of boilerplate here too; also, future versions of `>` will likely
@@ -282,6 +291,9 @@ index: func (interp: EoInterpreter, ns: Namespace) {
    // TODO: should work for strings as well
    // TODO: also support negative indexes
    // TODO: handle out-of-bounds indexen
+   /* Note: in theory we could handle dicts as well, but because of the
+    * integer requirement (see above) I will use a separate word `get` rather
+    * than making this code too complicated. */
    n := interp stack popCheck(EoInteger) as EoInteger
    indexable := interp stack pop()
    match indexable {
@@ -303,6 +315,8 @@ length: func (interp: EoInterpreter, ns: Namespace) {
     match obj {
         case (list: EoList) =>
             interp stack push(EoInteger new(list data size))
+        case (dict: EoDict) =>
+            interp stack push(EoInteger new(dict data size))
         case =>
             "Error: length not supported on objects of type %s" \
               printfln(obj class name)
@@ -363,6 +377,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "drop", drop)
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "-", minus)
+    loadBuiltinWord(interp, "=", _equals)
     loadBuiltinWord(interp, ">", _gt)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
@@ -388,6 +403,12 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
+
+    /* builtins_dict */
+    loadBuiltinWord(interp, "dict", dict)
+    loadBuiltinWord(interp, "put!", put_excl)
+    loadBuiltinWord(interp, "get", _get)
+    loadBuiltinWord(interp, "keys", keys)
 
     str_loadBuiltinWords(interp)
 }

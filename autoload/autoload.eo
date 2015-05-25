@@ -65,3 +65,10 @@
 -- Borrowed from Cat.
 { !$temp exec $temp } !dip
 
+--
+-- misc
+
+-- empty? ( container -- bool )
+-- Returns true if the given container (string, list, dict) is empty.
+{ length 0 = } !empty?
+

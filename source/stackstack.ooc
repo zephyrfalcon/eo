@@ -19,10 +19,10 @@ StackStack: class {
     }
     popCheck: func (type: Class) -> EoType {
         x := (stacks peek() as Stack<EoType>) pop()
-        if (x class name != type name) 
-            "Type error: %s expected, got %s instead" \
-             printfln(type name, x class name)
-        /* FIXME: raise error or something */
+        if (x class name != type name) {
+            Exception new("Type error: %s expected, got %s instead" \
+              format(type name, x class name)) throw()
+        }
         return x
     }
     peek: func -> EoType {
