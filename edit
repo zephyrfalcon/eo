@@ -1,2 +1,2 @@
 #!/bin/sh
-gvim source/*.ooc source/tests/*.txt
+gvim source/*.ooc source/tests/*.txt autoload/*.eo
