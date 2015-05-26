@@ -353,6 +353,21 @@ doc_excl_doc := \
 "doc! ( obj docstring -- )
 Set the docstring for the given object."
 
+hash: func (interp: EoInterpreter, ns: Namespace) {
+    /* hash ( x -- hash(x) ) */
+    obj := interp stack pop()
+    h := obj hash()
+    interp stack push(EoInteger new(h))
+}
+
+eq_qm: func (interp: EoInterpreter, ns: Namespace) {
+    /* eq? ( a b -- bool ) */
+    b := interp stack pop()
+    a := interp stack pop()
+    result := a equals?(b) ? EoTrue : EoFalse
+    interp stack push(result)
+}
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -400,6 +415,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
+    loadBuiltinWord(interp, "hash", hash)
+    loadBuiltinWord(interp, "eq?", eq_qm)
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)

@@ -14,4 +14,12 @@ $dict "United States" get
 $dict "Netherlands" 1648 put!
 $dict length
 => [2]
+$dict "Netherlands" get
+=> [1648]
+-- update an existing value:
+$dict "Netherlands" 1815 put!
+$dict length
+=> [2]
+$dict "Netherlands" get
+=> [1815]
 

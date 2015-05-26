@@ -23,6 +23,7 @@ EoType: abstract class {
     valueAsString: func -> String { this toString() }
     mutable?: func -> Bool { false }
     equals?: func (other: EoType) -> Bool { false }
+    hash: func -> SizeT { 0 }
 }
 
 /*** atoms ***/
@@ -98,6 +99,10 @@ EoInteger: class extends EoType {
         if (negative) value = -value
         return EoInteger new(value)
     }
+
+    equals?: func (other: EoInteger) -> Bool { this value == other value }
+    hash: func -> SizeT { value % 0xFFFF }
+
 }
 
 EoString: class extends EoType {
@@ -108,6 +113,7 @@ EoString: class extends EoType {
     equals?: func (other: EoString) -> Bool {
         return this value == other value
     }
+    hash: func -> SizeT { ac_X31_hash(value) }
 }
 
 EoSymbol: class extends EoType {
@@ -173,6 +179,8 @@ EoBool: class extends EoType {
     value: Bool
     toString: func -> String { value ? "true" : "false" }
     init: func(=value)
+    equals?: func (other: EoBool) -> Bool { this value == other value }
+    hash: func -> SizeT { value ? 1 : 0 }
 }
 
 /* don't create EoBools, use these instead */
@@ -195,6 +203,8 @@ EoModule: class extends EoType {
     mutable?: func -> Bool { true }
 }
 
+/* --- dictionaries (include equality testing and hash computation) --- */
+
 /* custom equality test, needed for HashMaps */
 eoEquals: func<K> (a, b: K) -> Bool {
     c := a as EoType
@@ -207,7 +217,17 @@ eoEquals: func<K> (a, b: K) -> Bool {
 
 /* we wrap eoEquals in this (see ooc source: sdk/structs/HashMap.ooc */
 eoStandardEquals: func<T> (T: Class) -> Func<T> (T, T) -> Bool {
+    "std equals" println()
     return eoEquals
+}
+
+eoHash: func<T> (key: T) -> SizeT {
+    a := key as EoType
+    return a hash()
+}
+
+eoStandardHashFunc: func<T> (T: Class) -> Func <T> (T) -> SizeT {
+    return eoHash
 }
 
 EoDict: class extends EoType {
@@ -217,7 +237,8 @@ EoDict: class extends EoType {
 
     init: func {
         data keyEquals = eoStandardEquals(EoType)
-        /* XXX needs to return a FUNCTION that does the comparison */
+        /* needs to return a FUNCTION that does the comparison */
+        data hashKey = eoStandardHashFunc(EoType)
     }
 
     add: func (key, value: EoType) {
@@ -227,3 +248,4 @@ EoDict: class extends EoType {
     }
 }
 
+/* --- end of dictionary-related code --- */
