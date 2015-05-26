@@ -1,0 +1,26 @@
+-- Eo types
+
+3 type
+=> ["int"]
+"abc" type
+=> ["string"]
+[ 1 ] type
+=> ["list"]
+dict type
+=> ["dict"]
+true type
+=> ["bool"]
+str type
+=> ["module"]
+"dup" lookup-here type
+=> ["b-word"]
+"map" lookup-here type
+=> ["u-word"]
+42 !$magic
+"$magic" lookup-here type
+=> ["variable"]
+{ dup } type
+=> ["block"]
+
+-- TODO: symbol?
+

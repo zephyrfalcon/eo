@@ -386,6 +386,11 @@ clear_excl: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+type: func (interp: EoInterpreter, ns: Namespace) {
+    obj := interp stack pop()
+    interp stack push(EoString new(obj type()))
+}
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -435,6 +440,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)
+    loadBuiltinWord(interp, "type", type)
     loadBuiltinWord(interp, "clear!", clear_excl)
     loadBuiltinWord(interp, "eq?", eq_qm)
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)

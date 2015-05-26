@@ -24,6 +24,7 @@ EoType: abstract class {
     mutable?: func -> Bool { false }
     equals?: func (other: EoType) -> Bool { false }
     hash: func -> SizeT { 0 }
+    type: func -> String { "unknown" }
 }
 
 /*** atoms ***/
@@ -32,6 +33,7 @@ EoInteger: class extends EoType {
     value: Int
     init: func(=value)
     toString: func -> String { value toString() }
+    type: func -> String { "int" }
 
     fromHexString: static func (s: String) -> EoInteger {
         /* parse hexadecimal literal to integer value. the input string may be
@@ -114,12 +116,14 @@ EoString: class extends EoType {
         return this value == other value
     }
     hash: func -> SizeT { ac_X31_hash(value) }
+    type: func -> String { "string" }
 }
 
 EoSymbol: class extends EoType {
     value: String
     init: func(=value)
     toString: func -> String { value }
+    type: func -> String { "symbol" }
 }
 
 /*** words ***/
@@ -138,6 +142,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     toString: func -> String { "#code{}" }
     /* later: maybe toString() should actually show the code? */
     mutable?: func -> Bool { true }
+    type: func -> String { "block" }
 
     asEoUserDefWord: func -> EoUserDefWord {
         return EoUserDefWord new(this)
@@ -147,6 +152,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 EoWord: abstract class extends EoType {
     arity: Arity
     mutable?: func -> Bool { true }
+    type: func -> String { "word" }
 }
 
 EoUserDefWord: class extends EoWord {
@@ -155,6 +161,7 @@ EoUserDefWord: class extends EoWord {
     init: func (=code, =name)  // name is optional
     init: func ~plain (=code)
     toString: func -> String { "u#<%s>" format(name == null ? "" : name) }
+    type: func -> String { "u-word" }
 }
 
 EoBuiltinWord: class extends EoWord {
@@ -162,6 +169,7 @@ EoBuiltinWord: class extends EoWord {
     name: String
     toString: func -> String { "#<%s>" format(name) }
     init: func (=name, =f)
+    type: func -> String { "b-word" }
 }
 
 EoList: class extends EoType {
@@ -177,6 +185,7 @@ EoList: class extends EoType {
     init: func ~empty { data = ArrayList<EoType> new() }
     /* ^ don't use `data := ...` here, it causes a segfault later */
     mutable?: func -> Bool { true }
+    type: func -> String { "list" }
 }
 
 EoBool: class extends EoType {
@@ -185,6 +194,7 @@ EoBool: class extends EoType {
     init: func(=value)
     equals?: func (other: EoBool) -> Bool { this value == other value }
     hash: func -> SizeT { value ? 1 : 0 }
+    type: func -> String { "bool" }
 }
 
 /* don't create EoBools, use these instead */
@@ -197,6 +207,7 @@ EoVariable: class extends EoType {
     init: func (=name, =value)
     toString: func -> String { "$%s" format(name) }
     mutable?: func -> Bool { true }
+    type: func -> String { "variable" }
 }
 
 EoModule: class extends EoType {
@@ -205,6 +216,7 @@ EoModule: class extends EoType {
     init: func (=namespace)  /* will usually be based on userNamespace */
     toString: func -> String { "#module<%s>" format(name) }
     mutable?: func -> Bool { true }
+    type: func -> String { "module" }
 }
 
 /* --- dictionaries (include equality testing and hash computation) --- */
@@ -238,6 +250,7 @@ EoDict: class extends EoType {
     data := HashMap<EoType, EoType> new()
     toString: func -> String { "#dict" } /* FIXME */
     mutable?: func -> Bool { true }
+    type: func -> String { "dict" }
 
     init: func {
         data keyEquals = eoStandardEquals(EoType)
