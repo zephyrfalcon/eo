@@ -42,5 +42,16 @@ stack_empty_qm: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 pick: func (interp: EoInterpreter, ns: Namespace) {
+    a: EoType
+    n := interp stack popCheck(EoInteger) as EoInteger
+    if (n value <= 0) 
+        Exception new("pick: index must be positive") throw()
+    stk := interp stack peekStack()
+    try {
+        a = stk peek(n value)
+    } catch {
+        Exception new("stack underflow") throw()
+    }
+    interp stack push(a)
 }
 
