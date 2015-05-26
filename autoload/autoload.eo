@@ -72,3 +72,10 @@
 -- Returns true if the given container (string, list, dict) is empty.
 { length 0 = } !empty?
 
+-- is? ( a b -- bool )
+-- Returns true if a and b refer to the same object internally.
+--{ id swap id = } !is?
+{ !$b !$a
+  $a id $b id = } !is?
+
+

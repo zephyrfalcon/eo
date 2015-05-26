@@ -1,0 +1,10 @@
+-- misc tests
+
+"a" "a" eq?
+=> [true]
+"a" "a" is?
+=> [false]
+"a" !$a
+$a $a is?
+=> [true]
+
