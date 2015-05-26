@@ -7,16 +7,8 @@ import io/File
 import eotypes, eo, namespace, tools
 import builtins_str
 import builtins_dict
+import builtins_stack
 
-dup: func (interp: EoInterpreter, ns: Namespace) {
-    x := interp stack pop()
-    interp stack push(x)
-    interp stack push(x)
-}
-
-drop: func (interp: EoInterpreter, ns: Namespace) {
-    interp stack pop()
-}
 
 plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -411,8 +403,6 @@ loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
 }
 
 loadBuiltinWords: func (interp: EoInterpreter) {
-    loadBuiltinWord(interp, "dup", dup)
-    loadBuiltinWord(interp, "drop", drop)
     loadBuiltinWord(interp, "+", plus)
     loadBuiltinWord(interp, "-", minus)
     loadBuiltinWord(interp, "=", _equals)
@@ -446,6 +436,11 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
+
+    /* builtins_stack */
+    loadBuiltinWord(interp, "dup", dup)
+    loadBuiltinWord(interp, "drop", drop)
+    loadBuiltinWord(interp, "swap", swap)
 
     /* builtins_dict */
     loadBuiltinWord(interp, "dict", dict)

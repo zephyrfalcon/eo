@@ -1,0 +1,9 @@
+-- stack operators
+
+4 dup
+=> [4 4]
+3 4 drop
+=> [3]
+6 7 swap
+=> [7 6]
+
