@@ -23,6 +23,11 @@ $dict length
 $dict "Netherlands" get
 => [1815]
 
+-- clear!
+$dict clear!
+$dict length
+=> [0]
+
 -- FIXME: to test `keys` and `items` and `values`, we would need `sort` or
 -- `sort!`, since the order of the keys is undefined.
 

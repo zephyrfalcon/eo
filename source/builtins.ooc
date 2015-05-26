@@ -376,6 +376,16 @@ id: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(EoInteger new(s))
 }
 
+clear_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* clear ( container -- container' ) */
+    obj := interp stack pop()
+    match (obj) {
+        case (list: EoList) => list data clear()
+        case (dict: EoDict) => dict data clear()
+        case => Exception new("Cannot call 'clear!' on this type") throw()
+    }
+}
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -425,6 +435,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)
+    loadBuiltinWord(interp, "clear!", clear_excl)
     loadBuiltinWord(interp, "eq?", eq_qm)
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)

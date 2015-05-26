@@ -20,3 +20,9 @@ $x
 [ 1 2 3 ] { 10 + } map
 => [[ 11 12 13 ]]
 
+-- clear
+[ 1 2 3 ] !$mylist
+$mylist clear!
+$mylist
+=> [[ ]]
+
