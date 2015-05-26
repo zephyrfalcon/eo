@@ -435,6 +435,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "put!", put_excl)
     loadBuiltinWord(interp, "get", _get)
     loadBuiltinWord(interp, "keys", keys)
+    loadBuiltinWord(interp, "values", values)
+    loadBuiltinWord(interp, "items", items)
 
     str_loadBuiltinWords(interp)
 }

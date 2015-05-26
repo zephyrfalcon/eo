@@ -312,6 +312,8 @@ EoInterpreter: class {
         strValues := (topStack data map(|x| (x as EoType) toString()))
         numPrevStacks := stack stacks getSize() - 1
         prefix := numPrevStacks ? "(%d) " format(numPrevStacks) : ""
+        //strValues add(0, "[")
+        //strValues add("]")
         return prefix + "[" + strValues join(" ") + "]"
     }
 

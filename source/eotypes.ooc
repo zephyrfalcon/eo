@@ -168,10 +168,14 @@ EoList: class extends EoType {
     data: ArrayList<EoType>
     toString: func -> String {
         strValues := data map(|x| x toString())
-        return "[" + strValues join(" ") + "]"
+        strValues add(0, "[")
+        strValues add("]")
+        //return "[" + strValues join(" ") + "]"
+        return strValues join(" ")
     }
     init: func(=data)
-    init: func ~empty { data := ArrayList<EoType> new() }
+    init: func ~empty { data = ArrayList<EoType> new() }
+    /* ^ don't use `data := ...` here, it causes a segfault later */
     mutable?: func -> Bool { true }
 }
 
