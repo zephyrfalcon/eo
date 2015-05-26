@@ -442,6 +442,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "drop", drop)
     loadBuiltinWord(interp, "swap", swap)
     loadBuiltinWord(interp, "over", over)
+    loadBuiltinWord(interp, "stack-empty?", stack_empty_qm)
 
     /* builtins_dict */
     loadBuiltinWord(interp, "dict", dict)

@@ -31,6 +31,9 @@ StackStack: class {
     clear: func {
         stacks peek() clear()
     }
+    empty?: func -> Bool {
+        stacks peek() empty?()
+    }
 
     /* methods that operate on the whole stack of stacks */
 

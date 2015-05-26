@@ -8,4 +8,8 @@
 => [7 6]
 3 4 over
 => [3 4 3]
+stack-empty?
+=> [true]
+8 stack-empty?
+=> [8 false]
 

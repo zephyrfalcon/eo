@@ -37,6 +37,8 @@ over: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 stack_empty_qm: func (interp: EoInterpreter, ns: Namespace) {
+    result := interp stack empty?() ? EoTrue : EoFalse
+    interp stack push(result)
 }
 
 pick: func (interp: EoInterpreter, ns: Namespace) {
