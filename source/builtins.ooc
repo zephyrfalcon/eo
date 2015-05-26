@@ -368,6 +368,14 @@ eq_qm: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(result)
 }
 
+id: func (interp: EoInterpreter, ns: Namespace) {
+    /* id ( x -- id(x) ) */
+    obj := interp stack pop()
+    s: SizeT = obj as SizeT  
+    /* note that obj is itself a pointer, technically */
+    interp stack push(EoInteger new(s))
+}
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -416,6 +424,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
+    loadBuiltinWord(interp, "id", id)
     loadBuiltinWord(interp, "eq?", eq_qm)
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)
