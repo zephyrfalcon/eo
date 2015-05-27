@@ -40,7 +40,7 @@ extend String {
             //if (this[i] == other[i]) continue
             //return this[i] toInt() - other[i] toInt()
         }
-        if (other size > this size) return 1
+        if (other size > this size) return -1
         return 0
     }
 }

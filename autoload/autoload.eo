@@ -85,6 +85,10 @@
   { true } { $cond2 exec } if 
 } !or*
 
+-- for fun/completeness/because we can:
+{ and not } !nand
+{ or not } !nor
+
 --
 -- stack manipulation
 
