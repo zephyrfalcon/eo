@@ -36,3 +36,32 @@ $a
 $a
 => [0]
 
+true true or
+=> [true]
+true false or
+=> [true]
+false true or
+=> [true]
+false false or
+=> [false]
+
+{ true } { true } or*
+=> [true]
+{ false } { true } or*
+=> [true]
+{ true } { false } or*
+=> [true]
+{ false } { false } or*
+=> [false]
+
+0 !$a
+{ true } { 1 !>$a false } or*
+=> [true]
+$a
+=> [0]
+0 !$a
+{ false } { 1 !>$a true } or*
+=> [true]
+$a
+=> [1]
+

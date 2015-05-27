@@ -78,6 +78,13 @@
   { $cond2 exec } { false } if
 } !and*
 
+-- or* ( cond1 cond2 -- )
+-- `or` with shortcut mechanism. cond1 and cond2 must be code blocks.
+{ !$cond2 !$cond1
+  $cond1 exec
+  { true } { $cond2 exec } if 
+} !or*
+
 --
 -- stack manipulation
 
