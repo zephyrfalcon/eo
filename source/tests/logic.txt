@@ -1,0 +1,38 @@
+-- logic
+
+true not
+=> [false]
+false not
+=> [true]
+
+true true and
+=> [true]
+true false and
+=> [false]
+false true and
+=> [false]
+false false and
+=> [false]
+
+{ true } { true } and*
+=> [true]
+{ false } { true } and*
+=> [false]
+{ true } { false } and*
+=> [false]
+{ false } { false } and*
+=> [false]
+
+-- test shortcut mechanism
+0 !$a
+{ true } { 1 !>$a false } and*
+=> [false]
+$a
+=> [1]
+
+0 !$a
+{ false } { 1 !>$a true } and*
+=> [false]
+$a
+=> [0]
+

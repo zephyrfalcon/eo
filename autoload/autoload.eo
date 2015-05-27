@@ -71,6 +71,13 @@
 { { stack-empty? not } { drop } while 
 } !clear
 
+-- and* ( cond1 cond2 -- )
+-- `and` with shortcut mechanism. cond1 and cond2 must be code blocks.
+{ !$cond2 !$cond1
+  $cond1 exec
+  { $cond2 exec } { false } if
+} !and*
+
 --
 -- stack manipulation
 

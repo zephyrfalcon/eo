@@ -455,6 +455,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
 
     /* builtins_logic */
     loadBuiltinWord(interp, "not", not)
+    loadBuiltinWord(interp, "and", and)
 
     str_loadBuiltinWords(interp)
 }
