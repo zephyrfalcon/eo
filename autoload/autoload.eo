@@ -57,6 +57,20 @@
   $list $block 0 [ ] map-aux
 } !map
 
+-- while ( cond-block exec-block -- )
+-- while cond-block evaluates to true (i.e. leaves 'true' on the stack),
+-- execute exec-block.
+{ !$exec-block !$cond-block
+  $cond-block exec                        -- check condition
+  { $exec-block exec                      -- if true, exec exec-block
+    $cond-block $exec-block while } when  -- recurse
+} !while
+
+-- clear ( ? -- )
+-- clear the stack
+{ { stack-empty? not } { drop } while 
+} !clear
+
 --
 -- stack manipulation
 

@@ -8,3 +8,8 @@
 $a $a is?
 => [true]
 
+-- while
+0 !$a
+{ 10 $a > } { $a 1 + !>$a } while
+$a
+=> [10]

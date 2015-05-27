@@ -8,7 +8,7 @@ import eotypes, eo, namespace, tools
 import builtins_str
 import builtins_dict
 import builtins_stack
-
+import builtins_logic
 
 plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -452,6 +452,9 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "keys", keys)
     loadBuiltinWord(interp, "values", values)
     loadBuiltinWord(interp, "items", items)
+
+    /* builtins_logic */
+    loadBuiltinWord(interp, "not", not)
 
     str_loadBuiltinWords(interp)
 }
