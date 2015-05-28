@@ -9,6 +9,7 @@ import builtins_str
 import builtins_dict
 import builtins_stack
 import builtins_logic
+import builtins_ns
 
 plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -383,33 +384,6 @@ type: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(EoString new(obj type()))
 }
 
-rootns: func (interp: EoInterpreter, ns: Namespace) {
-    rns := EoNamespace new(interp rootNamespace)
-    interp stack push(rns)
-}
-
-userns: func (interp: EoInterpreter, ns: Namespace) {
-    uns := EoNamespace new(interp userNamespace)
-    interp stack push(uns)
-}
-
-thisns: func (interp: EoInterpreter, ns: Namespace) {
-    tns := EoNamespace new(ns)
-    interp stack push(tns)
-}
-
-newns: func (interp: EoInterpreter, ns: Namespace) {
-    nns := EoNamespace new(ns)
-    interp stack push(nns)
-}
-
-newns_star: func (interp: EoInterpreter, ns: Namespace) {
-    /* newns* ( parent -- newns ) */
-    parent := interp stack popCheck(EoNamespace) as EoNamespace
-    nns := EoNamespace new(parent namespace)
-    interp stack push(nns)
-}
-
 hex: func (interp: EoInterpreter, ns: Namespace) {
     obj := interp stack popCheck(EoInteger) as EoInteger
     s := EoString new("%x" format(obj value))
@@ -471,12 +445,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "add!", add_excl, add_excl_doc)
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
-    loadBuiltinWord(interp, "rootns", rootns)
-    loadBuiltinWord(interp, "userns", userns)
-    loadBuiltinWord(interp, "thisns", thisns)
     loadBuiltinWord(interp, "hex", hex)
-    loadBuiltinWord(interp, "newns", newns)
-    loadBuiltinWord(interp, "newns*", newns)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
@@ -498,6 +467,14 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "not", not)
     loadBuiltinWord(interp, "and", and)
     loadBuiltinWord(interp, "or", or)
+
+    /* builtins_ns */
+    loadBuiltinWord(interp, "rootns", rootns)
+    loadBuiltinWord(interp, "userns", userns)
+    loadBuiltinWord(interp, "thisns", thisns)
+    loadBuiltinWord(interp, "newns", newns)
+    loadBuiltinWord(interp, "newns*", newns)
+    loadBuiltinWord(interp, "ns*", _ns)
 
     str_loadBuiltinWords(interp)
 }
