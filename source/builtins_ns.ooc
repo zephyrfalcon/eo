@@ -1,6 +1,7 @@
 /* builtins_ns.ooc */
 
 import eo, eotypes, namespace
+import structs/ArrayList
 
 rootns: func (interp: EoInterpreter, ns: Namespace) {
     rns := EoNamespace new(interp rootNamespace)
@@ -40,5 +41,40 @@ _ns: func (interp: EoInterpreter, ns: Namespace) {
     }
     assert (xns != null)
     interp stack push(EoNamespace new(xns))
+}
+
+/* return all local names in the given namespace (or module). */
+names: func (interp: EoInterpreter, ns: Namespace) {
+    /* names ( obj -- names ) */
+    obj := interp stack pop()
+    names: ArrayList<String>
+    match (obj) {
+        case (n: EoNamespace) => names = n namespace names()
+        case (m: EoModule) => names = m namespace names()
+        case => Exception new("Cannot extract names from %s" \
+                format(obj class name)) throw()
+    }
+    assert (names != null)
+    result := ArrayList<EoType> new()
+    for (name in names) 
+        result add(EoString new(name))
+    interp stack push(EoList new(result))
+}
+
+all_names: func (interp: EoInterpreter, ns: Namespace) {
+    /* all-names ( obj -- all-names ) */
+    obj := interp stack pop()
+    names: ArrayList<String>
+    match (obj) {
+        case (n: EoNamespace) => names = n namespace all_names()
+        case (m: EoModule) => names = m namespace all_names()
+        case => Exception new("Cannot extract names from %s" \
+                format(obj class name)) throw()
+    }
+    assert (names != null)
+    result := ArrayList<EoType> new()
+    for (name in names) 
+        result add(EoString new(name))
+    interp stack push(EoList new(result))
 }
 

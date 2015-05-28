@@ -39,7 +39,6 @@ over: func (interp: EoInterpreter, ns: Namespace) {
 stack_empty_qm: func (interp: EoInterpreter, ns: Namespace) {
     // FIXME
     ss := EoList new(interp stack peekStack() data)
-    "stack contents: %s" printfln(ss toString())
     result := interp stack empty?() ? EoTrue : EoFalse
     interp stack push(result)
 }

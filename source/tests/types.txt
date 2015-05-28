@@ -21,6 +21,8 @@ str type
 => ["variable"]
 { dup } type
 => ["block"]
+rootns type
+=> ["namespace"]
 
 -- TODO: symbol?
 

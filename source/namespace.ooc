@@ -54,7 +54,7 @@ Namespace: class {
     }
 
     names: func -> ArrayList<String> {
-        return data getKeys()
+        return data getKeys() 
     }
 
     all_names: func -> ArrayList<String> {

@@ -225,6 +225,9 @@ EoNamespace: class extends EoType {
     toString: func -> String { "#namespace<%x>" format(this) }
     mutable?: func -> Bool { true }
     type: func -> String { "namespace" }
+    equals?: func (other: EoNamespace) -> Bool {
+        return this namespace == other namespace /* pointer comparison */
+    }
 }
 
 /* --- dictionaries (include equality testing and hash computation) --- */

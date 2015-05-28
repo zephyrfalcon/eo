@@ -474,7 +474,9 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "thisns", thisns)
     loadBuiltinWord(interp, "newns", newns)
     loadBuiltinWord(interp, "newns*", newns)
-    loadBuiltinWord(interp, "ns*", _ns)
+    loadBuiltinWord(interp, "ns", _ns)
+    loadBuiltinWord(interp, "names", names)
+    loadBuiltinWord(interp, "all-names", all_names)
 
     str_loadBuiltinWords(interp)
 }
