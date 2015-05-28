@@ -219,6 +219,14 @@ EoModule: class extends EoType {
     type: func -> String { "module" }
 }
 
+EoNamespace: class extends EoType {
+    namespace: Namespace
+    init: func (=namespace)
+    toString: func -> String { "#namespace<%x>" format(this) }
+    mutable?: func -> Bool { true }
+    type: func -> String { "namespace" }
+}
+
 /* --- dictionaries (include equality testing and hash computation) --- */
 
 /* custom equality test, needed for HashMaps */
