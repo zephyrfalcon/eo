@@ -420,7 +420,76 @@ put_excl: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
-/* TODO: del! */
+del_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* del! ( container key -- )
+       Delete the given name/key from the container (which must be a
+       dictionary, module, namespace or list). */
+    key := interp stack pop()
+    container := interp stack pop()
+    match (container) {
+        case (dict: EoDict) => dict data remove(key)
+        case (list: EoList) => 
+            if (!key instanceOf?(EoInteger))
+                Exception new("") throw()
+            else
+                list data removeAt((key as EoInteger) value)
+        case (mod: EoModule) => 
+            if (!key instanceOf?(EoString))
+                Exception new("") throw()
+            else
+                mod namespace delete((key as EoString) value)
+        case (xns: EoNamespace) => 
+            if (!key instanceOf?(EoString))
+                Exception new("") throw()
+            else 
+                xns namespace delete((key as EoString) value)
+        case => Exception new("Unsupported type: %s" \
+                format(container class name)) throw()
+    }
+}
+
+contains_qm: func (interp: EoInterpreter, ns: Namespace) {
+    /* contains? ( obj key -- bool ) 
+       Return true if the given container (a list, string, dict, module,
+       namespace) contains the given "key".
+       For dicts, namespaces and modules, this is actually a key/name.
+       For lists, we check if the item is in the list.
+       For strings, we check if key is a substring of container. 
+    */
+   key := interp stack pop()
+   container := interp stack pop()
+   result: Bool = false
+   match (container) {
+       case (s: EoString) => 
+           if (!key instanceOf?(EoString))
+               raise("")
+           else
+               result = s value find((key as EoString) value, 0) > -1
+       case (list: EoList) => 
+           //result = (list data indexOf(key) != -1)
+           /* note: using ArrayList.indexOf doesn't work, since List has its
+            * own comparison method, and the compiler balks if we try to
+            * replace it like we do in EoDict <frown> */
+           for (elem in list data) {
+               if (elem equals?(key)) { result = true; break }
+           }
+       case (dict: EoDict) =>
+           result = dict data contains?(key)
+       case (mod: EoModule) => 
+           if (!key instanceOf?(EoString))
+               raise("")
+           else
+              result = mod namespace hasName?((key as EoString) value)
+       case (n: EoNamespace) => 
+           if (!key instanceOf?(EoString))
+               raise("")
+           else
+               result = n namespace hasName?((key as EoString) value)
+       case => Exception new("Unsupported type: %s" \
+               format(container class name)) throw()
+   }
+   interp stack push(result ? EoTrue : EoFalse)
+}
 
 // TODO: words to get ns from modules, code blocks, etc */
 
@@ -479,6 +548,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
     loadBuiltinWord(interp, "hex", hex)
     loadBuiltinWord(interp, "put!", put_excl)
+    loadBuiltinWord(interp, "del!", del_excl)
+    loadBuiltinWord(interp, "contains?", contains_qm)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

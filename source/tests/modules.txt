@@ -12,3 +12,8 @@ ansi:red
 ansi:red ansi:fg
 => [31]
 
+ansi "fg" contains?
+=> [true]
+ansi "xyzzy" contains?
+=> [false]
+

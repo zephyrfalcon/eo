@@ -22,3 +22,9 @@
 "a\x40b"
 => ["a@b"]
 
+-- contains?
+"abcdefgh" "def" contains?
+=> [true]
+"abcdefgh" "z" contains?
+=> [false]
+

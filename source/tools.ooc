@@ -27,3 +27,8 @@ getShortName: func (filename: String) -> String {
     return last
 }
 
+/* empty function to be used as a placeholder */
+dummy: func {
+    "Not implemented yet" println()
+}
+

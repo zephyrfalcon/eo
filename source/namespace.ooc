@@ -14,6 +14,14 @@ Namespace: class {
         data put(key, value)
     }
 
+    delete: func (key: String) {
+        (ns, value) := lookup_with_source(key)
+        if (ns == null)
+            Exception new("Key not found: %s" format(key)) throw()
+        else 
+            data remove(key)
+    }
+
     // alternatively, we could just use null to mean "no result", in which
     // case this would map straightforwardly to HashMap.get
     lookup: func (key: String) -> EoType {
@@ -66,6 +74,11 @@ Namespace: class {
             for (name in currns names()) names put(name, 0)
         }
         return names getKeys()
+    }
+
+    hasName?: func (key: String) -> Bool {
+        value := lookup(key)
+        return (value != null)
     }
 }
 

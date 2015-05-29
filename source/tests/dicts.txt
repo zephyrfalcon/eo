@@ -22,11 +22,25 @@ $dict length
 => [2]
 $dict "Netherlands" get
 => [1815]
+$dict "Netherlands" contains?
+=> [true]
+$dict "Germany" contains?
+=> [false]
 
 -- clear!
 $dict clear!
 $dict length
 => [0]
+
+dict !$dict
+$dict "a" 1 put!
+$dict "b" 2 put!
+$dict "c" 3 put!
+$dict length
+=> [3]
+$dict "c" del!
+$dict length
+=> [2]
 
 -- FIXME: to test `keys` and `items` and `values`, we would need `sort` or
 -- `sort!`, since the order of the keys is undefined.

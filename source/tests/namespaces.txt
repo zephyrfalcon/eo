@@ -5,6 +5,10 @@ ansi ns
 ansi ns   -- these actually create two different EoNamespace objects
 eq?       -- however...
 => [true]
+ansi ns "fg" contains?
+=> [true]
+ansi ns "xyzzy" contains?
+=> [false]
 
 -- create empty namespace, add name "foo"
 newns !$ns
@@ -19,3 +23,6 @@ $ns parent
 thisns 
 eq?
 => [true]
+thisns "dup" contains?
+=> [true]
+
