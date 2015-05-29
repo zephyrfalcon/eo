@@ -491,6 +491,18 @@ contains_qm: func (interp: EoInterpreter, ns: Namespace) {
    interp stack push(result ? EoTrue : EoFalse)
 }
 
+code: func (interp: EoInterpreter, ns: Namespace) {
+    /* code ( block -- words ) */
+    blk := interp stack popCheck(EoCodeBlock) as EoCodeBlock
+    interp stack push(EoList new(blk words))
+}
+
+block: func (interp: EoInterpreter, ns: Namespace) {
+    /* block ( word -- code-block ) */
+    w := interp stack popCheck(EoUserDefWord) as EoUserDefWord
+    interp stack push(w code)
+}
+
 // TODO: words to get ns from modules, code blocks, etc */
 
 /*** loading builtins ***/
@@ -550,6 +562,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "put!", put_excl)
     loadBuiltinWord(interp, "del!", del_excl)
     loadBuiltinWord(interp, "contains?", contains_qm)
+    loadBuiltinWord(interp, "code", code)
+    loadBuiltinWord(interp, "block", block)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

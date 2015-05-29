@@ -8,6 +8,7 @@ dict: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(d)
 }
 
+/* XXX can be merged into `lookup`? */
 _get: func (interp: EoInterpreter, ns: Namespace) {
     /* get ( dict key -- value ) */
     key := interp stack pop()
