@@ -21,6 +21,8 @@
 -- test if \x escaping is allowed
 "a\x40b"
 => ["a@b"]
+"\"Ha!\" he said."
+=> ["\"Ha!\" he said."]
 
 -- contains?
 "abcdefgh" "def" contains?

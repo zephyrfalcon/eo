@@ -7,7 +7,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.31"
+EO_VERSION := "0.0.32"
 
 /*****/
 
@@ -24,7 +24,9 @@ DebugSettings: class {
 }
 
 // comment | string | word
-re_word := Regexp compile("(--.*?(\\n|$))|(\"[^\"]*\")|(\\S+)")
+re_word := Regexp compile("(--.*?(\\n|$))|(\"(?:\\\\\"|[^\"])*?\")|(\\S+)")
+/* Fixed string regex; see: http://stackoverflow.com/a/18551774/27426
+*/
 
 tokenize: func (data: String) -> ArrayList<String> {
     results := re_word split(data)
