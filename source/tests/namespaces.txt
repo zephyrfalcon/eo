@@ -6,3 +6,16 @@ ansi ns   -- these actually create two different EoNamespace objects
 eq?       -- however...
 => [true]
 
+-- create empty namespace, add name "foo"
+newns !$ns
+$ns "foo" 42 put!
+$ns names
+=> [[ "foo" ]]
+
+-- create a new namespace with `thisns` as parent. then check if the parent
+-- and `thisns` are equal.
+thisns newns* !$ns
+$ns parent
+thisns 
+eq?
+=> [true]

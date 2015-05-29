@@ -8,14 +8,6 @@ dict: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(d)
 }
 
-put_excl: func (interp: EoInterpreter, ns: Namespace) {
-    /* put! ( dict key value -- ) */
-    value := interp stack pop() as EoType
-    key := interp stack pop() as EoType
-    dict := interp stack popCheck(EoDict) as EoDict
-    dict add(key, value)
-}
-
 _get: func (interp: EoInterpreter, ns: Namespace) {
     /* get ( dict key -- value ) */
     key := interp stack pop()

@@ -146,13 +146,18 @@ execns: func (interp: EoInterpreter, ns: Namespace) {
 
 lookup: func (interp: EoInterpreter, ns: Namespace) {
     /* lookup ( module name -- value ) */
-    /* for now, only works for modules, but other types will probably be added
-     * later (e.g. namespaces, dictionaries). */
+    /* works for modules and namespaces. do other types apply as well? */
     name := interp stack popCheck(EoString) as EoString
     module := interp stack pop() // later: can be other things as well
     match (module) {
         case (m: EoModule) =>
             value := m namespace lookup(name value)
+            if (value == null)
+                Exception new("Symbol not found: %s" format(name value)) throw()
+            else
+                interp stack push(value)
+        case (n: EoNamespace) =>
+            value := n namespace lookup(name value)
             if (value == null)
                 Exception new("Symbol not found: %s" format(name value)) throw()
             else
@@ -390,6 +395,33 @@ hex: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(s)
 }
 
+put_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* put! ( container key value -- ) */
+    value := interp stack pop() as EoType
+    key := interp stack pop() as EoType
+    container := interp stack pop() as EoType
+    match (container) {
+        case (dict: EoDict) =>
+            dict add(key, value)
+        case (mod: EoModule) =>
+            if (!key instanceOf?(EoString))
+                Exception new("Module names must be strings") throw()
+            mod namespace add((key as EoString) value, value)
+        case (xns: EoNamespace) => 
+            if (!key instanceOf?(EoString))
+                Exception new("Namespace names must be strings") throw()
+            xns namespace add((key as EoString) value, value)
+        case (list: EoList) => 
+            if (!key instanceOf?(EoInteger))
+                Exception new("List indexes must be integers") throw()
+            list data[(key as EoInteger) value] = value
+        case => Exception new("put!: Unsupported type: %s" \
+                format(value class name)) throw()
+    }
+}
+
+/* TODO: del! */
+
 // TODO: words to get ns from modules, code blocks, etc */
 
 /*** loading builtins ***/
@@ -446,6 +478,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
     loadBuiltinWord(interp, "hex", hex)
+    loadBuiltinWord(interp, "put!", put_excl)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
@@ -457,7 +490,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
 
     /* builtins_dict */
     loadBuiltinWord(interp, "dict", dict)
-    loadBuiltinWord(interp, "put!", put_excl)
     loadBuiltinWord(interp, "get", _get)
     loadBuiltinWord(interp, "keys", keys)
     loadBuiltinWord(interp, "values", values)
@@ -473,7 +505,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "userns", userns)
     loadBuiltinWord(interp, "thisns", thisns)
     loadBuiltinWord(interp, "newns", newns)
-    loadBuiltinWord(interp, "newns*", newns)
+    loadBuiltinWord(interp, "newns*", newns_star)
     loadBuiltinWord(interp, "ns", _ns)
     loadBuiltinWord(interp, "names", names)
     loadBuiltinWord(interp, "all-names", all_names)

@@ -19,14 +19,18 @@ thisns: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 newns: func (interp: EoInterpreter, ns: Namespace) {
-    nns := EoNamespace new(ns)
+    /* newns ( -- ns ) 
+       Creates a new namespace, no parent. */
+    xns := Namespace new()  /* no parent! */
+    nns := EoNamespace new(xns)
     interp stack push(nns)
 }
 
 newns_star: func (interp: EoInterpreter, ns: Namespace) {
     /* newns* ( parent -- newns ) */
     parent := interp stack popCheck(EoNamespace) as EoNamespace
-    nns := EoNamespace new(parent namespace)
+    xns := Namespace new(parent namespace)
+    nns := EoNamespace new(xns)
     interp stack push(nns)
 }
 

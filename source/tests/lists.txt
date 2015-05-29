@@ -26,3 +26,9 @@ $mylist clear!
 $mylist
 => [[ ]]
 
+-- put!
+[ 1 2 3 4 ] !$n
+$n 0 33 put!
+$n
+=> [[ 33 2 3 4 ]]
+

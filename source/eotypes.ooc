@@ -221,7 +221,9 @@ EoModule: class extends EoType {
 
 EoNamespace: class extends EoType {
     namespace: Namespace
-    init: func (=namespace)
+    init: func (namespace: Namespace) {
+        this namespace = namespace
+    }
     toString: func -> String { "#namespace<%x>" format(this) }
     mutable?: func -> Bool { true }
     type: func -> String { "namespace" }
