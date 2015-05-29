@@ -4,6 +4,9 @@
 /* FIXME: there should not be a str module after all. However, there should be
  * other built-in modules, like sys, which can be modeled after this code. */
 
+/* TODO: Once the str module has been phased out, we can put string-specific
+   words here. */
+
 import structs/ArrayList
 import builtins
 import eo, namespace, eotypes
