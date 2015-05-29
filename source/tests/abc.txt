@@ -1,7 +1,1 @@
--- tests for Eo
-
--- dup
-3 dup
-=> [3 3]
-
 

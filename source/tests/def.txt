@@ -1,11 +1,1 @@
--- another test file
-
--- simple user-defined word (double)
-{ dup + } "double" def
-11 double
-=> [22]
-
--- test that deliberately fails
---3 4 +
---=> [0]
 

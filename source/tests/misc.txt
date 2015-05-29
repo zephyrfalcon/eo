@@ -13,3 +13,10 @@ $a $a is?
 { 10 $a > } { $a 1 + !>$a } while
 $a
 => [10]
+
+-- simple user-defined word (double)
+{ dup + } "double" def
+11 double
+=> [22]
+
+
