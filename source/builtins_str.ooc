@@ -19,7 +19,7 @@ upper_tags := ["string"]
 upper_arity := Arity new(1, 1)
 
 str_loadBuiltinWords: func (interp: EoInterpreter) {
-    newns := Namespace new(interp userNamespace)
+    newns := Namespace new(interp rootNamespace)
     strmod := EoModule new(newns)
     strmod name = "str"
     strmod path = "<builtin>"
@@ -28,9 +28,9 @@ str_loadBuiltinWords: func (interp: EoInterpreter) {
     /* add builtin word 'str' that returns the module */
     words := ArrayList<EoType> new()
     words add(strmod)
-    blk := EoCodeBlock new(words, interp userNamespace)
+    blk := EoCodeBlock new(words, strns)
     strword := EoUserDefWord new(blk)
-    interp userNamespace add("str", strword)
+    interp rootNamespace add("str", strword)
 
     /* builtin words in the module */
     loadBuiltinWordInModule(strns, "upper", upper, upper_doc)
