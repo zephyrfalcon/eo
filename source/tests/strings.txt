@@ -1,7 +1,7 @@
 -- miscellaneous string tests
 
--- test str:upper
-"abc" str:upper
+-- upper
+"abc" upper
 => ["ABC"]
 
 "abc" ->string

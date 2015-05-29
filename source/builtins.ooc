@@ -10,6 +10,8 @@ import builtins_dict
 import builtins_stack
 import builtins_logic
 import builtins_ns
+import builtins_str
+import module_sys
 
 plus: func (interp: EoInterpreter, ns: Namespace) {
     x := interp stack pop()
@@ -596,6 +598,10 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "all-names", all_names)
     loadBuiltinWord(interp, "parent", parent)
 
-    str_loadBuiltinWords(interp)
+    /* builtin_str */
+    loadBuiltinWord(interp, "upper", upper)
+
+    /* built-in modules */
+    sys_loadBuiltinWords(interp)
 }
 

@@ -10,7 +10,7 @@ dict type
 => ["dict"]
 true type
 => ["bool"]
-str type
+sys type
 => ["module"]
 "dup" lookup-here type
 => ["b-word"]

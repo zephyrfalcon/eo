@@ -1,0 +1,9 @@
+-- module sys
+
+-- tests here...
+-- right now there's nothing to test, we cannot test the version since it
+-- changes all the time. :3
+
+sys:version type
+=> ["string"]
+
