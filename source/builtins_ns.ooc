@@ -78,3 +78,13 @@ all_names: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(EoList new(result))
 }
 
+parent: func (interp: EoInterpreter, ns: Namespace) {
+    /* parent ( ns -- parent ) */
+    xns := interp stack popCheck(EoNamespace) as EoNamespace
+    if (xns namespace parent == null) {
+        interp stack push(EoFalse)  /* FIXME: need 'null' object? */
+    } else {
+        interp stack push(EoNamespace new(xns namespace parent))
+    }
+}
+
