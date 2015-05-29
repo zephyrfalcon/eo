@@ -19,7 +19,8 @@ upper_tags := ["string"]
 upper_arity := Arity new(1, 1)
 
 str_loadBuiltinWords: func (interp: EoInterpreter) {
-    strmod := EoModule new(interp userNamespace)
+    newns := Namespace new(interp userNamespace)
+    strmod := EoModule new(newns)
     strmod name = "str"
     strmod path = "<builtin>"
     strns := strmod namespace
