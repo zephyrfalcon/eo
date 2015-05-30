@@ -13,7 +13,7 @@ fi
 
 eoversion() 
 {
-sed 's/EO_VERSION := \"(.*?)\"/ABC/' source/eo.ooc | grep 'EO_VERSION :=' | grep -o '[0-9.]\{1,\}'
+ grep 'EO_VERSION :=' source/eo.ooc | grep -o '[0-9.]\{1,\}'
 }
 
 EO_VERSION=$(eoversion)
@@ -22,10 +22,10 @@ echo "Current version: $EO_VERSION"
 REPL="s/$EO_VERSION/$NEW_VERSION/"
 echo "sed replacement command: $REPL"
 echo "After change:"
-sed $REPL source/eo.ooc | grep 'EO_VERSION :='
+sed -i.bak $REPL source/eo.ooc | grep 'EO_VERSION :='
 
-# TODO:
-# - commit changed file
-# - add git tag
-# - push with --tags
+git commit source/eo.ooc -m "version $NEW_VERSION"
+git tag $NEW_VERSION
+git push --all
+git push --tags
 
