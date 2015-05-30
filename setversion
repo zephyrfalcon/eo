@@ -1,0 +1,31 @@
+#!/bin/sh
+# Quickly set a new Eo version.
+# Usage: setversion <version>
+# e.g.   setversion 1.0
+
+NEW_VERSION=$1
+
+# make sure version is not empty
+if [ -z "$NEW_VERSION" ]; then
+    echo "Error: No new version specified"
+    exit
+fi
+
+eoversion() 
+{
+sed 's/EO_VERSION := \"(.*?)\"/ABC/' source/eo.ooc | grep 'EO_VERSION :=' | grep -o '[0-9.]\{1,\}'
+}
+
+EO_VERSION=$(eoversion)
+echo "Current version: $EO_VERSION"
+
+REPL="s/$EO_VERSION/$NEW_VERSION/"
+echo "sed replacement command: $REPL"
+echo "After change:"
+sed $REPL source/eo.ooc | grep 'EO_VERSION :='
+
+# TODO:
+# - commit changed file
+# - add git tag
+# - push with --tags
+
