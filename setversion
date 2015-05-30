@@ -24,8 +24,6 @@ if [ ! -z "$UNSAVED_CHANGES" ]; then
     exit
 fi
 
-exit
-
 eoversion() 
 {
  grep 'EO_VERSION :=' source/eo.ooc | grep -o '[0-9.]\{1,\}'
