@@ -5,4 +5,4 @@ test-all
 *.dSYM
 rock_tmp
 .sam-cache
-
+*.bak
