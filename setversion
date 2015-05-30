@@ -3,6 +3,8 @@
 # Usage: setversion <version>
 # e.g.   setversion 1.0
 
+# TODO: check if there are uncommitted git changes; if so, complain & exit
+
 NEW_VERSION=$1
 
 # make sure version is not empty
@@ -10,6 +12,19 @@ if [ -z "$NEW_VERSION" ]; then
     echo "Error: No new version specified"
     exit
 fi
+
+git_status()
+{
+ git status --porcelain | grep -m 1 "^ [MADRCU]" 
+}
+
+UNSAVED_CHANGES=$(git_status)
+if [ ! -z "$UNSAVED_CHANGES" ]; then
+    echo "Error: unsaved changes; add/commit first"
+    exit
+fi
+
+exit
 
 eoversion() 
 {
