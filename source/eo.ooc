@@ -58,6 +58,10 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 newTokens add("execns")
             }
         }
+        else if (token startsWith?("\\") && token length() > 1) {
+            newTokens add("\"%s\"" format(token substring(1)))
+            newTokens add("lookup-here")
+        }
         else if (token startsWith?("?") && token length() > 1) {
             newTokens add("\"%s\"" format(token substring(1)))
             newTokens add("lookup-here")
