@@ -1,0 +1,13 @@
+-- comparison of Eo objects
+
+"abc" 1 cmp
+=> [1]
+
+-- integers
+5 2 cmp
+=> [3]
+2 5 cmp
+=> [-3]
+9 9 cmp
+=> [0]
+

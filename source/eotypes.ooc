@@ -4,6 +4,7 @@ import structs/[ArrayList, HashMap]
 import text/EscapeSequence
 import eo
 import namespace
+import patch
 
 /*** helper classes ***/
 
@@ -22,9 +23,15 @@ EoType: abstract class {
     toString: abstract func -> String
     valueAsString: func -> String { this toString() }
     mutable?: func -> Bool { false }
-    equals?: func (other: EoType) -> Bool { false }
-    hash: func -> SizeT { 0 }
+    hash: func -> SizeT { 31337 }
     type: func -> String { "unknown" }
+
+    /* NOTE: the following methods shouldn't really be called. ooc's object
+     * system is not smart enough to call them when appropriate. these cases
+     * are handled in `cmp` and `eq?` instead. */
+    equals?: func (other: EoType) -> Bool { this == other }
+    cmp: func (other: EoType) -> Int { this type() cmp(other type()) 
+    }
 }
 
 /*** atoms ***/
@@ -104,7 +111,7 @@ EoInteger: class extends EoType {
 
     equals?: func (other: EoInteger) -> Bool { this value == other value }
     hash: func -> SizeT { value % 0xFFFF }
-
+    cmp: func (other: EoInteger) -> Int { cmp(this value, other value) }
 }
 
 EoString: class extends EoType {
@@ -117,6 +124,7 @@ EoString: class extends EoType {
     }
     hash: func -> SizeT { ac_X31_hash(value) }
     type: func -> String { "string" }
+    cmp: func (other: EoString) -> Int { this value cmp(other value) }
 }
 
 EoSymbol: class extends EoType {

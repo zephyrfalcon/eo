@@ -364,7 +364,9 @@ eq_qm: func (interp: EoInterpreter, ns: Namespace) {
     /* eq? ( a b -- bool ) */
     b := interp stack pop()
     a := interp stack pop()
-    result := a equals?(b) ? EoTrue : EoFalse
+    result := EoFalse
+    if (a class == b class)
+        result = a equals?(b) ? EoTrue : EoFalse
     interp stack push(result)
 }
 
@@ -505,6 +507,19 @@ block: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(w code)
 }
 
+_cmp: func (interp: EoInterpreter, ns: Namespace) {
+    /* cmp ( a b -- c ) 
+     Returns -1 if a < b, 1 if a > b, and 0 otherwise. */
+    b := interp stack pop()
+    a := interp stack pop()
+    c: Int
+    if (a class != b class) 
+        c = cmp(a type(), b type())
+    else
+        c = a cmp(b)
+    interp stack push(EoInteger new(c))
+}
+
 // TODO: words to get ns from modules, code blocks, etc */
 
 /*** loading builtins ***/
@@ -566,6 +581,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "contains?", contains_qm)
     loadBuiltinWord(interp, "code", code)
     loadBuiltinWord(interp, "block", block)
+    loadBuiltinWord(interp, "cmp", _cmp)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
