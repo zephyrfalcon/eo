@@ -163,6 +163,24 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     mutable?: func -> Bool { true }
     type: func -> String { "block" }
 
+    /* code blocks are considered equal if their code is equal... but what
+     * about the namespace? */
+    cmp: func (other: EoCodeBlock) -> Int {
+        Exception new("not implemented yet") throw()
+        for (i in 0..words size) {
+            if (i >= other words size) return 1
+            c := eocmp(this words[i], other words[i])
+            if (c != 0) return c
+        }
+        if (this words size < other words size) return -1
+
+        /* take namespaces into account */
+        return cmp(this namespace as SizeT, other namespace as SizeT)
+    }
+    equals?: func (other: EoCodeBlock) -> Bool { 
+        this cmp(other) == 0
+    }
+
     asEoUserDefWord: func -> EoUserDefWord {
         return EoUserDefWord new(this)
     }
@@ -181,6 +199,14 @@ EoUserDefWord: class extends EoWord {
     init: func ~plain (=code)
     toString: func -> String { "u#<%s>" format(name == null ? "" : name) }
     type: func -> String { "u-word" }
+
+    /* user-defined words are considered equal if their code blocks are equal */
+    cmp: func (other: EoUserDefWord) -> Int {
+        this code cmp(other code)
+    }
+    equals?: func (other: EoUserDefWord) -> Bool {
+        this cmp(other) == 0
+    }
 }
 
 EoBuiltinWord: class extends EoWord {
@@ -189,6 +215,7 @@ EoBuiltinWord: class extends EoWord {
     toString: func -> String { "#<%s>" format(name) }
     init: func (=name, =f)
     type: func -> String { "b-word" }
+
     /* built-in words are considered equal if they refer to the same function. */
     equals?: func (other: EoBuiltinWord) -> Bool {
         /* apparently Func is really just a Closure cover */
@@ -318,6 +345,11 @@ EoDict: class extends EoType {
             Exception new("Mutable objects cannot be used as keys") throw()
         data put(key, value)
     }
+
+    /* XXX how do we compare dictionaries? I think Python goes by length
+     * first, then maybe compares keys or items?
+     * We _could_ convert both dicts to alists and compare those... but list
+     * comparison and dict comparison is not the same! */
 }
 
 /* --- end of dictionary-related code --- */

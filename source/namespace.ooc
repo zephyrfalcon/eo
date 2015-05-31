@@ -80,6 +80,10 @@ Namespace: class {
         value := lookup(key)
         return (value != null)
     }
+
+    equals?: func (other: Namespace) -> Bool {
+        this == other /* pointer comparison */
+    }
 }
 
 
