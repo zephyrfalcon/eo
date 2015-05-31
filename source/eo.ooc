@@ -36,7 +36,11 @@ tokenize: func (data: String) -> ArrayList<String> {
 expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
     newTokens := ArrayList<String> new()
     for (token in tokens) {
-        if (token startsWith?("!$") && token length() > 2) {
+        if (token startsWith?("\"") && token endsWith?("\"")) {
+            /* we don't need to inspect strings */
+            newTokens add(token)
+        }
+        else if (token startsWith?("!$") && token length() > 2) {
             newTokens add("\"%s\"" format(token substring(1)))
             newTokens add("defvar")
         }
@@ -49,7 +53,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
             newTokens add("def")
         }
         else if (token contains?(":") && !(token startsWith?(":")) \
-                 && !(token endsWith?(":"))) {
+                 && !(token endsWith?(":")) && !(token startsWith?("\""))) {
             /* split foo:bar and replace with `foo "bar" execns` */
             parts := token split(":")
             newTokens add(parts[0])

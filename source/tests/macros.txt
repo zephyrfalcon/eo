@@ -8,3 +8,23 @@
 { dup\doc! } code
 => [[ "dup" lookup-here swap doc! ]]
 
+-- ! prefix
+{ !x } code
+=> [[ "x" def ]]
+
+-- !$ prefix
+{ !$y } code
+=> [[ "$y" defvar ]]
+
+-- !>$ prefix
+{ !>$z } code
+=> [[ "$z" update ]]
+
+-- : infix
+{ this:that } code
+=> [[ this "that" execns ]]
+
+-- ? prefix
+{ ?dup } code
+=> [[ "dup" lookup-here doc println ]]
+
