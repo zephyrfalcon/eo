@@ -8,6 +8,7 @@
 
 import text/Regexp
 import structs/ArrayList
+import tools
 
 extend Regexp {
     split: func (s: String) -> ArrayList<String> {
@@ -45,7 +46,7 @@ extend String {
 
 /* add different functions (non-methods) of cmp here: */
 cmp: func ~withStrings (s1, s2: String) -> Int { s1 cmp(s2) }
-cmp: func ~withInts (s1, s2: Int) -> Int { s1 - s2 }
+cmp: func ~withInts (s1, s2: Int) -> Int { sign(s1 - s2) }
 
 /* we can define operators here as well, although it's not strictly necessary.
  * String > String etc did work, but I think it compares pointers rather than

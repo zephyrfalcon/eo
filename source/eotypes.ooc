@@ -15,6 +15,16 @@ Arity: class {
 
 /*** base class ***/
 
+/* fallback for when a and b are not of the same EoType. we cannot rely on
+   EoType.cmp to handle this. */
+eocmp: func (a, b: EoType) -> Int {
+    "eocmp: %s vs %s" printfln(a class name, b class name)
+    if (a class != b class) 
+        return cmp(a type(), b type())
+    else
+        return a cmp(b)
+}
+
 EoType: abstract class {
     /* all objects can have a description and tags. */
     description: String
@@ -30,8 +40,7 @@ EoType: abstract class {
      * system is not smart enough to call them when appropriate. these cases
      * are handled in `cmp` and `eq?` instead. */
     equals?: func (other: EoType) -> Bool { this == other }
-    cmp: func (other: EoType) -> Int { this type() cmp(other type()) 
-    }
+    cmp: func (other: EoType) -> Int { this type() cmp(other type()) }
 }
 
 /*** atoms ***/
@@ -188,7 +197,6 @@ EoList: class extends EoType {
         strValues := data map(|x| x toString())
         strValues add(0, "[")
         strValues add("]")
-        //return "[" + strValues join(" ") + "]"
         return strValues join(" ")
     }
     init: func(=data)
@@ -196,6 +204,16 @@ EoList: class extends EoType {
     /* ^ don't use `data := ...` here, it causes a segfault later */
     mutable?: func -> Bool { true }
     type: func -> String { "list" }
+    cmp: func (other: EoList) -> Int {
+        for (i in 0..data size) {
+            if (i >= other data size) return 1
+            c := eocmp(this data[i], other data[i])
+            if (c != 0) return c
+        }
+        if (this data size < other data size) return -1
+        return 0
+    }
+    equals?: func (other: EoList) -> Bool { this cmp(other) == 0 }
 }
 
 EoBool: class extends EoType {
@@ -259,7 +277,6 @@ eoEquals: func<K> (a, b: K) -> Bool {
 
 /* we wrap eoEquals in this (see ooc source: sdk/structs/HashMap.ooc */
 eoStandardEquals: func<T> (T: Class) -> Func<T> (T, T) -> Bool {
-    "std equals" println()
     return eoEquals
 }
 

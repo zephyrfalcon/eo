@@ -513,10 +513,13 @@ _cmp: func (interp: EoInterpreter, ns: Namespace) {
     b := interp stack pop()
     a := interp stack pop()
     c: Int
+    /*
     if (a class != b class) 
         c = cmp(a type(), b type())
     else
         c = a cmp(b)
+    */
+    c = eocmp(a, b)
     interp stack push(EoInteger new(c))
 }
 
