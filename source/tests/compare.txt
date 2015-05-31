@@ -35,3 +35,9 @@
 [ "a" ] [ 1 ] cmp
 => [1]
 
+-- built-in words
+\dup \dup cmp
+=> [0]
+\dup \swap cmp
+=> [-1]
+

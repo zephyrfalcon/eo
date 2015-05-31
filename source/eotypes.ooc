@@ -189,6 +189,18 @@ EoBuiltinWord: class extends EoWord {
     toString: func -> String { "#<%s>" format(name) }
     init: func (=name, =f)
     type: func -> String { "b-word" }
+    /* built-in words are considered equal if they refer to the same function. */
+    equals?: func (other: EoBuiltinWord) -> Bool {
+        /* apparently Func is really just a Closure cover */
+        p1 := (this f as Closure) thunk
+        p2 := (other f as Closure) thunk
+        return p1 == p2
+        return true
+    }
+    cmp: func (other: EoBuiltinWord) -> Int {
+        if (this equals?(other)) return 0
+        return this name cmp(other name)
+    }
 }
 
 EoList: class extends EoType {
