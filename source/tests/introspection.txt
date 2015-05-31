@@ -4,6 +4,10 @@
 2 "dup" lookup-here exec
 => [2 2]
 
+-- `\` macro
+9 \dup exec
+=> [9 9]
+
 -- docstrings, getting and setting
 42 !$magic
 "$magic" lookup-here doc
