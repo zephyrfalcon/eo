@@ -62,6 +62,16 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
             newTokens add("\"%s\"" format(token substring(1)))
             newTokens add("lookup-here")
         }
+        else if (token indexOf("\\") > 0 && 
+                 token indexOf("\\") < token length() - 1 &&
+                 !token startsWith?("\"")) {
+            parts := token split("\\")
+            assert (parts size == 2)
+            newTokens add("\"%s\"" format(parts[0]))
+            newTokens add("lookup-here")
+            newTokens add("swap")
+            newTokens add(parts[1])
+        }
         else if (token startsWith?("?") && token length() > 1) {
             newTokens add("\"%s\"" format(token substring(1)))
             newTokens add("lookup-here")

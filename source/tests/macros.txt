@@ -1,0 +1,10 @@
+-- test reader macro expansion
+
+-- \ prefix 
+{ \dup } code
+=> [[ "dup" lookup-here ]]
+
+-- \ infix
+{ dup\doc! } code
+=> [[ "dup" lookup-here swap doc! ]]
+

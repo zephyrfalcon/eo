@@ -16,3 +16,7 @@
 "$magic" lookup-here doc
 => ["it\'s magic!"]
 
+"xyzzy" $magic\doc!
+\$magic doc
+=> ["xyzzy"]
+
