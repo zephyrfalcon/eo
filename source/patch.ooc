@@ -34,11 +34,9 @@ extend Regexp {
 extend String {
     cmp: func (other: String) -> Int {
         for (i in 0..size) {
-            if (i >= other size) return -1
+            if (i >= other size) return 1  /* this is longer than other */
             if (this[i] < other[i]) return -1
             if (this[i] > other[i]) return 1
-            //if (this[i] == other[i]) continue
-            //return this[i] toInt() - other[i] toInt()
         }
         if (other size > this size) return -1
         return 0
