@@ -1,0 +1,11 @@
+#!/bin/sh
+# Show the current Eo version.
+
+eoversion() 
+{
+ grep 'EO_VERSION :=' source/eo.ooc | grep -o '[0-9.]\{1,\}'
+}
+
+EO_VERSION=$(eoversion)
+echo "Current version: $EO_VERSION"
+

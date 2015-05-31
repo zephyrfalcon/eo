@@ -3,8 +3,6 @@
 # Usage: setversion <version>
 # e.g.   setversion 1.0
 
-# TODO: check if there are uncommitted git changes; if so, complain & exit
-
 NEW_VERSION=$1
 
 # make sure version is not empty
