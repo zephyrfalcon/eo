@@ -132,6 +132,8 @@ EoSymbol: class extends EoType {
     init: func(=value)
     toString: func -> String { value }
     type: func -> String { "symbol" }
+    equals?: func (other: EoSymbol) -> Bool { cmp(this value, other value) == 0 }
+    cmp: func (other: EoSymbol) -> Int { cmp(this value, other value) }
 }
 
 /*** words ***/
@@ -201,6 +203,9 @@ EoBool: class extends EoType {
     toString: func -> String { value ? "true" : "false" }
     init: func(=value)
     equals?: func (other: EoBool) -> Bool { this value == other value }
+    cmp: func (other: EoBool) -> Int { 
+        cmp(value ? 1 : 0, other value ? 1 : 0)
+    }
     hash: func -> SizeT { value ? 1 : 0 }
     type: func -> String { "bool" }
 }

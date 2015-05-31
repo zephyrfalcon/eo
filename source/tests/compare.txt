@@ -11,3 +11,13 @@
 9 9 cmp
 => [0]
 
+-- strings
+"hello" "bah" cmp
+=> [1]
+"hello" "zyxxy" cmp
+=> [-1]
+"hello" "hello" cmp
+=> [0]
+"hello" "hell" cmp
+=> [1]
+
