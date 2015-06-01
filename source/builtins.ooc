@@ -388,6 +388,13 @@ clear_excl: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+mutable_qm: func (interp: EoInterpreter, ns: Namespace) {
+    /* mutable? ( obj -- bool ) */
+    obj := interp stack pop()
+    result := obj mutable?() ? EoTrue : EoFalse
+    interp stack push(result)
+}
+
 type: func (interp: EoInterpreter, ns: Namespace) {
     obj := interp stack pop()
     interp stack push(EoString new(obj type()))
@@ -585,6 +592,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "code", code)
     loadBuiltinWord(interp, "block", block)
     loadBuiltinWord(interp, "cmp", _cmp)
+    loadBuiltinWord(interp, "mutable?", mutable_qm)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

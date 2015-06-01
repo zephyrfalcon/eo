@@ -26,3 +26,13 @@ rootns type
 
 -- TODO: symbol?
 
+--
+-- mutability
+
+dict mutable?
+=> [true]
+[ 1 2 3 ] mutable?
+=> [true]
+"xyzzy" mutable?
+=> [false]
+
