@@ -1,5 +1,7 @@
 -- simple printing words
 
+"autoload/docstrings.eo" include
+
 { 10 emit } "nl" def
 { 7 emit } "bel" def
 

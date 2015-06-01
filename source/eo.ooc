@@ -326,6 +326,9 @@ EoInterpreter: class {
     autoload: func {
         /* look for autoload/autoload.eo and load it. any other files should
            be loaded by autoload.eo itself. */
+        // NOTE: for now, we're assuming that the "current directory" is where
+        // the Eo executable is, so any "include" statements in autoload.eo &
+        // friends will be relative to the executable's path.
         autoloadfile := File join(rootDir, "autoload", "autoload.eo")
         "Loading: %s... " printf(autoloadfile)
         data := File new(autoloadfile) read()

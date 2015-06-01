@@ -1,0 +1,6 @@
+-- docstrings and tags for built-in words
+
+"dup ( a -- a a )
+Duplicate the top item on the stack." dup\doc!
+
+
