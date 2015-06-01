@@ -278,6 +278,12 @@ EoVariable: class extends EoType {
     toString: func -> String { "$%s" format(name) }
     mutable?: func -> Bool { true }
     type: func -> String { "variable" }
+
+    /* variable comparisons don't make a lot of sense... */
+    equals?: func (other: EoVariable) -> Bool { this == other }
+    cmp: func (other: EoVariable) -> Int {
+        cmp(this as SizeT, other as SizeT)
+    }
 }
 
 EoModule: class extends EoType {
@@ -287,6 +293,12 @@ EoModule: class extends EoType {
     toString: func -> String { "#module<%s>" format(name) }
     mutable?: func -> Bool { true }
     type: func -> String { "module" }
+
+    /* module comparisons don't make a lot of sense either... */
+    equals?: func (other: EoModule) -> Bool { this == other }
+    cmp: func (other: EoModule) -> Int {
+        cmp(this as SizeT, other as SizeT)
+    }
 }
 
 EoNamespace: class extends EoType {
@@ -299,6 +311,9 @@ EoNamespace: class extends EoType {
     type: func -> String { "namespace" }
     equals?: func (other: EoNamespace) -> Bool {
         return this namespace == other namespace /* pointer comparison */
+    }
+    cmp: func (other: EoNamespace) -> Int {
+        cmp(this namespace as SizeT, other namespace as SizeT)
     }
 }
 
@@ -346,10 +361,34 @@ EoDict: class extends EoType {
         data put(key, value)
     }
 
+    /* returns contents as an a-list, i.e. a list of [key value] pairs. both
+     * pairs and the alist itself are EoLists. */
+    // XXX is this the same as `items`??
+    asAList: func -> EoList {
+        alist := EoList new()
+        for (key in data getKeys()) {
+            value := data get(key)
+            pair := EoList new()
+            pair data add(key)
+            pair data add(value)
+            alist data add(pair)
+        }
+        return alist
+    }
+
     /* XXX how do we compare dictionaries? I think Python goes by length
      * first, then maybe compares keys or items?
      * We _could_ convert both dicts to alists and compare those... but list
      * comparison and dict comparison is not the same! */
+    cmp: func (other: EoDict) -> Int {
+        if (this data == other data) return 0  /* same object */
+        c := cmp(this data size, other data size)
+        if (c != 0) return c
+        /* same length, not the same object; compare contents: */
+        // FIXME: extract contents as alist (EoLists) and compare those
+        // *sorted*!!
+        return 1  // dummy
+    }
 }
 
 /* --- end of dictionary-related code --- */

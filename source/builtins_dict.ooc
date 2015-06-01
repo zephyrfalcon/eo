@@ -51,18 +51,15 @@ items: func (interp: EoInterpreter, ns: Namespace) {
      * and casting seems to be tricky. so we do it the hard way: */
     values := ArrayList<EoType> new()
     for (key in keys) {
-        key toString() println()
         value := dict data get(key as EoType) as EoType
-        value toString() println()
         pair := EoList new()
         pair data add(key as EoType)
-        "segfault?" println()
         pair data add(value)
-        pair toString() println()
         values add(pair)
     }
     result := EoList new(values)
     interp stack push(result)
+    // XXX can we use EoDict.asAList for this?
 }
 
 
