@@ -143,6 +143,7 @@ EoSymbol: class extends EoType {
     type: func -> String { "symbol" }
     equals?: func (other: EoSymbol) -> Bool { cmp(this value, other value) == 0 }
     cmp: func (other: EoSymbol) -> Int { cmp(this value, other value) }
+    hash: func -> SizeT { ac_X31_hash(value) }
 }
 
 /*** words ***/
@@ -164,9 +165,9 @@ EoCodeBlock: class extends EoType /* EoWord */ {
         strValues add("}")
         return strValues join(" ")
     }
-    /* later: maybe toString() should actually show the code? */
     mutable?: func -> Bool { true }
     type: func -> String { "block" }
+    hash: func -> SizeT { this as SizeT }
 
     /* code blocks are considered equal if their code is equal... but what
      * about the namespace? */
@@ -195,6 +196,7 @@ EoWord: abstract class extends EoType {
     arity: Arity
     mutable?: func -> Bool { true }
     type: func -> String { "word" }
+    hash: func -> SizeT { this as SizeT }
 }
 
 EoUserDefWord: class extends EoWord {
@@ -248,6 +250,7 @@ EoList: class extends EoType {
     /* ^ don't use `data := ...` here, it causes a segfault later */
     mutable?: func -> Bool { true }
     type: func -> String { "list" }
+    hash: func -> SizeT { this as SizeT }
     cmp: func (other: EoList) -> Int {
         for (i in 0..data size) {
             if (i >= other data size) return 1
@@ -283,6 +286,7 @@ EoVariable: class extends EoType {
     toString: func -> String { "$%s" format(name) }
     mutable?: func -> Bool { true }
     type: func -> String { "variable" }
+    hash: func -> SizeT { ac_X31_hash("$"+name) }
 
     /* variable comparisons don't make a lot of sense... */
     equals?: func (other: EoVariable) -> Bool { this == other }
@@ -298,6 +302,7 @@ EoModule: class extends EoType {
     toString: func -> String { "#module<%s>" format(name) }
     mutable?: func -> Bool { true }
     type: func -> String { "module" }
+    hash: func -> SizeT { this as SizeT }
 
     /* module comparisons don't make a lot of sense either... */
     equals?: func (other: EoModule) -> Bool { this == other }
@@ -314,6 +319,7 @@ EoNamespace: class extends EoType {
     toString: func -> String { "#namespace<%x>" format(this) }
     mutable?: func -> Bool { true }
     type: func -> String { "namespace" }
+    hash: func -> SizeT { this as SizeT }
     equals?: func (other: EoNamespace) -> Bool {
         return this namespace == other namespace /* pointer comparison */
     }
@@ -353,6 +359,7 @@ EoDict: class extends EoType {
     toString: func -> String { "#dict" } /* FIXME */
     mutable?: func -> Bool { true }
     type: func -> String { "dict" }
+    hash: func -> SizeT { this as SizeT }
 
     init: func {
         data keyEquals = eoStandardEquals(EoType)
