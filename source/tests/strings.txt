@@ -30,3 +30,7 @@
 "abcdefgh" "z" contains?
 => [false]
 
+-- append
+"a" "b" append
+=> ["ab"]
+

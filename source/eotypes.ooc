@@ -179,6 +179,11 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     type: func -> String { "block" }
     hash: func -> SizeT { this as SizeT }
 
+    clone: func -> EoCodeBlock {
+        blk := EoCodeBlock new(this words, this namespace)
+        return blk
+    }
+
     /* code blocks are considered equal if their code is equal... but what
      * about the namespace? */
     cmp: func (other: EoCodeBlock) -> Int {

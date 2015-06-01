@@ -146,6 +146,18 @@ execns: func (interp: EoInterpreter, ns: Namespace) {
     exec(interp, ns)
 }
 
+exec_with: func (interp: EoInterpreter, ns: Namespace) {
+    /* exec-with ( code module|namespace -- )
+       Execute the given code in the given module or namespace. */
+    context := interp stack pop()
+    code := interp stack popCheck(EoCodeBlock) as EoCodeBlock
+    match (context) {
+        case (m: EoModule) => dummy()
+        case (n: EoNamespace) => dummy()
+        case => raise("exec-with must be run with module or namespace")
+    }
+}
+
 lookup: func (interp: EoInterpreter, ns: Namespace) {
     /* lookup ( module name -- value ) */
     /* works for modules and namespaces. do other types apply as well? */
@@ -164,8 +176,8 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
                 Exception new("Symbol not found: %s" format(name value)) throw()
             else
                 interp stack push(value)
-        case => "Cannot look up in object of type (%s)" \
-                printfln(module class name)
+        case => raise("Cannot look up in object of type (%s)" \
+                      format(module class name))
     }
 }
 
@@ -530,6 +542,20 @@ _cmp: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(EoInteger new(c))
 }
 
+append: func (interp: EoInterpreter, ns: Namespace) {
+    /* append ( seq1 seq2 -- seq3 )
+       Append the two sequences (strings or lists). */
+    seq2 := interp stack pop()
+    seq1 := interp stack pop()
+    match (seq1) {
+        case (s: EoString) =>
+            seq3 := EoString new(s value + (seq2 as EoString) value)
+            interp stack push(seq3)
+        case (list: EoList) => dummy()
+        case => raise("append: Unsupported type: %s" format(seq1 class name))
+    }
+}
+
 // TODO: words to get ns from modules, code blocks, etc */
 
 /*** loading builtins ***/
@@ -593,6 +619,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "block", block)
     loadBuiltinWord(interp, "cmp", _cmp)
     loadBuiltinWord(interp, "mutable?", mutable_qm)
+    loadBuiltinWord(interp, "append", append)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

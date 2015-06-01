@@ -229,14 +229,21 @@ EoInterpreter: class {
                          printfln(frame code class name, frame code toString())
                 }
             case blk: EoCodeBlock =>
+                /* every time we process a code block via the call stack, we
+                 * create a fresh copy and push that, to avoid having the same
+                 * namespace every time */
+                newblk := blk clone()
                 newns := Namespace new(frame namespace)
-                blk namespace = newns
-                stack push(blk)
+                newblk namespace = newns
+                stack push(newblk)
                 callStack pop()
             case bw: EoBuiltinWord =>
                 /* REDUNDANT? yet this will execute things like `str:upper` */
                 callStack pop()
                 bw f(this, frame namespace)  /* is this the right namespace? */
+            case v: EoVariable =>  // XXX EXPERIMENTAL
+                callStack pop()
+                stack push(v value)
             case uw: EoUserDefWord =>
                 /* next step in executing user-defined word */
                 if (frame counter >= uw code words size)

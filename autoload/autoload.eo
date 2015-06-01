@@ -5,6 +5,8 @@
 
 { print nl } "println" def
 
+{ } "..." def  -- no-op
+
 -- when ( condition block -- )
 -- if condition is true, execute the block, otherwise do nothing.
 { { } if } !when
@@ -113,7 +115,34 @@
 -- TODO: create custom words from these type names
 -- e.g. `int?` to check if something is an int, etc etc
 --
-[ "int" "string" "bool" "list" "dict" "word" "u-word" "b-word" "module"
+[ "int" "string" "bool" "list" "dict" "u-word" "b-word" "module"
   "namespace" "block" "variable" "symbol" 
   ] !$TYPES
+
+$TYPES { 
+    !$type
+    {   -- creating a new closure here, so we don't get namespace conflicts
+        $type !$type
+        -- create custom word
+        -- e.g.: int? ( x -- bool )
+        -- returns true if x is an int.
+        $type "?" append !$wordname
+        { type $type eq? } $wordname def  -- define the new word
+        rootns $wordname $wordname lookup-here put!  -- stick in root namespace
+    } exec
+} each
+
+{ !$x 
+  $x u-word? $x b-word? or
+} !word?
+
+{ !$x
+  $x string? $x list? or
+} !sequence?
+
+{ !$x
+  [ "int" "string" "bool" "symbol" ] $x type contains?
+} !atom?
+
+{ atom? not } !container?
 
