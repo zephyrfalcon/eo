@@ -158,7 +158,12 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     namespace: Namespace
     init: func (=words, =namespace)
     init: func ~plain (=words)
-    toString: func -> String { "#code{}" }
+    toString: func -> String {
+        strValues := words map(|x| x toString())
+        strValues add(0, "{")
+        strValues add("}")
+        return strValues join(" ")
+    }
     /* later: maybe toString() should actually show the code? */
     mutable?: func -> Bool { true }
     type: func -> String { "block" }
