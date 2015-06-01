@@ -143,6 +143,8 @@ EoInterpreter: class {
     /* stack to deal with nested word definitions */
     currentWordStack := Stack<ArrayList<EoType>> new()
 
+    lastDefined: EoType  /* last word or variable defined */
+
     /* call stack to execute code */
     callStack := Stack<EoStackFrame> new()
     _oldStderr: FStream

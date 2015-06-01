@@ -7,11 +7,13 @@
 
 { print nl } "println" def
 
+{ _ swap doc! } !_doc!
+
 { } "..." def  -- no-op
 
--- when ( condition block -- )
--- if condition is true, execute the block, otherwise do nothing.
 { { } if } !when
+"when ( condition block -- )
+If condition is true, execute the block, otherwise do nothing." _doc!
 
 -- do-times ( block n -- )
 -- execute the given block n times.
@@ -75,6 +77,15 @@
 { { stack-empty? not } { drop } while 
 } !clear
 
+{ !$stuff
+  "" !$result
+  $stuff { ->string $result swap append !>$result } each
+  $result
+} !conc
+"conc ( stuff -- string )
+Join the string representations of all objects in `stuff` together, producing
+a single string." _doc!
+
 -- and* ( cond1 cond2 -- )
 -- `and` with shortcut mechanism. cond1 and cond2 must be code blocks.
 { !$cond2 !$cond1
@@ -113,13 +124,16 @@
 --{ id swap id = } !is?
 { !$b !$a
   $a id $b id = } !is?
+"is? ( a b -- bool )
+Returns true if a and b refer to the same object internally." _doc!
 
--- TODO: create custom words from these type names
+-- create custom words from these type names
 -- e.g. `int?` to check if something is an int, etc etc
 --
 [ "int" "string" "bool" "list" "dict" "u-word" "b-word" "module"
   "namespace" "block" "variable" "symbol" 
   ] !$TYPES
+"All of Eo's built-in types." $TYPES\doc!
 
 $TYPES { 
     !$type
@@ -130,6 +144,10 @@ $TYPES {
         -- returns true if x is an int.
         $type "?" append !$wordname
         { type $type eq? } $wordname def  -- define the new word
+        -- set custom doc string
+        [ $wordname " ( x -- bool )" "\n"
+          "Return true if x is of type " $type "." ] conc
+        $wordname lookup-here swap doc!
         rootns $wordname $wordname lookup-here put!  -- stick in root namespace
     } exec
 } each

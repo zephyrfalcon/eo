@@ -63,6 +63,7 @@ def: func (interp: EoInterpreter, ns: Namespace) {
     blk := interp stack pop() as EoCodeBlock //EoUserDefWord
     word := EoUserDefWord new(blk, name value) /* block already has a namespace */
     ns add(name value, word)
+    interp lastDefined = word
 }
 
 defvar: func (interp: EoInterpreter, ns: Namespace) {
@@ -75,6 +76,7 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     realname := varname value substring(1)
     e := EoVariable new(realname, value)
     ns add(varname value, e)
+    interp lastDefined = e
 }
 
 update: func (interp: EoInterpreter, ns: Namespace) {
@@ -556,6 +558,12 @@ append: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+underscore: func (interp: EoInterpreter, ns: Namespace) {
+    if (interp lastDefined == null)
+        raise("no word or variable defined")
+    interp stack push(interp lastDefined)
+}
+
 // TODO: words to get ns from modules, code blocks, etc */
 
 /*** loading builtins ***/
@@ -620,6 +628,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "cmp", _cmp)
     loadBuiltinWord(interp, "mutable?", mutable_qm)
     loadBuiltinWord(interp, "append", append)
+    loadBuiltinWord(interp, "_", underscore)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

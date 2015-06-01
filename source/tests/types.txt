@@ -36,3 +36,14 @@ dict mutable?
 "xyzzy" mutable?
 => [false]
 
+--
+
+3 int?
+=> [true]
+3 string?
+=> [false]
+"33" int?
+=> [false]
+"33" string?
+=> [true]
+

@@ -18,5 +18,7 @@ $a
 { dup + } "double" def
 11 double
 => [22]
-
+-- try `_` (last defined word/variable)
+3 _ exec
+=> [6]
 
