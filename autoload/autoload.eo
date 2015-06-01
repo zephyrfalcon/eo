@@ -110,4 +110,10 @@
 { !$b !$a
   $a id $b id = } !is?
 
+-- TODO: create custom words from these type names
+-- e.g. `int?` to check if something is an int, etc etc
+--
+[ "int" "string" "bool" "list" "dict" "word" "u-word" "b-word" "module"
+  "namespace" "block" "variable" "symbol" 
+  ] !$TYPES
 

@@ -6,14 +6,6 @@ import eo
 import namespace
 import patch
 
-/*** helper classes ***/
-
-Arity: class {
-    in, out: Int
-    init: func (=in, =out)
-}
-
-/*** base class ***/
 
 /* fallback for when a and b are not of the same EoType. we cannot rely on
    EoType.cmp to handle this. */
@@ -24,6 +16,8 @@ eocmp: func (a, b: EoType) -> Int {
     else
         return a cmp(b)
 }
+
+/*** base class ***/
 
 EoType: abstract class {
     /* all objects can have a description and tags. */
@@ -146,6 +140,22 @@ EoSymbol: class extends EoType {
     hash: func -> SizeT { ac_X31_hash(value) }
 }
 
+EoBool: class extends EoType {
+    value: Bool
+    toString: func -> String { value ? "true" : "false" }
+    init: func(=value)
+    equals?: func (other: EoBool) -> Bool { this value == other value }
+    cmp: func (other: EoBool) -> Int { 
+        cmp(value ? 1 : 0, other value ? 1 : 0)
+    }
+    hash: func -> SizeT { value ? 1 : 0 }
+    type: func -> String { "bool" }
+}
+
+/* don't create EoBools, use these instead */
+EoTrue := EoBool new(true)
+EoFalse := EoBool new(false)
+
 /*** words ***/
 
 /* Code blocks vs user-defined words:
@@ -193,7 +203,7 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 }
 
 EoWord: abstract class extends EoType {
-    arity: Arity
+    //arity: Arity
     mutable?: func -> Bool { true }
     type: func -> String { "word" }
     hash: func -> SizeT { this as SizeT }
@@ -237,6 +247,8 @@ EoBuiltinWord: class extends EoWord {
     }
 }
 
+/*** containers ***/
+
 EoList: class extends EoType {
     data: ArrayList<EoType>
     toString: func -> String {
@@ -262,22 +274,6 @@ EoList: class extends EoType {
     }
     equals?: func (other: EoList) -> Bool { this cmp(other) == 0 }
 }
-
-EoBool: class extends EoType {
-    value: Bool
-    toString: func -> String { value ? "true" : "false" }
-    init: func(=value)
-    equals?: func (other: EoBool) -> Bool { this value == other value }
-    cmp: func (other: EoBool) -> Int { 
-        cmp(value ? 1 : 0, other value ? 1 : 0)
-    }
-    hash: func -> SizeT { value ? 1 : 0 }
-    type: func -> String { "bool" }
-}
-
-/* don't create EoBools, use these instead */
-EoTrue := EoBool new(true)
-EoFalse := EoBool new(false)
 
 EoVariable: class extends EoType {
     value: EoType
