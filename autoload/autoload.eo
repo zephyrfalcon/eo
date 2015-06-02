@@ -136,7 +136,7 @@ Returns true if a and b refer to the same object internally." _doc!
 -- e.g. `int?` to check if something is an int, etc etc
 --
 [ "int" "string" "bool" "list" "dict" "u-word" "b-word" "module"
-  "namespace" "block" "variable" "symbol" 
+  "namespace" "block" "variable" "symbol" "regex"
   ] !$TYPES
 "All of Eo's built-in types." $TYPES\doc!
 

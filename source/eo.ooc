@@ -17,6 +17,7 @@ EO_VERSION := "0.0.41"
 DebugSettings: class {
     showCallStack := false
     countCycles := false
+    showTokens := false
 
     cycles := 0  /* will be incremented if countCycles is true */
 
@@ -24,9 +25,9 @@ DebugSettings: class {
 }
 
 // comment | string | word
-re_word := Regexp compile("(--.*?(\\n|$))|(\"(?:\\\\\"|[^\"])*?\")|(\\S+)")
-/* Fixed string regex; see: http://stackoverflow.com/a/18551774/27426
-*/
+re_word := Regexp compile("(--.*?(\\n|$))|(\"(?:\\\\\"|[^\"])*?\")"\
+                        + "|(/(?:\\\\/|[^/])*?/)|(\\S+)")
+/* Fixed string regex; see: http://stackoverflow.com/a/18551774/27426 */
 
 tokenize: func (data: String) -> ArrayList<String> {
     results := re_word split(data)
@@ -36,8 +37,9 @@ tokenize: func (data: String) -> ArrayList<String> {
 expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
     newTokens := ArrayList<String> new()
     for (token in tokens) {
-        if (token startsWith?("\"") && token endsWith?("\"")) {
-            /* we don't need to inspect strings */
+        if ((token startsWith?("\"") && token endsWith?("\"")) ||
+            (token startsWith?("/") && token endsWith?("/"))) {
+            /* we don't need to inspect strings or regexen */
             newTokens add(token)
         }
         else if (token startsWith?("!$") && token length() > 2) {
@@ -112,6 +114,10 @@ parseToken: func(token: String) -> EoType {
         return EoString new(s)
         /* NOTE: ooc slicing != Python slicing. */
     }
+    if (token startsWith?("/") && token endsWith?("/") && 
+        token length() >= 2) {
+        return EoRegex new(token[1..-2])
+}
     /* true and false are special symbols that evaluate to themselves */
     if (token == "true") return EoTrue
     if (token == "false") return EoFalse
@@ -173,6 +179,8 @@ EoInterpreter: class {
     parse: func (data: String) -> Bool {
         // NOTE: assumes that currentWordStack is non-empty.
         tokens := tokenize(data)
+        if (debugSettings showTokens)
+            tokens each(|token| "Token: %s" printfln(token))
         tokens = expandMacros(tokens)
         for (token in tokens) {
             match (token) {

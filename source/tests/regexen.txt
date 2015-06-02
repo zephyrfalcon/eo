@@ -1,0 +1,20 @@
+-- regular expressions
+
+"[abc]" regex !$r
+$r regex?
+=> [true]
+$r ->string
+=> ["[abc]"]
+-- $r ->repr ?
+
+/abc/ type
+=> ["regex"]
+/abc/ regex?
+=> [true]
+/abc/ ->string
+=> ["abc"]
+/ab cd/ ->string
+=> ["ab cd"]
+/ab\/cd/ ->string  -- slashes must be escaped
+=> ["ab/cd"]
+

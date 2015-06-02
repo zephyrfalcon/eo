@@ -165,7 +165,8 @@ EoRegex: class extends EoType {
         regex = r
         this original = original
     }
-    init: func ~withString (s: String) { 
+    init: func ~withString (s: String) {
+        s = s replaceAll("\\/", "/")
         regex = Regexp compile(s) 
         original = s
     }
@@ -174,7 +175,7 @@ EoRegex: class extends EoType {
     hash: func -> SizeT { ac_X31_hash(original) }
     type: func -> String { "regex" }
     cmp: func (other: EoRegex) -> Int { this original cmp(other original) }
-
+    valueAsString: func -> String { original }
 }
 
 /*** words ***/

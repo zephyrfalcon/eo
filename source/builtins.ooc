@@ -11,6 +11,7 @@ import builtins_stack
 import builtins_logic
 import builtins_ns
 import builtins_str
+import builtins_debug
 import module_sys
 
 plus: func (interp: EoInterpreter, ns: Namespace) {
@@ -282,20 +283,6 @@ words: func (interp: EoInterpreter, ns: Namespace) {
     names sort(|s1, s2| s1 > s2)
     for (name in names) "%s " printf(name)
     println()
-}
-
-_perc_show_call_stack: func (interp: EoInterpreter, ns: Namespace) {
-    /* %show-call-stack ( <bool> -- )
-       Show the contents of the call stack at every execution step. */
-    onoff := interp stack popCheck(EoBool) as EoBool
-    interp debugSettings showCallStack = onoff value
-}
-
-_perc_count_cycles: func (interp: EoInterpreter, ns: Namespace) {
-    /* %count-cycles ( <bool> -- )
-       Turn on cycle counting. */
-    onoff := interp stack popCheck(EoBool) as EoBool
-    interp debugSettings countCycles = onoff value
 }
 
 index: func (interp: EoInterpreter, ns: Namespace) {
@@ -590,6 +577,9 @@ tags_excl: func (interp: EoInterpreter, ns: Namespace) {
 
 _regex: func (interp: EoInterpreter, ns: Namespace) {
     /* regex ( str -- regex ) */
+    s := interp stack popCheck(EoString) as EoString
+    reg := EoRegex new(s value)
+    interp stack push(reg)
 }
 
 
@@ -634,8 +624,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
     loadBuiltinWord(interp, "words", words)
-    loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
-    loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
     loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
@@ -658,6 +646,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "_", underscore)
     loadBuiltinWord(interp, "tags", tags)
     loadBuiltinWord(interp, "tags!", tags_excl)
+    loadBuiltinWord(interp, "regex", _regex)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
@@ -692,6 +681,11 @@ loadBuiltinWords: func (interp: EoInterpreter) {
 
     /* builtin_str */
     loadBuiltinWord(interp, "upper", upper)
+
+    /* builtin_debug */
+    loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
+    loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
+    loadBuiltinWord(interp, "%show-tokens", _perc_show_tokens)
 
     /* built-in modules */
     sys_loadBuiltinWords(interp)
