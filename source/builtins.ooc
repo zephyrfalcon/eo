@@ -681,6 +681,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
 
     /* builtin_str */
     loadBuiltinWord(interp, "upper", upper)
+    loadBuiltinWord(interp, "split*", split_star)
 
     /* builtin_debug */
     loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)

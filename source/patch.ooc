@@ -11,6 +11,7 @@ import structs/ArrayList
 import tools
 
 extend Regexp {
+    /* leave only the parts that match the regex. */
     split: func (s: String) -> ArrayList<String> {
         results := ArrayList<String> new()
         while (true) {
@@ -21,6 +22,25 @@ extend Regexp {
             cutoff := matchobj groupStart(0) + matchobj groupLength(0)
             results add(token)
 
+            s = s substring(cutoff)
+        }
+        return results
+    }
+
+    /* delete the parts that match the regex. */
+    splitBy: func (s: String) -> ArrayList<String> {
+        results := ArrayList<String> new()
+        while (true) {
+            matchobj := this matches(s)
+            if (matchobj == null) {
+                results add(s)
+                break
+            }
+
+            token := matchobj group(0)
+            before := s substring(0, matchobj groupStart(0))
+            results add(before)
+            cutoff := matchobj groupStart(0) + matchobj groupLength(0)
             s = s substring(cutoff)
         }
         return results

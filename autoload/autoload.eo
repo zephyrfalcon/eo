@@ -179,3 +179,9 @@ $TYPES {
 "has-tag? ( obj tag - bool )
 Return true if obj has the given tag." _doc!
 
+------
+
+{ /\s+/ split* } !split
+"split ( s -- parts )
+Split a string by whitespace." _doc!
+

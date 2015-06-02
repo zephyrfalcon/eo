@@ -18,3 +18,14 @@ $r ->string
 /ab\/cd/ ->string  -- slashes must be escaped
 => ["ab/cd"]
 
+-- splitting
+"a.b.c" /\./ split*
+=> [[ "a" "b" "c" ]]
+"a.b.c." /\./ split*
+=> [[ "a" "b" "c" "" ]]
+-- ^ this is correct, same as in Python BTW
+"a b c" /\s+/ split*  -- split by whitespace
+=> [[ "a" "b" "c" ]]
+"a   b\n \tc" /\s+/ split*  -- split by whitespace
+=> [[ "a" "b" "c" ]]
+

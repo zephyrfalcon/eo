@@ -1,7 +1,16 @@
 -- docstrings and tags for built-in words
 
+--
+-- stack words
+
 "dup ( a -- a a )
 Duplicate the top item on the stack." dup\doc!
 [ "stack" ] dup\tags!
 
+--
+-- debug words
+
+"%show-tokens ( bool -- )
+If true, show tokens after a string has been tokenized." %show-tokens\doc!
+[ "debug" ] %show-tokens\tags!
 
