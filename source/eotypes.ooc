@@ -22,7 +22,7 @@ eocmp: func (a, b: EoType) -> Int {
 EoType: abstract class {
     /* all objects can have a description and tags. */
     description: String
-    tags: ArrayList<String>
+    tags := ArrayList<String> new()
 
     toString: abstract func -> String
     valueAsString: func -> String { this toString() }

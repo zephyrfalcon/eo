@@ -72,6 +72,11 @@ If condition is true, execute the block, otherwise do nothing." _doc!
     $cond-block $exec-block while } when  -- recurse
 } !while
 
+-- TODO: some kind of for loop... 
+-- maybe something that works just with numbers (pushing a number in each round)
+-- and maybe another one that takes a list and pushes index and item?
+-- I need something like this to make string.join :)
+
 -- clear ( ? -- )
 -- clear the stack
 { { stack-empty? not } { drop } while 
@@ -165,4 +170,12 @@ $TYPES {
 } !atom?
 
 { atom? not } !container?
+
+------
+
+{ !$tag !$obj
+  $obj tags $tag contains?
+} !has-tag?
+"has-tag? ( obj tag - bool )
+Return true if obj has the given tag." _doc!
 

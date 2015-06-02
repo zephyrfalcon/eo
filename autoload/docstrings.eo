@@ -2,5 +2,6 @@
 
 "dup ( a -- a a )
 Duplicate the top item on the stack." dup\doc!
+[ "stack" ] dup\tags!
 
 

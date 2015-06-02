@@ -22,3 +22,13 @@ $a
 3 _ exec
 => [6]
 
+-- try to set docstring, tags
+\double "xyzzy" doc!
+\double doc
+=> ["xyzzy"]
+\double [ "foo" "bar" ] tags!
+\double tags
+=> [[ "foo" "bar" ]]
+\double "foo" has-tag?
+=> [true]
+

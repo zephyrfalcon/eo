@@ -564,7 +564,23 @@ underscore: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(interp lastDefined)
 }
 
-// TODO: words to get ns from modules, code blocks, etc */
+tags: func (interp: EoInterpreter, ns: Namespace) {
+    /* tags ( obj -- tags ) */
+    obj := interp stack pop()
+    /* we don't use map here to avoid problems with List vs ArrayList */
+    eotaglist := EoList new()
+    for (s in obj tags)
+        eotaglist data add(EoString new(s))
+    interp stack push(eotaglist)
+}
+
+tags_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* tags! ( obj tags -- ) */
+    tags := interp stack popCheck(EoList) as EoList
+    obj := interp stack pop()
+    s1 := tags data map(|e| (e as EoString) value) as ArrayList<String>
+    obj tags = s1
+}
 
 /*** loading builtins ***/
 
@@ -629,6 +645,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "mutable?", mutable_qm)
     loadBuiltinWord(interp, "append", append)
     loadBuiltinWord(interp, "_", underscore)
+    loadBuiltinWord(interp, "tags", tags)
+    loadBuiltinWord(interp, "tags!", tags_excl)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
