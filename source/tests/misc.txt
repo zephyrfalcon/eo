@@ -39,6 +39,9 @@ $a
 -- this shouldn't collide with for's internal variable called $counter, BTW
 $counter
 => [3]
+-- test nested `for`s; there should be no namespace collisions:
+0 2 { 10 12 { } for } for
+=> [0 10 11 1 10 11]
 
 -- range
 0 5 range

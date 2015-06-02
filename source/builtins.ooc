@@ -252,7 +252,7 @@ _import: func (interp: EoInterpreter, ns: Namespace) {
     data := File new(path) read()
     /* create a namespace for the module, then a module object that uses this
      * namespace */
-    newns := Namespace new(interp userNamespace)
+    newns := Namespace new(interp rootNamespace)  
     mod := EoModule new(newns) 
     mod name = shortName; mod path = path
 

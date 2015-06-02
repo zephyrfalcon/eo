@@ -160,6 +160,9 @@ EoStackFrame: class {
     code: EoType
     counter := 0
     namespace: Namespace
+    codens: Namespace  /* namespace to be used when executing user-defined
+                          words, so we don't reuse the same namespace for each
+                          call */
     init: func (=code, =namespace)
 }
 
@@ -261,6 +264,8 @@ EoInterpreter: class {
                     case (uw: EoUserDefWord) =>
                         /* user-defined words go on the call stack. */
                         newFrame := EoStackFrame new(uw, frame namespace)
+                        if (!uw reuseNamespace)
+                            newFrame codens = Namespace new(uw code namespace)
                         /* not sure about the namespace... */
                         callStack push(newFrame)
                     case =>
@@ -285,6 +290,12 @@ EoInterpreter: class {
                 stack push(v value)
             case uw: EoUserDefWord =>
                 /* next step in executing user-defined word */
+                /* NOTE: consecutive calls to a user-defined word should not use 
+                   the same namespace, unless uw reuseNamespace is true!
+                   otherwise, this will be a problem when we have nested calls
+                   (e.g. in loops)! */
+                if (!uw reuseNamespace && frame codens == null)
+                    frame codens = Namespace new(uw code namespace)
                 if (frame counter >= uw code words size)
                     callStack pop()  /* done */
                     /* ^ does this still happen? */
@@ -297,7 +308,8 @@ EoInterpreter: class {
                         callStack pop()  /* TCO */
                     wordTBE := uw code words[frame counter]
                     frame counter += 1
-                    newFrame := EoStackFrame new(wordTBE, uw code namespace)
+                    newFrame := EoStackFrame new(wordTBE, uw reuseNamespace ? \
+                        uw code namespace : frame codens)
                     callStack push(newFrame)
                 }
             case =>
@@ -355,6 +367,9 @@ EoInterpreter: class {
             code: ArrayList<EoType> = currentWordStack pop()
             blk := EoCodeBlock new(code, ns)
             uw := blk asEoUserDefWord()
+            uw reuseNamespace = true
+            /* XXX this works, but anything we create in the current namespace
+             * will now be discarded :( */
             frame := EoStackFrame new(uw, ns)
             callStack push(frame)
             clear()
@@ -424,6 +439,7 @@ EoREPL: class {
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
                 blk := EoCodeBlock new(code, interpreter userNamespace)
                 uw := blk asEoUserDefWord()
+                uw reuseNamespace = true
                 frame := EoStackFrame new(uw, interpreter userNamespace)
                 interpreter callStack push(frame)
                 interpreter executeAll()

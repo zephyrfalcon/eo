@@ -248,6 +248,12 @@ EoWord: abstract class extends EoType {
 EoUserDefWord: class extends EoWord {
     code: EoCodeBlock
     name: String
+
+    /* if reuseNamespace is true, then when the word is executed, it will
+     * reuse the code block's namespace. this is desirable in *some* cases,
+     * but usually it isn't, so the default is false. */
+    reuseNamespace := false
+
     init: func (=code, =name)  // name is optional
     init: func ~plain (=code)
     toString: func -> String { "u#<%s>" format(name == null ? "" : name) }
