@@ -148,6 +148,7 @@ parseToken: func(token: String) -> EoType {
     /* true and false are special symbols that evaluate to themselves */
     if (token == "true") return EoTrue
     if (token == "false") return EoFalse
+    if (token == "null") return EoNull
 
     return EoSymbol new(token)
     /* NOTE: symbols include variables. */
@@ -195,6 +196,7 @@ EoInterpreter: class {
         /* true and false are special names that evaluate to themselves */
         rootNamespace add("true", EoTrue)
         rootNamespace add("false", EoFalse)
+        rootNamespace add("null", EoNull)
         loadBuiltinWords(this)
         autoload()
     }

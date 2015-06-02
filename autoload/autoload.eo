@@ -136,7 +136,7 @@ Returns true if a and b refer to the same object internally." _doc!
 -- e.g. `int?` to check if something is an int, etc etc
 --
 [ "int" "string" "bool" "list" "dict" "u-word" "b-word" "module"
-  "namespace" "block" "variable" "symbol" "regex"
+  "namespace" "block" "variable" "symbol" "regex" "null"
   ] !$TYPES
 "All of Eo's built-in types." $TYPES\doc!
 
@@ -166,7 +166,7 @@ $TYPES {
 } !sequence?
 
 { !$x
-  [ "int" "string" "bool" "symbol" ] $x type contains?
+  [ "int" "string" "bool" "symbol" "null" "regex" ] $x type contains?
 } !atom?
 
 { atom? not } !container?

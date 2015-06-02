@@ -31,3 +31,6 @@ eq?
 thisns "dup" contains?
 => [true]
 
+rootns parent
+=> [null]
+

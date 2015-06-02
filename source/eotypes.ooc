@@ -156,6 +156,16 @@ EoBool: class extends EoType {
 EoTrue := EoBool new(true)
 EoFalse := EoBool new(false)
 
+EoNull_: class extends EoType {
+    init: func
+    toString: func -> String { "null" }
+    equals?: func (other: EoNull_) -> Bool { true }
+    cmp: func (other: EoNull_) -> Int { 0 }
+    hash: func -> SizeT { 0 }
+    type: func -> String { "null" }
+}
+EoNull := EoNull_ new()
+
 EoRegex: class extends EoType {
     regex: Regexp
     original: String
