@@ -619,6 +619,8 @@ reverse: func (interp: EoInterpreter, ns: Namespace) {
 reverse_excl: func (interp: EoInterpreter, ns: Namespace) {
     /* reverse! ( list -- ) 
        Reverse a list in-place. */
+    list := interp stack popCheck(EoList) as EoList
+    list data reverse!()
 }
 
 /*** loading builtins ***/
