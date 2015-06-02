@@ -58,6 +58,17 @@ _gt: func (interp: EoInterpreter, ns: Namespace) {
         Exception new("> only works on numbers") throw()
 }
 
+_lt: func (interp: EoInterpreter, ns: Namespace) {
+    x := interp stack pop()
+    y := interp stack pop()
+    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
+        result := ((y as EoInteger) value < (x as EoInteger) value)
+        interp stack push(result ? EoTrue : EoFalse)
+    }
+    else
+        Exception new("< only works on numbers") throw()
+}
+
 def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
     name := interp stack pop() as EoString
@@ -615,6 +626,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "-", minus)
     loadBuiltinWord(interp, "=", _equals)
     loadBuiltinWord(interp, ">", _gt)
+    loadBuiltinWord(interp, "<", _lt)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
     loadBuiltinWord(interp, "[", lbracket)

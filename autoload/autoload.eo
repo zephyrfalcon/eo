@@ -72,6 +72,26 @@ If condition is true, execute the block, otherwise do nothing." _doc!
     $cond-block $exec-block while } when  -- recurse
 } !while
 
+{ !$code !$n2 !$n1
+  $n1 !$counter
+  { $counter $n2 < } 
+  { $counter                   -- push counter
+    $code exec                 -- execute code block
+    $counter 1 + !>$counter    -- counter++
+  } while
+} !for
+"for ( n1 n2 code -- )
+Loops from n1 to n2 (excluding n2), pushing each number on the stack and
+executing the code block." _doc!
+
+{ !$n2 !$n1
+  [ ] !$result
+  $n1 $n2 { $result swap add! } for
+  $result
+} !range
+"range ( n1 n2 -- [n1..n2-1] )
+Create a list of numbers ranging from n1..n2, excluding n2." _doc!
+
 -- TODO: some kind of for loop... 
 -- maybe something that works just with numbers (pushing a number in each round)
 -- and maybe another one that takes a list and pushes index and item?
