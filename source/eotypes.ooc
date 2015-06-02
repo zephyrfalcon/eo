@@ -1,7 +1,7 @@
 /* Eo built-in types */
 
 import structs/[ArrayList, HashMap]
-import text/EscapeSequence
+import text/[EscapeSequence, Regexp]
 import eo
 import namespace
 import patch
@@ -155,6 +155,27 @@ EoBool: class extends EoType {
 /* don't create EoBools, use these instead */
 EoTrue := EoBool new(true)
 EoFalse := EoBool new(false)
+
+EoRegex: class extends EoType {
+    regex: Regexp
+    original: String
+    /* ooc's Regexp has no way to extract the original string from it, so we
+     * need to keep track of it ourselves */
+    init: func ~withRegex (r: Regexp, original: String) {
+        regex = r
+        this original = original
+    }
+    init: func ~withString (s: String) { 
+        regex = Regexp compile(s) 
+        original = s
+    }
+    toString: func -> String { "#regex" } // FIXME, obviously
+    equals?: func (other: EoRegex) -> Bool { false } // FIXME
+    hash: func -> SizeT { ac_X31_hash(original) }
+    type: func -> String { "regex" }
+    cmp: func (other: EoRegex) -> Int { this original cmp(other original) }
+
+}
 
 /*** words ***/
 

@@ -588,6 +588,11 @@ tags_excl: func (interp: EoInterpreter, ns: Namespace) {
     obj tags = t
 }
 
+_regex: func (interp: EoInterpreter, ns: Namespace) {
+    /* regex ( str -- regex ) */
+}
+
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
