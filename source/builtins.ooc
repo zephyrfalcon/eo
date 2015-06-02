@@ -578,8 +578,14 @@ tags_excl: func (interp: EoInterpreter, ns: Namespace) {
     /* tags! ( obj tags -- ) */
     tags := interp stack popCheck(EoList) as EoList
     obj := interp stack pop()
-    s1 := tags data map(|e| (e as EoString) value) as ArrayList<String>
-    obj tags = s1
+    t := ArrayList<String> new()
+    for (e in tags data) {
+        if (e instanceOf?(EoString))
+            t add((e as EoString) value)
+        else
+            raise("tags!: tags must be strings")
+    }
+    obj tags = t
 }
 
 /*** loading builtins ***/
