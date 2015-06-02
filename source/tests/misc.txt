@@ -44,3 +44,10 @@ $counter
 0 5 range
 => [[ 0 1 2 3 4 ]]
 
+-- for-each
+[ ] !$result
+"a b c" split
+{ 2 scoop $result swap add! } for-each
+$result
+=> [[ [ "a" 0 ] [ "b" 1 ] [ "c" 2 ] ]]
+

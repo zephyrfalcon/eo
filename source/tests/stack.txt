@@ -25,3 +25,8 @@ stack-empty?
 1 2 3 clear
 => []
 
+-- scoop
+1 2 3 4 5
+2 scoop
+=> [1 2 3 [ 4 5 ]]
+

@@ -95,7 +95,7 @@ Create a list of numbers ranging from n1..n2, excluding n2." _doc!
 { !$code !$list
   0 $list length { 
     !$index
-    $index $list $index index
+    $list $index index $index  -- push list[index] and index
     $code exec
   } for
 } !for-each 
@@ -103,25 +103,16 @@ Create a list of numbers ranging from n1..n2, excluding n2." _doc!
 Loop over the list; for each item, push its index (starting from 0) and the
 item itself, then execute the code block." _doc!
 
+-- XXX for some reason, when I tried to implement `scoop` with `for`, it
+-- didn't work properly, bailing out after the first iteration :-/
 { !$n
   [ ] !$result
-  0 $n { 
-    drop
-    $result swap add!
-    -- FIXME: this returns a reversed list.
-    -- we don't have a way yet to reverse the result list, or to insert items
-    -- at the beginning of a list.
-  } for
-  $result
+  { $result swap add! } $n do-times
+  $result reverse
 } !scoop
 "scoop ( n -- list )
 Take n items from the stack and return them as a list." _doc!
 [ "stack" ] scoop\tags!
-
--- TODO: some kind of for loop... 
--- maybe something that works just with numbers (pushing a number in each round)
--- and maybe another one that takes a list and pushes index and item?
--- I need something like this to make string.join :)
 
 -- clear ( ? -- )
 -- clear the stack

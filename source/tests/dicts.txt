@@ -43,7 +43,7 @@ $dict length
 => [2]
 $dict/"b"  -- macro expansion: getter
 => [2]
-4 $dict/"d"  -- macro expansion: setter
+4 $dict/!"d"  -- macro expansion: setter
 $dict/"d"
 => [4]
 

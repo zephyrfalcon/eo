@@ -10,7 +10,6 @@ import patch
 /* fallback for when a and b are not of the same EoType. we cannot rely on
    EoType.cmp to handle this. */
 eocmp: func (a, b: EoType) -> Int {
-    "eocmp: %s vs %s" printfln(a class name, b class name)
     if (a class != b class) 
         return cmp(a type(), b type())
     else
