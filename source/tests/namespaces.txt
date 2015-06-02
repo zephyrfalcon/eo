@@ -15,6 +15,11 @@ newns !$ns
 $ns "foo" 42 put!
 $ns names
 => [[ "foo" ]]
+$ns:foo  -- reader macro: getter
+=> [42]
+99 $ns:!foo  -- reader macro: getter
+$ns:foo
+=> [99]
 
 -- create a new namespace with `thisns` as parent. then check if the parent
 -- and `thisns` are equal.

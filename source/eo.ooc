@@ -56,12 +56,21 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
         }
         else if (token contains?(":") && !(token startsWith?(":")) \
                  && !(token endsWith?(":")) && !(token startsWith?("\""))) {
-            /* split foo:bar and replace with `foo "bar" execns` */
+            /* foo:bar => foo "bar" execns
+               [value] foo:!bar => foo "bar" rol put!
+             */
             parts := token split(":")
             newTokens add(parts[0])
             for (part in parts[1..-1]) {
-                newTokens add("\"%s\"" format(part))
-                newTokens add("execns")
+                if (part startsWith?("!")) {
+                    newTokens add("\"%s\"" format(part[1..-1]))
+                    newTokens add("rol")
+                    newTokens add("put!")
+                }
+                else {
+                    newTokens add("\"%s\"" format(part))
+                    newTokens add("execns")
+            }
             }
         }
         else if (token contains?("/")) {
