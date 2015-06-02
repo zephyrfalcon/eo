@@ -17,3 +17,8 @@ ansi "fg" contains?
 ansi "xyzzy" contains?
 => [false]
 
+module !$mod
+1 $mod:!foo
+$mod:foo 
+=> [1]
+

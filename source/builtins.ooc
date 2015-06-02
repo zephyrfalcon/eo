@@ -584,6 +584,12 @@ _regex: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(reg)
 }
 
+module: func (interp: EoInterpreter, ns: Namespace) {
+    /* module ( -- module ) */
+    mod := EoModule new(interp rootNamespace)
+    interp stack push(mod)
+}
+
 
 /*** loading builtins ***/
 
@@ -649,6 +655,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "tags", tags)
     loadBuiltinWord(interp, "tags!", tags_excl)
     loadBuiltinWord(interp, "regex", _regex)
+    loadBuiltinWord(interp, "module", module)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)
