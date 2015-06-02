@@ -64,6 +64,24 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 newTokens add("execns")
             }
         }
+        else if (token contains?("/")) {
+            /* foo/key => foo key get 
+               [value] foo/!key => [value] foo key rol put!
+             */
+            parts := token split("/")
+            newTokens add(parts[0])
+            for (part in parts[1..-1]) {
+                if (part startsWith?("!")) {
+                    newTokens add(part[1..-1])
+                    newTokens add("rol")
+                    newTokens add("put!")
+                }
+                else {
+                    newTokens add(part)
+                    newTokens add("get")
+                }
+            }
+        }
         else if (token startsWith?("\\") && token length() > 1) {
             newTokens add("\"%s\"" format(token substring(1)))
             newTokens add("lookup-here")

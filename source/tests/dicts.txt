@@ -41,6 +41,11 @@ $dict length
 $dict "c" del!
 $dict length
 => [2]
+$dict/"b"  -- macro expansion: getter
+=> [2]
+4 $dict/"d"  -- macro expansion: setter
+$dict/"d"
+=> [4]
 
 -- FIXME: to test `keys` and `items` and `values`, we would need `sort` or
 -- `sort!`, since the order of the keys is undefined.

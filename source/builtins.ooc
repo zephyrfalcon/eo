@@ -113,11 +113,13 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
        NOTE: Currently only expects and executes ONE token. Also see #22.
        NOTE: Work correctly with word objects that happen to be on the stack
        (for example, after having been placed there by `lookup-here`).
-       TODO: run strings with arbitrary code.
+       TODO: run strings with arbitrary code. In the new situation we should
+       also be able to handle e.g. "sys:version" (macro expansion).
     */
     x := interp stack pop()  /* string or executable */
     match (x) {
         case (s: EoString) => {
+            // FIXME
             sv := parseToken((s as EoString) value)
             frame := EoStackFrame new(sv, ns)
             interp callStack push(frame)
@@ -655,6 +657,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "over", over)
     loadBuiltinWord(interp, "stack-empty?", stack_empty_qm)
     loadBuiltinWord(interp, "pick", pick)
+    loadBuiltinWord(interp, "rol", rol)
 
     /* builtins_dict */
     loadBuiltinWord(interp, "dict", dict)

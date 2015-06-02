@@ -57,3 +57,12 @@ pick: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(a)
 }
 
+rol: func (interp: EoInterpreter, ns: Namespace) {
+    /* rol ( a b c -- b c a ) */
+    c := interp stack pop()
+    b := interp stack pop()
+    a := interp stack pop()
+    interp stack push(b)
+    interp stack push(c)
+    interp stack push(a)
+}
