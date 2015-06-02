@@ -601,6 +601,25 @@ module: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(mod)
 }
 
+reverse: func (interp: EoInterpreter, ns: Namespace) {
+    /* reverse ( seq -- qes ) 
+       Reverse a sequence. Does not modify the sequence in-place. */
+    seq := interp stack pop()
+    match (seq) {
+        case (s: EoString) => 
+            t := s value reverse()
+            interp stack push(EoString new(t))
+        case (list: EoList) =>
+            revlist := list data reverse() as ArrayList<EoType>
+            interp stack push(EoList new(revlist))
+        case => raise("Cannot reverse this type: %s" format(seq class name))
+    }
+}
+
+reverse_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* reverse! ( list -- ) 
+       Reverse a list in-place. */
+}
 
 /*** loading builtins ***/
 
@@ -668,6 +687,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "tags!", tags_excl)
     loadBuiltinWord(interp, "regex", _regex)
     loadBuiltinWord(interp, "module", module)
+    loadBuiltinWord(interp, "reverse", reverse)
+    loadBuiltinWord(interp, "reverse!", reverse_excl)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

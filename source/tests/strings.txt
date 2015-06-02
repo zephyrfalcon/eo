@@ -34,3 +34,7 @@
 "a" "b" append
 => ["ab"]
 
+-- reverse
+"abc" reverse
+=> ["cba"]
+

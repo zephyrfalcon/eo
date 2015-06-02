@@ -43,3 +43,12 @@ $n
 [ 1 2 3 4 ] 9 contains?
 => [false]
 
+-- reverse
+[ 1 2 3 ] reverse
+=> [[ 3 2 1 ]]
+[ 4 5 6 ] !$list
+$list reverse
+=> [[ 6 5 4 ]]
+-- make sure $list didn't change:
+$list
+=> [[ 4 5 6 ]]
