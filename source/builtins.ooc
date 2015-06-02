@@ -12,62 +12,8 @@ import builtins_logic
 import builtins_ns
 import builtins_str
 import builtins_debug
+import builtins_arith
 import module_sys
-
-plus: func (interp: EoInterpreter, ns: Namespace) {
-    x := interp stack pop()
-    y := interp stack pop()
-    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
-        result := EoInteger new((y as EoInteger) value + (x as EoInteger) value)
-        interp stack push(result)
-    }
-    else
-        Exception new("+ only works on numbers") throw()
-}
-
-/* lots of boilerplate in here; needs fixed */
-minus: func (interp: EoInterpreter, ns: Namespace) {
-    x := interp stack pop()
-    y := interp stack pop()
-    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
-        result := EoInteger new((y as EoInteger) value - (x as EoInteger) value)
-        interp stack push(result)
-    }
-    else
-        Exception new("- only works on numbers") throw()
-}
-
-_equals: func (interp: EoInterpreter, ns: Namespace) {
-    /* ( = a b -- bool ) */
-    x := interp stack popCheck(EoInteger) as EoInteger
-    y := interp stack popCheck(EoInteger) as EoInteger
-    result := (x value == y value) ? EoTrue : EoFalse
-    interp stack push(result)
-}
-
-/* lots of boilerplate here too; also, future versions of `>` will likely
- * support more types, like strings */
-_gt: func (interp: EoInterpreter, ns: Namespace) {
-    x := interp stack pop()
-    y := interp stack pop()
-    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
-        result := ((y as EoInteger) value > (x as EoInteger) value)
-        interp stack push(result ? EoTrue : EoFalse)
-    }
-    else
-        Exception new("> only works on numbers") throw()
-}
-
-_lt: func (interp: EoInterpreter, ns: Namespace) {
-    x := interp stack pop()
-    y := interp stack pop()
-    if (x instanceOf?(EoInteger) && y instanceOf?(EoInteger)) {
-        result := ((y as EoInteger) value < (x as EoInteger) value)
-        interp stack push(result ? EoTrue : EoFalse)
-    }
-    else
-        Exception new("< only works on numbers") throw()
-}
 
 def: func (interp: EoInterpreter, ns: Namespace) {
     /* ( lambda-word name -- ) */
@@ -644,11 +590,6 @@ loadBuiltinWordInModule: func (targetNs: Namespace, name: String,
 }
 
 loadBuiltinWords: func (interp: EoInterpreter) {
-    loadBuiltinWord(interp, "+", plus)
-    loadBuiltinWord(interp, "-", minus)
-    loadBuiltinWord(interp, "=", _equals)
-    loadBuiltinWord(interp, ">", _gt)
-    loadBuiltinWord(interp, "<", _lt)
     loadBuiltinWord(interp, "def", def)
     loadBuiltinWord(interp, "defvar", defvar)
     loadBuiltinWord(interp, "[", lbracket)
@@ -725,14 +666,21 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "all-names", all_names)
     loadBuiltinWord(interp, "parent", parent)
 
-    /* builtin_str */
+    /* builtins_str */
     loadBuiltinWord(interp, "upper", upper)
     loadBuiltinWord(interp, "split*", split_star)
 
-    /* builtin_debug */
+    /* builtins_debug */
     loadBuiltinWord(interp, "%show-call-stack", _perc_show_call_stack)
     loadBuiltinWord(interp, "%count-cycles", _perc_count_cycles)
     loadBuiltinWord(interp, "%show-tokens", _perc_show_tokens)
+
+    /* builtins_arith */
+    loadBuiltinWord(interp, "+", plus)
+    loadBuiltinWord(interp, "-", minus)
+    loadBuiltinWord(interp, "=", _equals)
+    loadBuiltinWord(interp, ">", _gt)
+    loadBuiltinWord(interp, "<", _lt)
 
     /* built-in modules */
     sys_loadBuiltinWords(interp)
