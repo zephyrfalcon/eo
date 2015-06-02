@@ -7,7 +7,7 @@ import patch
 import namespace, eotypes, stackstack
 import builtins
 
-EO_VERSION := "0.0.42"
+EO_VERSION := "0.0.43"
 
 /*****/
 
