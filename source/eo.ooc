@@ -266,7 +266,6 @@ EoInterpreter: class {
                         newFrame := EoStackFrame new(uw, frame namespace)
                         if (!uw reuseNamespace)
                             newFrame codens = Namespace new(uw code namespace)
-                        /* not sure about the namespace... */
                         callStack push(newFrame)
                     case =>
                         "Symbol cannot be executed: %s with value %s" \
@@ -386,7 +385,7 @@ EoInterpreter: class {
         autoloadfile := File join(rootDir, "autoload", "autoload.eo")
         "Loading: %s... " printf(autoloadfile)
         data := File new(autoloadfile) read()
-        runCode(data, rootNamespace)
+        runCodeViaStack(data, rootNamespace)
         "OK" println()
     }
 

@@ -17,7 +17,8 @@ EoTest: class {
 
     run: func (interp: EoInterpreter) -> (EoTestResult, String) {
         try {
-            interp runCode(input, interp userNamespace)
+            interp runCodeViaStack(input, interp userNamespace)
+            interp executeAll()
         }
         catch (e: Exception) {
             return (EoTestResult ERROR, e message)
