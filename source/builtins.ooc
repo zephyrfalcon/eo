@@ -138,6 +138,7 @@ exec: func (interp: EoInterpreter, ns: Namespace) {
         }
         case (blk: EoCodeBlock) => {
             uw := blk asEoUserDefWord()
+            /* reuseNamespace = true? not sure */
             frame := EoStackFrame new(uw, ns)
             interp callStack push(frame)
         }

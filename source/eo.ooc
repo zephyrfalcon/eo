@@ -376,8 +376,6 @@ EoInterpreter: class {
         strValues := (topStack data map(|x| (x as EoType) toString()))
         numPrevStacks := stack stacks getSize() - 1
         prefix := numPrevStacks ? "(%d) " format(numPrevStacks) : ""
-        //strValues add(0, "[")
-        //strValues add("]")
         return prefix + "[" + strValues join(" ") + "]"
     }
 
@@ -398,7 +396,8 @@ EoInterpreter: class {
 
 EoREPL: class {
     interpreter: EoInterpreter
-    prompt := "> "
+    prompt := ">>> "
+    secondaryPrompt := "... "
     greeting: String  /* apparently cannot be initialized with "" + format */
     rootDir := "."
 
@@ -409,11 +408,12 @@ EoREPL: class {
     init: func ~withRoot (=rootDir) { init() }
 
     run: func() {
+        done := true
         greeting println()
         while (stdin hasNext?()) {
-            stdout write(prompt)
+            stdout write(done ? prompt : secondaryPrompt)
             line := stdin readLine()
-            done := interpreter parse(line)
+            done = interpreter parse(line)
             if (done) {
                 /* treat input like it was all entered in one code block */
                 code: ArrayList<EoType> = interpreter currentWordStack pop()
@@ -426,7 +426,8 @@ EoREPL: class {
                 interpreter clear()
             }
             // FIXME: some code duplication here with EoInterpreter.runCode
-            interpreter stackRepr() println()
+            if (done)
+                interpreter stackRepr() println()
         }
         println()
     }
