@@ -264,18 +264,19 @@ words: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 length: func (interp: EoInterpreter, ns: Namespace) {
-    /* length ( list -- length )
-       Get the length of a list. */
-    // TODO: should also work with strings and possibly other types
+    /* length ( container -- length )
+       Get the length of a container (string/list/dict). */
     obj := interp stack pop()
     match obj {
         case (list: EoList) =>
             interp stack push(EoInteger new(list data size))
         case (dict: EoDict) =>
             interp stack push(EoInteger new(dict data size))
+        case (s: EoString) =>
+            interp stack push(EoInteger new(s value length()))
         case =>
-            "Error: length not supported on objects of type %s" \
-              printfln(obj class name)
+            raise("Error: length not supported on objects of type %s" \
+                  format(obj class name))
     }
 }
 
@@ -397,17 +398,17 @@ del_excl: func (interp: EoInterpreter, ns: Namespace) {
         case (dict: EoDict) => dict data remove(key)
         case (list: EoList) => 
             if (!key instanceOf?(EoInteger))
-                Exception new("") throw()
+                Exception new("del!: index must be integer") throw()
             else
                 list data removeAt((key as EoInteger) value)
         case (mod: EoModule) => 
             if (!key instanceOf?(EoString))
-                Exception new("") throw()
+                Exception new("del!: name must be string") throw()
             else
                 mod namespace delete((key as EoString) value)
         case (xns: EoNamespace) => 
             if (!key instanceOf?(EoString))
-                Exception new("") throw()
+                Exception new("del!: name must be string") throw()
             else 
                 xns namespace delete((key as EoString) value)
         case => Exception new("Unsupported type: %s" \

@@ -44,3 +44,7 @@
 -- "abc"/1  -- does not work (yet?) because of parser
 --=> ["b"]
 
+-- length
+"quickly" length
+=> [7]
+
