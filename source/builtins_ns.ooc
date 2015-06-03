@@ -18,6 +18,12 @@ thisns: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(tns)
 }
 
+callerns: func (interp: EoInterpreter, ns: Namespace) {
+    /* callerns ( -- ns )
+       Push the caller's namespace. */
+    // FIXME
+}
+
 newns: func (interp: EoInterpreter, ns: Namespace) {
     /* newns ( -- ns ) 
        Creates a new namespace, no parent. */

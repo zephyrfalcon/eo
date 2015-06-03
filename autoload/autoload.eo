@@ -138,3 +138,27 @@ Return true if obj has the given tag." _doc!
 "split ( s -- parts )
 Split a string by whitespace." _doc!
 
+------
+
+-- experimental
+{ thisns swap get } !my-lookup-here
+-- like lookup-here. not sure if it works correctly. we need to inspect the 
+-- *caller's* namespace, not the namespace inside this code block, or the
+-- namespace where my-lookup-here was defined.
+-- We can probably find out by inspecting the stack frame?
+
+------
+
+-- experimental
+{ 
+  { } !$block
+  $block code
+  swap
+  add!
+  $block
+} !as-block
+-- this is supposed to wrap an object in a code block.
+-- surprisingly (?), works with stuff like `\dup as-block`.
+-- at this point, we cannot add symbols to it (since we have no way to create
+-- symbols! but that is easily fixed when necessary).
+

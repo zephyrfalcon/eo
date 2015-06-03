@@ -84,6 +84,12 @@ Namespace: class {
     equals?: func (other: Namespace) -> Bool {
         this == other /* pointer comparison */
     }
+
+    clone: func -> Namespace {
+        newns := Namespace new(this parent)
+        newns data = this data clone()
+        return newns
+    }
 }
 
 

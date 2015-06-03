@@ -218,9 +218,9 @@ EoCodeBlock: class extends EoType /* EoWord */ {
     type: func -> String { "block" }
     hash: func -> SizeT { this as SizeT }
 
-    clone: func -> EoCodeBlock {
-        blk := EoCodeBlock new(this words, this namespace)
-        return blk
+    /* XXX should we copy the namespace too? can we? should we? */
+    copy: func -> EoCodeBlock {
+        return EoCodeBlock new(this words clone(), this namespace)
     }
 
     /* code blocks are considered equal if their code is equal... but what

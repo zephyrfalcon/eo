@@ -275,7 +275,7 @@ EoInterpreter: class {
                 /* every time we process a code block via the call stack, we
                  * create a fresh copy and push that, to avoid having the same
                  * namespace every time */
-                newblk := blk clone()
+                newblk := blk copy() // clone()
                 newns := Namespace new(frame namespace)
                 newblk namespace = newns
                 stack push(newblk)

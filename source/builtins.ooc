@@ -161,7 +161,11 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
-/* XXX can be written in Eo now? */
+/* XXX can be written in Eo now? 
+   NO!! Not until we have a decent way to get the caller's namespace. (But
+   since that is ill-defined, that might not happen. Until then, the builtin
+   version does what it should do. 
+ */
 lookup_here: func (interp: EoInterpreter, ns: Namespace) {
     name := interp stack popCheck(EoString) as EoString
     obj := ns lookup(name value)
