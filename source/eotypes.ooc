@@ -34,6 +34,13 @@ EoType: abstract class {
      * are handled in `cmp` and `eq?` instead. */
     equals?: func (other: EoType) -> Bool { this == other }
     cmp: func (other: EoType) -> Int { this type() cmp(other type()) }
+
+    copy: func -> EoType {
+        if (mutable?())
+            raise("copy: not implemented")
+        else
+            return this
+    }
 }
 
 /*** atoms ***/
@@ -185,6 +192,7 @@ EoRegex: class extends EoType {
     type: func -> String { "regex" }
     cmp: func (other: EoRegex) -> Int { this original cmp(other original) }
     valueAsString: func -> String { original }
+    mutable?: func -> Bool { false }
 }
 
 /*** words ***/
@@ -315,6 +323,10 @@ EoList: class extends EoType {
         return 0
     }
     equals?: func (other: EoList) -> Bool { this cmp(other) == 0 }
+    copy: func -> EoList {
+        copiedData := data clone()
+        return EoList new(copiedData)
+    }
 }
 
 EoVariable: class extends EoType {
@@ -398,6 +410,12 @@ EoDict: class extends EoType {
     mutable?: func -> Bool { true }
     type: func -> String { "dict" }
     hash: func -> SizeT { this as SizeT }
+
+    copy: func -> EoDict {
+        d := EoDict new()
+        d data = this data clone()
+        return d
+    }
 
     init: func {
         data keyEquals = eoStandardEquals(EoType)

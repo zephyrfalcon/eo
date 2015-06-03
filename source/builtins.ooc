@@ -570,6 +570,25 @@ reverse_excl: func (interp: EoInterpreter, ns: Namespace) {
     list data reverse!()
 }
 
+sort_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* sort! ( list -- )
+       Sort a list in-place. */
+    list := interp stack popCheck(EoList) as EoList
+    qsort(list data, eocmp)
+}
+
+/* we will be able to write this in Eo, later:
+   $list copy sort!
+   We do need a way to copy things first. */
+sort: func (interp: EoInterpreter, ns: Namespace) {
+    /* sort ( list -- list' )
+       Return a sorted list, leaving the original list unchanged. */
+    list := interp stack popCheck(EoList) as EoList
+    list2 := list copy()
+    qsort(list2 data, eocmp)
+    interp stack push(list2)
+}
+
 /*** loading builtins ***/
 
 loadBuiltinWord: func (interp: EoInterpreter, name: String,
@@ -633,6 +652,8 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "module", module)
     loadBuiltinWord(interp, "reverse", reverse)
     loadBuiltinWord(interp, "reverse!", reverse_excl)
+    loadBuiltinWord(interp, "sort!", sort_excl)
+    loadBuiltinWord(interp, "sort", sort)
 
     /* builtins_stack */
     loadBuiltinWord(interp, "dup", dup)

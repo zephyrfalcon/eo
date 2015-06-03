@@ -62,3 +62,19 @@ $list
 $list reverse!
 $list
 => [[ 9 8 7 ]]
+
+-- sorting
+[ 4 8 1 4 0 2 ] !$list
+$list sort!
+$list
+=> [[ 0 1 2 4 4 8 ]]
+[ "Hans" "Matz" "Guido" "Larry" "Jose" "Joe" ] !$names
+$names sort!
+$names
+=> [[ "Guido" "Hans" "Joe" "Jose" "Larry" "Matz" ]]
+[ 7 3 9 2 3 ] !$list
+$list sort  -- leave original list untouched
+=> [[ 2 3 3 7 9 ]]
+$list
+=> [[ 7 3 9 2 3 ]]
+
