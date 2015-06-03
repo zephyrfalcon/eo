@@ -32,6 +32,7 @@ a single string." _doc!
   $cond1 exec
   { $cond2 exec } { false } if
 } !and*
+[ "logic" ] and*\tags!
 
 -- or* ( cond1 cond2 -- )
 -- `or` with shortcut mechanism. cond1 and cond2 must be code blocks.
@@ -39,10 +40,38 @@ a single string." _doc!
   $cond1 exec
   { true } { $cond2 exec } if 
 } !or*
+[ "logic "] or*\tags!
 
 -- for fun/completeness/because we can:
 { and not } !nand
 { or not } !nor
+
+{ eq? not } !xor
+"xor ( a b -- bool )
+Returns true if only one of a and b is true." _doc!
+[ "logic" ] xor\tags!
+
+{ eq? } !eqv
+"eqv ( a b -- bool )
+Returns true if a and b are both true, or both false." _doc!
+-- technically this is redundant
+[ "logic " ] eqv\tags!
+
+{ !$b !$a
+  $a
+  $a not $b not and
+  or
+} !imp
+"imp ( a b -- bool )
+Returns true if b is true, or both a and b are false." _doc!
+[ "logic "] imp\tags!
+
+--
+-- comparison
+
+{ eq? not } !neq?
+"neq? ( a b -- bool )
+Returns true if a and b are not equal (as compared with `eq?`)." _doc!
 
 --
 -- stack manipulation
@@ -52,6 +81,21 @@ a single string." _doc!
 Take x, execute the code block, put x back. 
 (Borrowed from Cat.)" _doc!
 [ "stack" ] dip\tags!
+
+{ swap drop } !nip
+"nip ( a b -- b )
+Remove the element directly under the top element of the stack." _doc!
+[ "stack" ] nip\tags!
+
+{ swap over } !tuck
+"tuck ( a b -- b a b )
+Insert the top element of the stack into position #3 of the stack."
+[ "stack" ] tuck\tags!
+
+{ rol rol } !ror
+"ror ( a b c -- c a b )
+Rotate the topmost three elements of the stack to the right." _doc!
+[ "stack" ] ror\tags!
 
 { !$n
   [ ] !$result
@@ -138,64 +182,5 @@ Return true if obj has the given tag." _doc!
 "split ( s -- parts )
 Split a string by whitespace." _doc!
 
-------
-
--- experimental
-{ thisns swap get } !my-lookup-here
--- like lookup-here. not sure if it works correctly. we need to inspect the 
--- *caller's* namespace, not the namespace inside this code block, or the
--- namespace where my-lookup-here was defined.
--- We can probably find out by inspecting the stack frame?
-
-------
-
--- experimental
-{ 
-  { } !$block
-  $block code
-  swap
-  add!
-  $block
-} !as-block
--- this is supposed to wrap an object in a code block.
--- surprisingly (?), works with stuff like `\dup as-block`.
--- at this point, we cannot add symbols to it (since we have no way to create
--- symbols! but that is easily fixed when necessary).
-
-------
-
--- experimental
-{ userns all-names sort
-} !all-words
--- `thisns` is relative to where the word is created (i.e. here in
--- autoload.eo), so I use userns instead... for now
-
-{ names sort } !words-from-ns
-
-{ { print " " print } each
-  nl 
-} !print-words
--- is there a way to hide this? like inside a closure?
-
-{ all-words print-words } !words
-"words ( -- )
-Display all words visible in the current namespace." _doc!
-[ "words" ] words\tags!
-
-{ !$code !$ns
-  $ns all-names sort             -- get names
-  $code filter
-} !filter-words
-"filter-words ( ns code -- words )
-Get the words (names) from the given namespace that meet the conditions
-specified in the code block." _doc!
-
-{ !$ns
-  $ns  -- redundant really :-/
-  { !$word
-    $ns $word get          -- get the object associated with the name
-    doc empty? not         -- docstring must be present
-  } filter-words
-} !words-with-doc
--- this appears to work, e.g. `thisns words-with-doc`
+"autoload/experimental.eo" include
 
