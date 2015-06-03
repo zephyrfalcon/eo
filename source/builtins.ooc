@@ -263,29 +263,6 @@ words: func (interp: EoInterpreter, ns: Namespace) {
     println()
 }
 
-index: func (interp: EoInterpreter, ns: Namespace) {
-    /* index ( list n -- list[n] )
-       Get the item at position n of the list (indexing starts at 0).
-    */
-   // TODO: should work for strings as well
-   // TODO: also support negative indexes
-   // TODO: handle out-of-bounds indexen
-   /* Note: in theory we could handle dicts as well, but because of the
-    * integer requirement (see above) I will use a separate word `get` rather
-    * than making this code too complicated. */
-   n := interp stack popCheck(EoInteger) as EoInteger
-   indexable := interp stack pop()
-   match indexable {
-       case (list: EoList) => {
-           elem := list data[n value]
-           interp stack push(elem)
-       }
-       case =>
-           "Error: index not supported on objects of type %s" \
-             printfln(indexable class name)
-   }
-}
-
 length: func (interp: EoInterpreter, ns: Namespace) {
     /* length ( list -- length )
        Get the length of a list. */
@@ -644,7 +621,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
     loadBuiltinWord(interp, "words", words)
-    //loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)
