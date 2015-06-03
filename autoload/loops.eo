@@ -1,18 +1,15 @@
 -- loops.eo
 -- Loop/iteration/mapping constructs.
 
--- do-times ( block n -- )
--- execute the given block n times.
 { !$n !$block
   $n 0 > {
     $block exec               -- execute the code
     $block $n 1 - do-times    -- recurse with n-1
   } when
 } !do-times
+"do-times ( block n -- )
+Execute the given block n times." _doc!
 
--- each ( list block -- )
--- execute the code block for each item in the list. (i.e. each item in the
--- list is pushed, then the block is executed to do something with it.)
 { !$block !$list
   -- each-aux ( list block index -- )
   { !$index !$block !$list
@@ -25,6 +22,9 @@
   } !each-aux
   $list $block 0 each-aux
 } !each
+"each ( list block -- )
+Execute the code block for each item in the list. (i.e. each item in the
+list is pushed, then the block is executed to do something with it.)" _doc!
 
 -- ^ NOTE: technically we don't need the outer $block and $list...
 -- but it's more readable this way.
@@ -48,6 +48,19 @@
   } !map-aux
   $list $block 0 [ ] map-aux
 } !map
+
+-- filter is now written in terms of `each`, much shorter and clearer ^_^
+{ !$block !$list
+  [ ] !$result
+  $list { !$item
+    $item $block exec            -- execute code block with item
+    { $result $item add! } when  -- if condition met, add to result list
+  } each
+  $result
+} !filter
+"filter ( list block -- list' )
+Execute the code block for each item in the list. Returns a new list with all
+the items for which the code block returned true." _doc!
 
 -- while ( cond-block exec-block -- )
 -- while cond-block evaluates to true (i.e. leaves 'true' on the stack),

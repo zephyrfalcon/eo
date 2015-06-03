@@ -367,6 +367,7 @@ EoInterpreter: class {
         "Loading: %s... " printf(autoloadfile)
         data := File new(autoloadfile) read()
         runCodeViaStack(data, rootNamespace)
+        executeAll()
         "OK" println()
     }
 

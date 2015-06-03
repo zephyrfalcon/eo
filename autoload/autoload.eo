@@ -17,7 +17,6 @@ If condition is true, execute the block, otherwise do nothing." _doc!
 
 "autoload/loops.eo" include
 
-
 { !$stuff
   "" !$result
   $stuff { ->string $result swap append !>$result } each
@@ -120,7 +119,7 @@ $TYPES {
 } !sequence?
 
 { !$x
-  [ "int" "string" "bool" "symbol" "null" "regex" ] $x type contains?
+  [ "int" "string" "bool" "symbol" "null" "regex" "null" ] $x type contains?
 } !atom?
 
 { atom? not } !container?
