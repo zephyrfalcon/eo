@@ -105,7 +105,7 @@ execns: func (interp: EoInterpreter, ns: Namespace) {
        Lookup name in module/namespace/etc and execute it. */
     //name := interp stack popCheck(EoString) as EoString
     //mod := interp stack pop()
-    lookup(interp, ns)
+    _get(interp, ns)
     exec(interp, ns)
 }
 
@@ -121,9 +121,8 @@ exec_with: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
-lookup: func (interp: EoInterpreter, ns: Namespace) {
-    /* lookup ( module name -- value ) */
-    /* works for modules and namespaces. do other types apply as well? */
+_get: func (interp: EoInterpreter, ns: Namespace) {
+    /* get ( module name -- value ) */
     key := interp stack pop()
     container := interp stack pop() // later: can be other things as well
     match (container) {
@@ -158,6 +157,7 @@ lookup: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+/* XXX can be written in Eo now? */
 lookup_here: func (interp: EoInterpreter, ns: Namespace) {
     name := interp stack popCheck(EoString) as EoString
     obj := ns lookup(name value)
@@ -628,7 +628,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "[", lbracket)
     loadBuiltinWord(interp, "]", rbracket)
     loadBuiltinWord(interp, "exec", exec)
-    loadBuiltinWord(interp, "lookup", lookup)
+    loadBuiltinWord(interp, "get", _get)
     loadBuiltinWord(interp, "lookup-here", lookup_here, lookup_here_doc)
     loadBuiltinWord(interp, "execns", execns)
     loadBuiltinWord(interp, "if", _if)

@@ -1,9 +1,9 @@
 -- miscellanous list tests
 
 -- indexing
-[ "a" "b" "c" ] 0 index
+[ "a" "b" "c" ] 0 get
 => ["a"]
-[ "a" "b" "c" ] 1 lookup
+[ "a" "b" "c" ] 1 get
 => ["b"]
 [ "a" "b" "c" ] !$list
 $list/1  -- reader macro

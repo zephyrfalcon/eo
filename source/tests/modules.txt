@@ -5,7 +5,7 @@
 ansi
 => [#module<ansi>]
 
-ansi "red" lookup exec
+ansi "red" get exec
 => [1]
 ansi:red
 => [1]

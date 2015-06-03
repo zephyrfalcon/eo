@@ -87,7 +87,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 }
                 else {
                     newTokens add(part)
-                    newTokens add("lookup") //add("get")
+                    newTokens add("get") //add("get")
                 }
             }
         }
