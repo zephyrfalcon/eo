@@ -9,18 +9,18 @@ $dict empty?
 $dict "United States" 1776 set!
 $dict length
 => [1]
-$dict "United States" get
+$dict "United States" lookup
 => [1776]
 $dict "Netherlands" 1648 set!
 $dict length
 => [2]
-$dict "Netherlands" get
+$dict "Netherlands" lookup
 => [1648]
 -- update an existing value:
 $dict "Netherlands" 1815 set!
 $dict length
 => [2]
-$dict "Netherlands" get
+$dict "Netherlands" lookup
 => [1815]
 $dict "Netherlands" lookup
 => [1815]

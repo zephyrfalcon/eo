@@ -680,7 +680,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
 
     /* builtins_dict */
     loadBuiltinWord(interp, "dict", dict)
-    loadBuiltinWord(interp, "get", _get)
+    //loadBuiltinWord(interp, "get", _get)
     loadBuiltinWord(interp, "keys", keys)
     loadBuiltinWord(interp, "values", values)
     loadBuiltinWord(interp, "items", items)
