@@ -8,17 +8,6 @@ dict: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(d)
 }
 
-/* XXX superseded by `lookup` */
-_get: func (interp: EoInterpreter, ns: Namespace) {
-    /* get ( dict key -- value ) */
-    key := interp stack pop()
-    dict := interp stack popCheck(EoDict) as EoDict
-    value: EoType = dict data get(key) as EoType
-    if (value == null)
-        Exception new("Key not found: %s" format(key toString())) throw()
-    interp stack push(value)
-}
-
 keys: func (interp: EoInterpreter, ns: Namespace) {
     /* keys ( dict -- keys ) */
     dict := interp stack popCheck(EoDict) as EoDict
