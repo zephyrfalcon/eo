@@ -258,15 +258,6 @@ emit: func (interp: EoInterpreter, ns: Namespace) {
     // output character...
 }
 
-/* DEPRECATED: can now be written in pure Eo */
-words: func (interp: EoInterpreter, ns: Namespace) {
-    /* words ( -- ) */
-    names := interp userNamespace all_names()
-    names sort(|s1, s2| s1 > s2)
-    for (name in names) "%s " printf(name)
-    println()
-}
-
 length: func (interp: EoInterpreter, ns: Namespace) {
     /* length ( container -- length )
        Get the length of a container (string/list/dict). */
@@ -625,7 +616,6 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "emit", emit)
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
-    //loadBuiltinWord(interp, "words", words)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)
