@@ -38,6 +38,11 @@ sign: func (x: Int) -> Int {
     return 0
 }
 
+assertInstance: func (x: EoType, c: Class) {
+    if (!x instanceOf?(c))
+        raise("Expected type: %s, got %s instead" format(c name, x class name))
+}
+
 /* Better (?) sorting algorithm for ArrayList.
    ooc uses bubble sort by default! >.<
    Adapted from: http://www.pp4s.co.uk/main/tu-ss-sort-quick.html

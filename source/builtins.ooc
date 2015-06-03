@@ -124,23 +124,37 @@ exec_with: func (interp: EoInterpreter, ns: Namespace) {
 lookup: func (interp: EoInterpreter, ns: Namespace) {
     /* lookup ( module name -- value ) */
     /* works for modules and namespaces. do other types apply as well? */
-    name := interp stack popCheck(EoString) as EoString
-    module := interp stack pop() // later: can be other things as well
-    match (module) {
+    key := interp stack pop()
+    container := interp stack pop() // later: can be other things as well
+    match (container) {
         case (m: EoModule) =>
-            value := m namespace lookup(name value)
+            assertInstance(key, EoString)
+            value := m namespace lookup((key as EoString) value)
             if (value == null)
-                Exception new("Symbol not found: %s" format(name value)) throw()
+                raise("Symbol not found: %s" format((key as EoString) value))
             else
                 interp stack push(value)
         case (n: EoNamespace) =>
-            value := n namespace lookup(name value)
+            assertInstance(key, EoString)
+            value := n namespace lookup((key as EoString) value)
             if (value == null)
-                Exception new("Symbol not found: %s" format(name value)) throw()
+                raise("Symbol not found: %s" format((key as EoString) value))
             else
                 interp stack push(value)
+        case (d: EoDict) =>  /* supersedes `get` */
+            if (key mutable?())
+                raise("Cannot look up in dictionaries with key of type %s" \
+                      format(key class name))
+            value: EoType = d data get(key) as EoType
+            if (value == null)
+                raise("Key not found: %s" format(key toString()))
+            interp stack push(value)
+        case (list: EoList) =>  /* supersedes `index` */
+            assertInstance(key, EoInteger)
+            value := list data[(key as EoInteger) value]
+            interp stack push(value)
         case => raise("Cannot look up in object of type (%s)" \
-                      format(module class name))
+                      format(container class name))
     }
 }
 

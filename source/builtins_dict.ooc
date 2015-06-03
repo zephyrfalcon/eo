@@ -8,7 +8,7 @@ dict: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(d)
 }
 
-/* XXX can be merged into `lookup`? */
+/* XXX superseded by `lookup` */
 _get: func (interp: EoInterpreter, ns: Namespace) {
     /* get ( dict key -- value ) */
     key := interp stack pop()
@@ -16,11 +16,7 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
     value: EoType = dict data get(key) as EoType
     if (value == null)
         Exception new("Key not found: %s" format(key toString())) throw()
-    //"zzz" println()
     interp stack push(value)
-    //"pushed!" println()
-    //"%s" printfln(value class name)
-    //"%s pushed!" printfln(value toString())
 }
 
 keys: func (interp: EoInterpreter, ns: Namespace) {

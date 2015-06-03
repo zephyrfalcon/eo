@@ -22,6 +22,8 @@ $dict length
 => [2]
 $dict "Netherlands" get
 => [1815]
+$dict "Netherlands" lookup
+=> [1815]
 $dict "Netherlands" contains?
 => [true]
 $dict "Germany" contains?
