@@ -57,7 +57,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
         else if (token contains?(":") && !(token startsWith?(":")) \
                  && !(token endsWith?(":")) && !(token startsWith?("\""))) {
             /* foo:bar => foo "bar" execns
-               [value] foo:!bar => foo "bar" rol put!
+               [value] foo:!bar => foo "bar" rol set!
              */
             parts := token split(":")
             newTokens add(parts[0])
@@ -65,7 +65,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 if (part startsWith?("!")) {
                     newTokens add("\"%s\"" format(part[1..-1]))
                     newTokens add("rol")
-                    newTokens add("put!")
+                    newTokens add("set!")
                 }
                 else {
                     newTokens add("\"%s\"" format(part))
@@ -75,7 +75,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
         }
         else if (token contains?("/")) {
             /* foo/key => foo key get 
-               [value] foo/!key => [value] foo key rol put!
+               [value] foo/!key => [value] foo key rol set!
              */
             parts := token split("/")
             newTokens add(parts[0])
@@ -83,7 +83,7 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
                 if (part startsWith?("!")) {
                     newTokens add(part[1..-1])
                     newTokens add("rol")
-                    newTokens add("put!")
+                    newTokens add("set!")
                 }
                 else {
                     newTokens add(part)

@@ -12,7 +12,7 @@ ansi ns "xyzzy" contains?
 
 -- create empty namespace, add name "foo"
 newns !$ns
-$ns "foo" 42 put!
+$ns "foo" 42 set!
 $ns names
 => [[ "foo" ]]
 $ns:foo  -- reader macro: getter

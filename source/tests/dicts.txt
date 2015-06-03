@@ -6,18 +6,18 @@ dict empty?
 dict !$dict
 $dict empty?
 => [true]
-$dict "United States" 1776 put!
+$dict "United States" 1776 set!
 $dict length
 => [1]
 $dict "United States" get
 => [1776]
-$dict "Netherlands" 1648 put!
+$dict "Netherlands" 1648 set!
 $dict length
 => [2]
 $dict "Netherlands" get
 => [1648]
 -- update an existing value:
-$dict "Netherlands" 1815 put!
+$dict "Netherlands" 1815 set!
 $dict length
 => [2]
 $dict "Netherlands" get
@@ -35,9 +35,9 @@ $dict length
 => [0]
 
 dict !$dict
-$dict "a" 1 put!
-$dict "b" 2 put!
-$dict "c" 3 put!
+$dict "a" 1 set!
+$dict "b" 2 set!
+$dict "c" 3 set!
 $dict length
 => [3]
 $dict "c" del!

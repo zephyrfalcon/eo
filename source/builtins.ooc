@@ -381,8 +381,8 @@ hex: func (interp: EoInterpreter, ns: Namespace) {
     interp stack push(s)
 }
 
-put_excl: func (interp: EoInterpreter, ns: Namespace) {
-    /* put! ( container key value -- ) */
+set_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* set! ( container key value -- ) */
     value := interp stack pop() as EoType
     key := interp stack pop() as EoType
     container := interp stack pop() as EoType
@@ -401,7 +401,7 @@ put_excl: func (interp: EoInterpreter, ns: Namespace) {
             if (!key instanceOf?(EoInteger))
                 Exception new("List indexes must be integers") throw()
             list data[(key as EoInteger) value] = value
-        case => Exception new("put!: Unsupported type: %s" \
+        case => Exception new("set!: Unsupported type: %s" \
                 format(value class name)) throw()
     }
 }
@@ -651,7 +651,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "doc", doc, doc_doc)
     loadBuiltinWord(interp, "doc!", doc_excl, doc_excl_doc)
     loadBuiltinWord(interp, "hex", hex)
-    loadBuiltinWord(interp, "put!", put_excl)
+    loadBuiltinWord(interp, "set!", set_excl)
     loadBuiltinWord(interp, "del!", del_excl)
     loadBuiltinWord(interp, "contains?", contains_qm)
     loadBuiltinWord(interp, "code", code)

@@ -106,7 +106,7 @@ $TYPES {
         [ $wordname " ( x -- bool )" "\n"
           "Return true if x is of type " $type "." ] conc
         $wordname lookup-here swap doc!
-        rootns $wordname $wordname lookup-here put!  -- stick in root namespace
+        rootns $wordname $wordname lookup-here set!  -- stick in root namespace
     } exec
 } each
 
