@@ -162,3 +162,18 @@ Split a string by whitespace." _doc!
 -- at this point, we cannot add symbols to it (since we have no way to create
 -- symbols! but that is easily fixed when necessary).
 
+------
+
+-- experimental
+{ thisns all-names sort
+} !all-words
+-- this works... now we need to apply filters to it, and print the names in
+-- a friendly way
+
+{ { print " " print } each
+  nl 
+} !print-words
+
+-- so: { all-words print-words } !words
+-- yes?
+

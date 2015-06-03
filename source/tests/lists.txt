@@ -82,4 +82,8 @@ $list sort  -- leave original list untouched
 => [[ 2 3 3 7 9 ]]
 $list
 => [[ 7 3 9 2 3 ]]
+[ ] sort
+=> [[ ]]
+[ 1 ] sort
+=> [[ 1 ]]
 

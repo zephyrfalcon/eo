@@ -74,6 +74,7 @@ qsort: func (list: ArrayList<EoType>, cmp: Func (EoType, EoType) -> Int,
 }
 
 qsort: func ~short (list: ArrayList<EoType>, cmp: Func (EoType, EoType) -> Int) {
+    if (list size < 2) return
     qsort(list, cmp, 0, list size - 1)
 }
 
