@@ -258,7 +258,7 @@ emit: func (interp: EoInterpreter, ns: Namespace) {
     // output character...
 }
 
-/* FIXME: can later be written in pure Eo */
+/* DEPRECATED: can now be written in pure Eo */
 words: func (interp: EoInterpreter, ns: Namespace) {
     /* words ( -- ) */
     names := interp userNamespace all_names()
@@ -625,7 +625,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "emit", emit)
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
-    loadBuiltinWord(interp, "words", words)
+    //loadBuiltinWord(interp, "words", words)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)

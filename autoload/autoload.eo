@@ -173,7 +173,10 @@ Split a string by whitespace." _doc!
 { { print " " print } each
   nl 
 } !print-words
+-- is there a way to hide this? like inside a closure?
 
--- so: { all-words print-words } !words
--- yes?
+{ all-words print-words } !words
+"words ( -- )
+Display all words visible in the current namespace." _doc!
+[ "words" ] words\tags!
 
