@@ -165,10 +165,12 @@ Split a string by whitespace." _doc!
 ------
 
 -- experimental
-{ thisns all-names sort
+{ userns all-names sort
 } !all-words
--- this works... now we need to apply filters to it, and print the names in
--- a friendly way
+-- `thisns` is relative to where the word is created (i.e. here in
+-- autoload.eo), so I use userns instead... for now
+
+{ names sort } !words-from-ns
 
 { { print " " print } each
   nl 
@@ -179,4 +181,21 @@ Split a string by whitespace." _doc!
 "words ( -- )
 Display all words visible in the current namespace." _doc!
 [ "words" ] words\tags!
+
+{ !$code !$ns
+  $ns all-names sort             -- get names
+  $code filter
+} !filter-words
+"filter-words ( ns code -- words )
+Get the words (names) from the given namespace that meet the conditions
+specified in the code block." _doc!
+
+{ !$ns
+  $ns  -- redundant really :-/
+  { !$word
+    $ns $word get          -- get the object associated with the name
+    doc empty? not         -- docstring must be present
+  } filter-words
+} !words-with-doc
+-- this appears to work, e.g. `thisns words-with-doc`
 
