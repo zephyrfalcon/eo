@@ -152,6 +152,10 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
             assertInstance(key, EoInteger)
             value := list data[(key as EoInteger) value]
             interp stack push(value)
+        case (s: EoString) =>
+            assertInstance(key, EoInteger)
+            value := s value[(key as EoInteger) value] toString()
+            interp stack push(EoString new(value))
         case => raise("Cannot look up in object of type (%s)" \
                       format(container class name))
     }
@@ -640,7 +644,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "import", _import)
     loadBuiltinWord(interp, "update", update)
     loadBuiltinWord(interp, "words", words)
-    loadBuiltinWord(interp, "index", index)
+    //loadBuiltinWord(interp, "index", index)
     loadBuiltinWord(interp, "length", length)
     loadBuiltinWord(interp, "hash", hash)
     loadBuiltinWord(interp, "id", id)

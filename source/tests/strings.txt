@@ -38,3 +38,9 @@
 "abc" reverse
 => ["cba"]
 
+-- indexing
+"abc" 0 get
+=> ["a"]
+-- "abc"/1  -- does not work (yet?) because of parser
+--=> ["b"]
+
