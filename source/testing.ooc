@@ -44,6 +44,7 @@ EoTest: class {
 EoTestRunner: class {
     tests := ArrayList<EoTest> new()
     passed, failed, error: Int
+    failuresOnly := false
     init: func
 
     add: func (input, output: String) {
@@ -81,13 +82,17 @@ EoTestRunner: class {
         interp := EoInterpreter new()
         for (t in tests) {
             interp stack clearStack()
-            "%s... " printf(t description)
+            if (!failuresOnly)
+                "%s... " printf(t description)
             result := t run(interp)
+
             match (result status) {
                 case EoTestStatus SUCCESS =>
-                    "OK" println()
+                    if (!failuresOnly)
+                        "OK" println()
                     passed += 1
                 case EoTestStatus FAILURE =>
+                    "%s..." printf(t description)
                     Terminal setFgColor(Color red)
                     "FAIL" println()
                     Terminal reset()
@@ -95,6 +100,7 @@ EoTestRunner: class {
                     "  %s" printfln(result message)
                     failed += 1
                 case EoTestStatus ERROR =>
+                    "%s..." printf(t description)
                     Terminal setFgColor(Color red)
                     "ERROR" println()
                     Terminal reset()
@@ -111,14 +117,16 @@ EoTestRunner: class {
 
 /*** read tests from files ***/
 
-runEoTests: func (path: String) {
+runEoTests: func (path: String, failuresOnly: Bool, verbose: Bool) {
     testFiles := ArrayList<String> new()
     for (fn in File new(path) getChildren()) {
         if (fn path endsWith?(".txt"))
             testFiles add(fn path)
+        if (verbose)
             "Loading: %s" printfln(fn path)
     }
     runner := EoTestRunner new()
+    runner failuresOnly = failuresOnly
     for (fn in testFiles)
         runner readFromFile(fn)
     runner run()

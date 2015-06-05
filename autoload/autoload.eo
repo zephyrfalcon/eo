@@ -166,6 +166,10 @@ $TYPES {
 
 { atom? not } !container?
 
+{ !$x
+  [ "word" "b-word" "u-word" "variable" ] $x type contains?
+} !executable?
+
 ------
 
 { !$tag !$obj

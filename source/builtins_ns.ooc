@@ -104,11 +104,11 @@ find_caller_ns: func (interp: EoInterpreter, ns: Namespace) {
        named <name>. */
     name := interp stack popCheck(EoString) as EoString
     cs := interp callStack data as ArrayList<EoStackFrame>
-    "Call stack size: %d" printfln(cs size)
+    //"Call stack size: %d" printfln(cs size)
     idx := cs size - 1
     while (idx >= 0) {
         frame := cs[idx] as EoStackFrame
-        "Frame %d: code %s" printfln(idx+1, frame code toString())
+        //"Frame %d: code %s" printfln(idx+1, frame code toString())
         if (frame code instanceOf?(EoUserDefWord) && 
             (frame code as EoUserDefWord) name == name value) {
             interp stack push(EoNamespace new(frame namespace))

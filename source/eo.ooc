@@ -364,7 +364,7 @@ EoInterpreter: class {
         // the Eo executable is, so any "include" statements in autoload.eo &
         // friends will be relative to the executable's path.
         autoloadfile := File join(rootDir, "autoload", "autoload.eo")
-        "Loading: %s... " printf(autoloadfile)
+        //"Loading: %s... " printf(autoloadfile)
         data := File new(autoloadfile) read()
         runCodeViaStack(data, rootNamespace)
         executeAll()

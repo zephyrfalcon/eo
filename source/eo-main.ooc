@@ -16,12 +16,16 @@ whereAmI: func (executableName: String) -> String {
 main: func (args: ArrayList<String>) {
     runTests := false
     allowStderr := false
+    failuresOnly := false
+    verbose := false
 
     if (args size > 1)
         for (arg in args slice(1..-1)) {
             match (arg) {
                 case "--test" => runTests = true
                 case "--allow-stderr" => allowStderr = true
+                case "--failures-only" => failuresOnly = true
+                case "--verbose" => verbose = true
                 case => "Unknown option: %s" printfln(arg)
             }
         }
@@ -35,7 +39,7 @@ main: func (args: ArrayList<String>) {
         testPath := File join(executablePath, "source", "tests")
         "Tests are in: %s" printfln(testPath)
         "Running tests..." println()
-        runEoTests(testPath)
+        runEoTests(testPath, failuresOnly, verbose)
     }
     else
         repl run()
