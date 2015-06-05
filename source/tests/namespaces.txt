@@ -47,16 +47,17 @@ rootns parent
 => [null]
 
 -- hairy stuff: find-caller-ns
---1 !$a
---{ 2 !$b 
---  "bar" find-caller-ns names println
---  "bar" find-caller-ns !$cns ... 44 $cns:!$a
---  1 1 + } !foo
---{ 3 !$c foo $a + } !bar
---bar
---=> [34]
+1 !$a
+-- foo is a nasty piece of work that looks in bar's namespace and changes the
+-- value of $a
+{ 2 !$b 
+  "bar" find-caller-ns !$cns ... 44 $cns:!$a
+  1 1 + } !foo
+{ 3 !$c foo $a + } !bar
+bar
+=> [46]
 
--- FAILS
+-- no longer fails since `set!` wraps values in variables ^_^
 4 !$a
 5 thisns:!$a
 $a

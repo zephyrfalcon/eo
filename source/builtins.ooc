@@ -120,10 +120,21 @@ exec_with: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 _get: func (interp: EoInterpreter, ns: Namespace) {
-    /* get ( module name -- value ) */
+    /* get ( container key -- value ) 
+       General: look up the given 'key' in the container.
+       If container is a:
+       - module/namespace: look up the name (a string) and return the value.
+         DOES NOT execute anything. If you want that, follow it by `execns` or
+         use `container:name` syntax.
+       - list/string: return the value at index 'key' (must be an integer).
+       - dict: return the value associated with the given key (must be
+         immutable).
+    */
     key := interp stack pop()
     container := interp stack pop() // later: can be other things as well
+
     match (container) {
+
         case (m: EoModule) =>
             assertInstance(key, EoString)
             value := m namespace lookup((key as EoString) value)
@@ -131,6 +142,7 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
                 raise("Symbol not found: %s" format((key as EoString) value))
             else
                 interp stack push(value)
+
         case (n: EoNamespace) =>
             assertInstance(key, EoString)
             value := n namespace lookup((key as EoString) value)
@@ -138,7 +150,8 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
                 raise("Symbol not found: %s" format((key as EoString) value))
             else
                 interp stack push(value)
-        case (d: EoDict) =>  /* supersedes `get` */
+
+        case (d: EoDict) =>  
             if (key mutable?())
                 raise("Cannot look up in dictionaries with key of type %s" \
                       format(key class name))
@@ -146,14 +159,17 @@ _get: func (interp: EoInterpreter, ns: Namespace) {
             if (value == null)
                 raise("Key not found: %s" format(key toString()))
             interp stack push(value)
-        case (list: EoList) =>  /* supersedes `index` */
+
+        case (list: EoList) =>  
             assertInstance(key, EoInteger)
             value := list data[(key as EoInteger) value]
             interp stack push(value)
+
         case (s: EoString) =>
             assertInstance(key, EoInteger)
             value := s value[(key as EoInteger) value] toString()
             interp stack push(EoString new(value))
+
         case => raise("Cannot look up in object of type (%s)" \
                       format(container class name))
     }
