@@ -12,14 +12,26 @@ ansi ns "xyzzy" contains?
 
 -- create empty namespace, add name "foo"
 newns !$ns
-$ns "foo" 42 set!
+$ns "foo" 42 set-raw!
 $ns names
 => [[ "foo" ]]
 $ns:foo  -- reader macro: getter
 => [42]
-99 $ns:!foo  -- reader macro: getter
-$ns:foo
-=> [99]
+
+-- XXX this is no longer allowed
+--99 $ns:!foo  -- reader macro: setter
+--$ns:foo
+--=> [99]
+
+-- set! and foo:!bar syntax now expect code blocks
+{ 1 1 + } $ns:!two
+$ns:two
+=> [2]
+
+-- but set-raw! can still be used to mess things up, if you want :)
+$ns "bogus" 66 set-raw!
+$ns:bogus
+=> [66]
 
 -- create a new namespace with `thisns` as parent. then check if the parent
 -- and `thisns` are equal.
@@ -33,4 +45,20 @@ thisns "dup" contains?
 
 rootns parent
 => [null]
+
+-- hairy stuff: find-caller-ns
+--1 !$a
+--{ 2 !$b 
+--  "bar" find-caller-ns names println
+--  "bar" find-caller-ns !$cns ... 44 $cns:!$a
+--  1 1 + } !foo
+--{ 3 !$c foo $a + } !bar
+--bar
+--=> [34]
+
+-- FAILS
+4 !$a
+5 thisns:!$a
+$a
+=> [5]
 

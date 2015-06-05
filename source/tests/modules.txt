@@ -18,7 +18,21 @@ ansi "xyzzy" contains?
 => [false]
 
 module !$mod
-1 $mod:!foo
-$mod:foo 
-=> [1]
+-- XXX this is no longer allowed
+--1 $mod:!foo
+--$mod:foo 
+-- => [1]
+
+-- set! and foo:!bar syntax expect code blocks now
+{ 2 2 + } $mod:!four
+$mod:four
+=> [4]
+-- but set-raw! can still mess things up, if you are so inclined:
+$mod "wrong" 55 set-raw!
+$mod:wrong
+=> [55]
+
+4 $mod:!$a
+$mod:$a
+=> [4]
 

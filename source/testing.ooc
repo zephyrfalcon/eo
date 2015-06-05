@@ -7,29 +7,36 @@ import io/File
 import text/StringTokenizer
 import os/Terminal
 
-EoTestResult: enum { SUCCESS, FAILURE, ERROR }
+EoTestStatus: enum { SUCCESS, FAILURE, ERROR }
+
+EoTestResult: class {
+    status: EoTestStatus
+    message: String
+    filename: String
+    init: func (=status, =message, =filename)
+}
 
 EoTest: class {
-    description, input, output, source: String
+    description, input, output, filename: String
     // TODO: setting that indicates whether we start with a fresh interpreter?
     init: func (=input, =output)
-    init: func ~withDesc (=input, =output, =description, =source)
+    init: func ~withDesc (=input, =output, =description, =filename)
 
-    run: func (interp: EoInterpreter) -> (EoTestResult, String) {
+    run: func (interp: EoInterpreter) -> EoTestResult { 
         try {
             interp runCodeViaStack(input, interp userNamespace)
             interp executeAll()
         }
         catch (e: Exception) {
-            return (EoTestResult ERROR, e message)
+            return EoTestResult new(EoTestStatus ERROR, e message, filename)
         }
 
         sr := interp stackRepr()
         if (sr == output)
-            return (EoTestResult SUCCESS, "")
+            return EoTestResult new(EoTestStatus SUCCESS, "", filename)
         else {
             failMsg := "Expected: %s, got %s instead" format(output, sr)
-            return (EoTestResult FAILURE, failMsg)
+            return EoTestResult new(EoTestStatus FAILURE, failMsg, filename)
         }
     }
 }
@@ -75,22 +82,24 @@ EoTestRunner: class {
         for (t in tests) {
             interp stack clearStack()
             "%s... " printf(t description)
-            (result, message) := t run(interp)
-            match (result) {
-                case EoTestResult SUCCESS =>
+            result := t run(interp)
+            match (result status) {
+                case EoTestStatus SUCCESS =>
                     "OK" println()
                     passed += 1
-                case EoTestResult FAILURE =>
+                case EoTestStatus FAILURE =>
                     Terminal setFgColor(Color red)
                     "FAIL" println()
                     Terminal reset()
-                    "  %s" printfln(message)
+                    "File: %s" printfln(result filename)
+                    "  %s" printfln(result message)
                     failed += 1
-                case EoTestResult ERROR =>
+                case EoTestStatus ERROR =>
                     Terminal setFgColor(Color red)
                     "ERROR" println()
                     Terminal reset()
-                    "  %s" printfln(message)
+                    "File: %s" printfln(result filename)
+                    "  %s" printfln(result message)
                     error += 1
                 case => "?!" println()
             }

@@ -1,0 +1,81 @@
+-- experimental stuff
+
+-- FIXME: We should really mark the experimental words with something (like a
+-- prefix symbol) so they stand out clearly.
+
+-- experimental
+{ thisns swap get } !my-lookup-here
+-- like lookup-here. not sure if it works correctly. we need to inspect the 
+-- *caller's* namespace, not the namespace inside this code block, or the
+-- namespace where my-lookup-here was defined.
+-- We can probably find out by inspecting the stack frame?
+
+------
+
+-- experimental
+{ 
+  { } !$block
+  $block code
+  swap
+  add!
+  $block
+} !as-block
+-- this is supposed to wrap an object in a code block.
+-- surprisingly (?), works with stuff like `\dup as-block`.
+-- at this point, we cannot add symbols to it (since we have no way to create
+-- symbols! but that is easily fixed when necessary).
+
+------
+
+-- experimental
+{ userns all-names sort
+} !all-words
+-- `thisns` is relative to where the word is created (i.e. here in
+-- autoload.eo), so I use userns instead... for now
+
+{ names sort } !words-from-ns
+
+{ { print " " print } each
+  nl 
+} !print-words
+-- is there a way to hide this? like inside a closure?
+
+{ all-words print-words } !words
+"words ( -- )
+Display all words visible in the current namespace." _doc!
+[ "words" ] words\tags!
+
+{ !$code !$ns
+  $ns all-names sort             -- get names
+  $code filter
+} !filter-words
+"filter-words ( ns code -- words )
+Get the words (names) from the given namespace that meet the conditions
+specified in the code block." _doc!
+
+{ !$ns
+  $ns  
+  { !$word
+    $ns $word get          -- get the object associated with the name
+    doc empty? not         -- docstring must be present
+  } filter-words
+} !words-with-doc
+-- this appears to work, e.g. `thisns words-with-doc`
+
+-- ^ There is a more general pattern in here... we must identify it and
+-- separate it so we can use this more easily.
+-- Maybe something with a code block (the condition) that takes the word name
+-- AND the word object... that would be like a 2-parameter block for filter...
+-- but the regular filter only takes one "parameter". Hmm...
+-- Or you pass it a LIST [ name value ] as a single param. Access is easy now
+-- with the $list/N syntax.
+-- We need to map the names then... or even create a new built-in that returns
+-- [ name value ] pairs (so we don't have to traverse the namespaces twice).
+
+-- Ideally we have a construct where we can easily add a (short) code block on
+-- the command line to get the words we want.
+-- e.g. 
+-- thisns { $pair $pair/0 "x" contains? } words*   -- words with x in the name
+-- thisns { $pair $pair/1 doc empty? } words*      -- words with no docstring
+-- etc.
+

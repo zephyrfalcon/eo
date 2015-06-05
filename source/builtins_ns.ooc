@@ -1,7 +1,7 @@
 /* builtins_ns.ooc */
 
 import eo, eotypes, namespace
-import structs/ArrayList
+import structs/[ArrayList, Stack]
 
 rootns: func (interp: EoInterpreter, ns: Namespace) {
     rns := EoNamespace new(interp rootNamespace)
@@ -98,3 +98,22 @@ parent: func (interp: EoInterpreter, ns: Namespace) {
     }
 }
 
+find_caller_ns: func (interp: EoInterpreter, ns: Namespace) {
+    /* find-caller-ns ( name -- ns )
+       Look up the call stack for the (first) namespace associated with a word
+       named <name>. */
+    name := interp stack popCheck(EoString) as EoString
+    cs := interp callStack data as ArrayList<EoStackFrame>
+    "Call stack size: %d" printfln(cs size)
+    idx := cs size - 1
+    while (idx >= 0) {
+        frame := cs[idx] as EoStackFrame
+        "Frame %d: code %s" printfln(idx+1, frame code toString())
+        if (frame code instanceOf?(EoUserDefWord) && 
+            (frame code as EoUserDefWord) name == name value) {
+            interp stack push(EoNamespace new(frame namespace))
+            return
+        }
+        idx -= 1
+    }
+}

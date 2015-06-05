@@ -14,6 +14,23 @@ Namespace: class {
         data put(key, value)
     }
 
+    /* helper method to wrap code blocks in EoUserDefWords */
+    addWord: func (key: String, value: EoCodeBlock) -> EoUserDefWord {
+        assert (!key startsWith?("$"))
+        word := EoUserDefWord new(value, key) /* block already has a namespace */
+        this add(key, word)
+        return word
+    }
+
+    /* helper function to wrap values in EoVariables */
+    addVariable: func (key: String, value: EoType) -> EoVariable {
+        assert(key startsWith?("$"))
+        realname := key substring(1)
+        e := EoVariable new(realname, value)
+        this add(key, e)
+        return e
+    }
+
     delete: func (key: String) {
         (ns, value) := lookup_with_source(key)
         if (ns == null)

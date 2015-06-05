@@ -89,7 +89,7 @@ Remove the element directly under the top element of the stack." _doc!
 
 { swap over } !tuck
 "tuck ( a b -- b a b )
-Insert the top element of the stack into position #3 of the stack."
+Insert the top element of the stack into position #3 of the stack." _doc!
 [ "stack" ] tuck\tags!
 
 { rol rol } !ror
@@ -121,9 +121,7 @@ Clear the stack." _doc!
 -- Returns true if the given container (string, list, dict) is empty.
 { length 0 = } !empty?
 
--- is? ( a b -- bool )
--- Returns true if a and b refer to the same object internally.
---{ id swap id = } !is?
+-- somewhat shorter version: { id swap id = } !is?
 { !$b !$a
   $a id $b id = } !is?
 "is? ( a b -- bool )
@@ -150,7 +148,7 @@ $TYPES {
         [ $wordname " ( x -- bool )" "\n"
           "Return true if x is of type " $type "." ] conc
         $wordname lookup-here swap doc!
-        rootns $wordname $wordname lookup-here set!  -- stick in root namespace
+        rootns $wordname $wordname lookup-here set-raw!  -- stick in root namespace
     } exec
 } each
 

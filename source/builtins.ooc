@@ -16,11 +16,10 @@ import builtins_arith
 import module_sys
 
 def: func (interp: EoInterpreter, ns: Namespace) {
-    /* ( lambda-word name -- ) */
+    /* ( code-block name -- ) */
     name := interp stack pop() as EoString
-    blk := interp stack pop() as EoCodeBlock //EoUserDefWord
-    word := EoUserDefWord new(blk, name value) /* block already has a namespace */
-    ns add(name value, word)
+    blk := interp stack pop() as EoCodeBlock 
+    word := ns addWord(name value, blk)
     interp lastDefined = word
 }
 
@@ -28,18 +27,17 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
     /* ( value varname -- ) */
     varname := interp stack pop() as EoString
     value := interp stack pop()
-    assert (varname value startsWith?("$"))
-    /* NOTE: this is the only place where we enforce that variable names
+    /* NOTE: addVariable is the only place where we enforce that variable names
      * should start with a '$'. Otherwise it's treated as any other symbol. */
-    realname := varname value substring(1)
-    e := EoVariable new(realname, value)
-    ns add(varname value, e)
-    interp lastDefined = e
+    v := ns addVariable(varname value, value)
+    interp lastDefined = v
 }
 
 update: func (interp: EoInterpreter, ns: Namespace) {
     /* update ( value varname -- )
-       Updates an existing variable. */
+       Updates an existing variable in the current namespace. 
+       Value precedes variable names to mirror `defvar` usage.
+    */
     eovar: EoVariable
     varns: Namespace
     varname := interp stack popCheck(EoString) as EoString
@@ -359,13 +357,67 @@ hex: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 set_excl: func (interp: EoInterpreter, ns: Namespace) {
-    /* set! ( container key value -- ) */
+    /* set! ( container key value -- ) 
+       If container is a:
+       - dict: Add (key, value) where key can be any immutable EoType
+       - module or namespace: Set key to value. If key is a variable, then the
+         value will be wrapped in an EoVariable before it is set. Any other
+         key can be associated with any value.
+         [XXX this is asymmetrical with def/defvar; should ns:!foo require a
+         code block and then create a word in the namespace? if so, we also
+         need a way to manipulate a namespace's "raw" values...]
+       - list: Set index indicated by key (which must be an integer) to value.
+    */
     value := interp stack pop() as EoType
     key := interp stack pop() as EoType
     container := interp stack pop() as EoType
+
     match (container) {
+
         case (dict: EoDict) =>
             dict add(key, value)
+
+        case (mod: EoModule) =>
+            if (!key instanceOf?(EoString))
+                Exception new("Module names must be strings") throw()
+            if ((key as EoString) value startsWith?("$"))
+                mod namespace addVariable((key as EoString) value, value)
+            else {
+                assertInstance(value, EoCodeBlock)
+                mod namespace addWord((key as EoString) value, value as EoCodeBlock)
+            }
+
+        case (xns: EoNamespace) => 
+            if (!key instanceOf?(EoString))
+                Exception new("Namespace names must be strings") throw()
+            if ((key as EoString) value startsWith?("$"))
+                xns namespace addVariable((key as EoString) value, value)
+            else {
+                assertInstance(value, EoCodeBlock)
+                xns namespace addWord((key as EoString) value, value as EoCodeBlock)
+        }
+
+        case (list: EoList) => 
+            if (!key instanceOf?(EoInteger))
+                Exception new("List indexes must be integers") throw()
+            list data[(key as EoInteger) value] = value
+
+        case => Exception new("set!: Unsupported type: %s" \
+                format(value class name)) throw()
+    }
+}
+
+set_raw_excl: func (interp: EoInterpreter, ns: Namespace) {
+    /* set-raw! ( container key value -- ) 
+       Like `set!`, but if container is a namespace or a module, then it sets
+       the name to the given value without checking it, or converting it to a
+       variable or word. This is meant to give us direct access to a
+       namespace; it is not symmetrical with `def` and `defvar`. */
+    value := interp stack pop() as EoType
+    key := interp stack pop() as EoType
+    container := interp stack pop() as EoType
+
+    match (container) {
         case (mod: EoModule) =>
             if (!key instanceOf?(EoString))
                 Exception new("Module names must be strings") throw()
@@ -374,14 +426,15 @@ set_excl: func (interp: EoInterpreter, ns: Namespace) {
             if (!key instanceOf?(EoString))
                 Exception new("Namespace names must be strings") throw()
             xns namespace add((key as EoString) value, value)
-        case (list: EoList) => 
-            if (!key instanceOf?(EoInteger))
-                Exception new("List indexes must be integers") throw()
-            list data[(key as EoInteger) value] = value
-        case => Exception new("set!: Unsupported type: %s" \
-                format(value class name)) throw()
+        case => 
+            /* delegate to set_excl */
+            interp stack push(container)
+            interp stack push(key)
+            interp stack push(value)
+            set_excl(interp, ns)
     }
 }
+
 
 del_excl: func (interp: EoInterpreter, ns: Namespace) {
     /* del! ( container key -- )
@@ -628,6 +681,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "hex", hex)
     loadBuiltinWord(interp, "set!", set_excl)
     loadBuiltinWord(interp, "del!", del_excl)
+    loadBuiltinWord(interp, "set-raw!", set_raw_excl)
     loadBuiltinWord(interp, "contains?", contains_qm)
     loadBuiltinWord(interp, "code", code)
     loadBuiltinWord(interp, "block", block)
@@ -674,6 +728,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "names", names)
     loadBuiltinWord(interp, "all-names", all_names)
     loadBuiltinWord(interp, "parent", parent)
+    loadBuiltinWord(interp, "find-caller-ns", find_caller_ns)
 
     /* builtins_str */
     loadBuiltinWord(interp, "upper", upper)
