@@ -34,9 +34,10 @@ defvar: func (interp: EoInterpreter, ns: Namespace) {
 }
 
 update: func (interp: EoInterpreter, ns: Namespace) {
-    /* update ( value varname -- )
+    /* update ( value var -- )
        Updates an existing variable in the current namespace. 
        Value precedes variable names to mirror `defvar` usage.
+       `var` can be a name (string) or a variable object.
     */
     eovar: EoVariable
     varns: Namespace
