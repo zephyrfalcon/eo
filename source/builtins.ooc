@@ -40,14 +40,20 @@ update: func (interp: EoInterpreter, ns: Namespace) {
     */
     eovar: EoVariable
     varns: Namespace
-    varname := interp stack popCheck(EoString) as EoString
+    var := interp stack pop()
     value := interp stack pop()
-    assert (varname value startsWith?("$"))
-    /* note: we reuse the existing EoVariable object */
-    (eovar, varns) = ns lookup_with_source(varname value)
-    if (eovar == null || varns == null)
-        Exception new("Symbol not found: %s" format(varname value)) throw()
-    eovar value = value
+    match (var) {
+        case (varname: EoString) =>
+            assert (varname value startsWith?("$"))
+            /* note: we reuse the existing EoVariable object */
+            (eovar, varns) = ns lookup_with_source(varname value)
+            if (eovar == null || varns == null)
+                Exception new("Symbol not found: %s" format(varname value)) throw()
+            eovar value = value
+        case (v: EoVariable) =>
+            v value = value
+        case => raise("update: needs variable object or variable name (string)")
+    }
 }
 
 lbracket: func (interp: EoInterpreter, ns: Namespace) {

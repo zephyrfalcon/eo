@@ -62,7 +62,12 @@ expandMacros: func (tokens: ArrayList<String>) -> ArrayList<String> {
             parts := token split(":")
             newTokens add(parts[0])
             for (part in parts[1..-1]) {
-                if (part startsWith?("!")) {
+                if (part startsWith?("!>$")) {
+                    newTokens add("\"%s\"" format(part[2..-1]))
+                    newTokens add("get")
+                    newTokens add("update")
+                }
+                else if (part startsWith?("!")) {
                     newTokens add("\"%s\"" format(part[1..-1]))
                     newTokens add("rol")
                     newTokens add("set!")

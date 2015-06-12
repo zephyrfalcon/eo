@@ -116,4 +116,6 @@ find_caller_ns: func (interp: EoInterpreter, ns: Namespace) {
         }
         idx -= 1
     }
+    raise("Namespace not found")
 }
+

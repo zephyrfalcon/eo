@@ -63,3 +63,15 @@ bar
 $a
 => [5]
 
+-- update now accepts variable objects
+42 !$magic
+thisns "$magic" get  -- pushes variable object
+100 swap update      -- update the variable
+$magic
+=> [100]
+
+-- there's also syntax for it:
+144 thisns:!>$magic
+$magic
+=> [144]
+
