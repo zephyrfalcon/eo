@@ -1,0 +1,26 @@
+Development quick start/reminder:
+
+To compile:
+
+In top directory (eo), execute
+
+    rock -v
+
+This should produce an executable eo-main.
+
+To run tests:
+
+    ./eor --test
+
+It's useful to combine the two:
+
+    rock -v && ./eor --test
+
+Other useful scripts:
+- edit: start gvim with all relevant ooc files, Eo autoload files, and tests
+- getversion: display current version of the interpreter
+- setversion: set a new version (careful: this will update the code, set a tag
+  in git, and do a git push)
+- update-git: easily add new ooc source files, Eo autoload files, or tests to
+  the git repository (does not check them in or push)
+
