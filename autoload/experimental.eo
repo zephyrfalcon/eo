@@ -32,6 +32,7 @@
 } !all-words
 -- `thisns` is relative to where the word is created (i.e. here in
 -- autoload.eo), so I use userns instead... for now
+-- Also see: find-caller-ns
 
 { names sort } !words-from-ns
 
@@ -79,4 +80,17 @@ specified in the code block." _doc!
 -- thisns { $pair $pair/1 doc empty? } words*        -- words with no docstring
 -- thisns { $pair $pair/1 "stack" has-tag? } words*  -- words with tag "stack"
 -- etc.
+
+-- experimental
+{ !$ns
+  $ns names
+  { !$name 
+    $ns $name get !$value
+    [ $name $value ]
+  } map
+} !my-ns-local-names-to-alist
+-- this works; we can easily write a variant using `all-names`
+
+-- We could use `words` for all words, and `lwords` for just the local words.
+-- `[l]words*` is just a filter over the aforementioned word.
 
