@@ -17,6 +17,8 @@ $ns names
 => [[ "foo" ]]
 $ns:foo  -- reader macro: getter
 => [42]
+$ns ns->alist
+=> [[ [ "foo" 42 ] ]]
 
 -- XXX this is no longer allowed
 --99 $ns:!foo  -- reader macro: setter

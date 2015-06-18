@@ -752,6 +752,7 @@ loadBuiltinWords: func (interp: EoInterpreter) {
     loadBuiltinWord(interp, "all-names", all_names)
     loadBuiltinWord(interp, "parent", parent)
     loadBuiltinWord(interp, "find-caller-ns", find_caller_ns)
+    loadBuiltinWord(interp, "ns->alist", ns_to_alist)
 
     /* builtins_str */
     loadBuiltinWord(interp, "upper", upper)

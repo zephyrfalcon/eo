@@ -1,6 +1,6 @@
 /* builtins_ns.ooc */
 
-import eo, eotypes, namespace
+import eo, eotypes, namespace, tools
 import structs/[ArrayList, Stack]
 
 rootns: func (interp: EoInterpreter, ns: Namespace) {
@@ -16,12 +16,6 @@ userns: func (interp: EoInterpreter, ns: Namespace) {
 thisns: func (interp: EoInterpreter, ns: Namespace) {
     tns := EoNamespace new(ns)
     interp stack push(tns)
-}
-
-callerns: func (interp: EoInterpreter, ns: Namespace) {
-    /* callerns ( -- ns )
-       Push the caller's namespace. */
-    // FIXME
 }
 
 newns: func (interp: EoInterpreter, ns: Namespace) {
@@ -86,6 +80,34 @@ all_names: func (interp: EoInterpreter, ns: Namespace) {
     for (name in names) 
         result add(EoString new(name))
     interp stack push(EoList new(result))
+}
+
+/* helper function */
+_alist_from_ns: func (targetns: Namespace, interp: EoInterpreter) {
+    result := EoList new()
+    names := targetns all_names()
+    for (name in names) {
+        value := targetns lookup(name)  /* an EoType object */
+        pair := EoList new()
+        pair data add(EoString new(name))
+        pair data add(value)
+        result data add(pair)
+    }
+    interp stack push(result)
+}
+
+ns_to_alist: func (interp: EoInterpreter, ns: Namespace) {
+    /* ns->alist ( ns|mod -- ns-items )
+       Return a list of [ name value ] pairs for all names found in the given
+       namespace or module. */
+    // XXX does this apply to dicts as well? in that case we should move this
+    // word and call it `->alist` or something
+    container := interp stack pop()
+    match (container) {
+        case (n: EoNamespace) => _alist_from_ns(n namespace, interp)
+        case (mod: EoModule) => _alist_from_ns(mod namespace, interp)
+        case => raise("ns->alist: target must be namespace or module")
+    }
 }
 
 parent: func (interp: EoInterpreter, ns: Namespace) {

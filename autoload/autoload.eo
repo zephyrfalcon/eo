@@ -45,6 +45,8 @@ a single string." _doc!
 -- for fun/completeness/because we can:
 { and not } !nand
 { or not } !nor
+[ "logic "] nand\tags!
+[ "logic" ] nor\tags!
 
 { eq? not } !xor
 "xor ( a b -- bool )
