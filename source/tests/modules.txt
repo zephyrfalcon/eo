@@ -35,4 +35,9 @@ $mod:wrong
 4 $mod:!$a
 $mod:$a
 => [4]
+-- inspect contents with ns->alist
+$mod ns->alist !$mod-alist
+$mod-alist [ "wrong" 55 ] contains?
+=> [true]
+
 

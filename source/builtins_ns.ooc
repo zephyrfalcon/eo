@@ -96,12 +96,16 @@ _alist_from_ns: func (targetns: Namespace, interp: EoInterpreter) {
     interp stack push(result)
 }
 
+/* I suppose we could write this in pure Eo, although switching based on type
+ * isn't well-supported yet; OTOH, we could have variants that use the local
+ * names only, vs all names */
 ns_to_alist: func (interp: EoInterpreter, ns: Namespace) {
     /* ns->alist ( ns|mod -- ns-items )
        Return a list of [ name value ] pairs for all names found in the given
        namespace or module. */
     // XXX does this apply to dicts as well? in that case we should move this
     // word and call it `->alist` or something
+    // A: No. For dicts we already have `items` which does much the same thing.
     container := interp stack pop()
     match (container) {
         case (n: EoNamespace) => _alist_from_ns(n namespace, interp)
