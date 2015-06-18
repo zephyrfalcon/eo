@@ -177,6 +177,7 @@ $TYPES {
 } !has-tag?
 "has-tag? ( obj tag - bool )
 Return true if obj has the given tag." _doc!
+[ "tags" ] has-tag?\tags!
 
 ------
 

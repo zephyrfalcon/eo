@@ -7,6 +7,44 @@
 Duplicate the top item on the stack." dup\doc!
 [ "stack" ] dup\tags!
 
+"drop ( a -- )
+Drop the top element from the stack." drop\doc!
+[ "stack" ] drop\tags!
+
+"swap ( a b -- b a )
+Swap the order of the two topmost elements on the stack." swap\doc!
+[ "stack" ] swap\tags!
+
+"over ( a b -- a b a )
+Copy the second-topmost element on the stack the top." over\doc!
+[ "stack" ] over\tags!
+
+"stack-empty? ( ? -- bool )
+Push true if the stack is empty, false otherwise." stack-empty?\doc!
+[ "stack" ] stack-empty?\tags!
+
+"pick ( ... n -- stack[n] )
+Copy the n-th element of the stack to the top, counting from 1. So the topmost
+element is 1, the element under there is 2, etc.
+Example: \"a\" \"b\" \"c\" 1 pick => \"c\"
+         \"a\" \"b\" \"c\" 3 pick => \"a\"" pick\doc!
+[ "stack" ] pick\tags!
+
+"rol ( a b c -- b c a )
+Rotate the topmost three stack elements \"to the left\"." rol\doc!
+[ "stack" ] rol\tags!
+
+--
+-- tags
+
+"tags ( word -- tags )
+Return a list of the given word's tags." tags\doc!
+[ "tags" ] tags\tags!
+
+"tags! ( word tags -- )
+Set the word's tags to the given list. List must consist of strings." tags!\doc!
+[ "tags" ] tags!\tags!
+
 --
 -- debug words
 

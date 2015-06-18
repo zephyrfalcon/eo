@@ -75,7 +75,8 @@ specified in the code block." _doc!
 -- Ideally we have a construct where we can easily add a (short) code block on
 -- the command line to get the words we want.
 -- e.g. 
--- thisns { $pair $pair/0 "x" contains? } words*   -- words with x in the name
--- thisns { $pair $pair/1 doc empty? } words*      -- words with no docstring
+-- thisns { $pair $pair/0 "x" contains? } words*     -- words with x in the name
+-- thisns { $pair $pair/1 doc empty? } words*        -- words with no docstring
+-- thisns { $pair $pair/1 "stack" has-tag? } words*  -- words with tag "stack"
 -- etc.
 

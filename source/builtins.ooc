@@ -581,7 +581,7 @@ underscore: func (interp: EoInterpreter, ns: Namespace) {
 tags: func (interp: EoInterpreter, ns: Namespace) {
     /* tags ( obj -- tags ) */
     obj := interp stack pop()
-    /* we don't use map here to avoid problems with List vs ArrayList */
+    /* we don't use ooc's map here to avoid problems with List vs ArrayList */
     eotaglist := EoList new()
     for (s in obj tags)
         eotaglist data add(EoString new(s))
