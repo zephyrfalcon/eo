@@ -94,3 +94,11 @@ specified in the code block." _doc!
 -- We could use `words` for all words, and `lwords` for just the local words.
 -- `[l]words*` is just a filter over the aforementioned word.
 
+-- TODO:
+-- add `list-of?` which takes a list and a predicate (or a code block)
+-- so we can check if we have a list of numbers, a list of pairs, etc
+-- [ 1 2 3 ] \number? list-of? => [true]
+-- [ 1 2 3 ] { number? } list-of? => [true]
+-- We might need a new looping construct for this; like map, but it stops as
+-- soon as a condition is (not) met.
+

@@ -225,8 +225,10 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 
     /* code blocks are considered equal if their code is equal... but what
      * about the namespace? */
+    // XXX FOR NOW, disregard the namespace for cmp(); for equals?, I'm not
+    // sure yet.
     cmp: func (other: EoCodeBlock) -> Int {
-        Exception new("not implemented yet") throw()
+        if (this as SizeT == other as SizeT) return 0
         for (i in 0..words size) {
             if (i >= other words size) return 1
             c := eocmp(this words[i], other words[i])
@@ -236,6 +238,8 @@ EoCodeBlock: class extends EoType /* EoWord */ {
 
         /* take namespaces into account */
         return cmp(this namespace as SizeT, other namespace as SizeT)
+        // may differ between runs with the same code, since cannot guarantee
+        // the position in memory of these objects... FIXME
     }
     equals?: func (other: EoCodeBlock) -> Bool { 
         this cmp(other) == 0
@@ -316,7 +320,10 @@ EoList: class extends EoType {
     cmp: func (other: EoList) -> Int {
         for (i in 0..data size) {
             if (i >= other data size) return 1
+            //"Comparing: %s vs %s" printfln(this data[i] toString(), \
+            //    other data[i] toString())
             c := eocmp(this data[i], other data[i])
+            //"Result: %d" printfln(c)
             if (c != 0) return c
         }
         if (this data size < other data size) return -1

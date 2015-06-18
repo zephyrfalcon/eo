@@ -77,3 +77,15 @@ $magic
 $magic
 => [144]
 
+-- sorting; we cannot test the contents reliably, but we can check if `sort`
+-- works at all with no errors being raised.
+thisns names sort type
+=> ["list"]
+
+-- this didn't work yet until I made EoCodeBlock.cmp available, but the thing
+-- is, it shouldn't even be calling that method since the first elements of
+-- all the lists being compared are different
+-- see EoList.cmp, tools.ooc:qsort
+thisns ns->alist sort type
+=> ["list"]
+

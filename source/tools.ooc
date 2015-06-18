@@ -52,7 +52,8 @@ qsort: func (list: ArrayList<EoType>, cmp: Func (EoType, EoType) -> Int,
              Left, Right: Int) {
     ptrLeft := Left
     ptrRight := Right
-    pivot := list[(Left+Right)/2]  // hmm
+    pivotIndex := (Left + Right) / 2
+    pivot := list[pivotIndex]  // hmm
     while (true) {
         while (ptrLeft < Right && cmp(list[ptrLeft], pivot) == -1)
             ptrLeft += 1
