@@ -40,12 +40,12 @@ a single string." _doc!
   $cond1 exec
   { true } { $cond2 exec } if 
 } !or*
-[ "logic "] or*\tags!
+[ "logic" ] or*\tags!
 
 -- for fun/completeness/because we can:
 { and not } !nand
 { or not } !nor
-[ "logic "] nand\tags!
+[ "logic" ] nand\tags!
 [ "logic" ] nor\tags!
 
 { eq? not } !xor
@@ -57,7 +57,7 @@ Returns true if only one of a and b is true." _doc!
 "eqv ( a b -- bool )
 Returns true if a and b are both true, or both false." _doc!
 -- technically this is redundant
-[ "logic " ] eqv\tags!
+[ "logic" ] eqv\tags!
 
 { !$b !$a
   $a
@@ -66,7 +66,7 @@ Returns true if a and b are both true, or both false." _doc!
 } !imp
 "imp ( a b -- bool )
 Returns true if b is true, or both a and b are false." _doc!
-[ "logic "] imp\tags!
+[ "logic" ] imp\tags!
 
 --
 -- comparison
@@ -114,7 +114,7 @@ Take n items from the stack and return them as a list." _doc!
 } !clear
 "clear ( ? -- )
 Clear the stack." _doc!
-[ "stack "] clear\tags!
+[ "stack" ] clear\tags!
 
 --
 -- misc
