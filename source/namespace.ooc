@@ -67,6 +67,7 @@ Namespace: class {
         } else {
             return (result, this)
         }
+        return (null, null)  /* can't be reached; put here to keep rock happy */
     }
 
     update: func(key: String, new_value: EoType) {
