@@ -6,6 +6,12 @@ In top directory (eo), execute
 
     rock -v
 
+If it complains about include files or libraries not found, and you're sure
+they are installed, use the -I and -L command line options to add additional
+paths, e.g.:
+    
+    rock -v -I/usr/local/include/ -L/usr/local/lib/
+
 This should produce an executable eo-main.
 
 To run tests:
