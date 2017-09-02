@@ -20,7 +20,7 @@ To run the Eo test suite, enter `eor --test` in the toplevel directory.
 (Running the `test` script will produce a few errors.)
 
 **Update 2017-09-03:** I worked on this in 2015. Currently it still compiles (using
-macOS Sierra 10.12.6, XCode ___, Homebrew 1.3.1), but I get a bunch of
+macOS Sierra 10.12.6, XCode 8.8.3, Homebrew 1.3.1), but I get a bunch of
 warnings. 
 
 ## Rationale
