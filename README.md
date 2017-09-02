@@ -34,4 +34,6 @@ local variables, to make things easier to understand.
 ## Documentation
 
 ...still needs to be written. For now, "use the code, Luke", as they say. Soz.
+(`source/tests` contains a number of test files, which have the form of actual
+Eo expressions (as entered at the REPL), and the expected result.)
 
