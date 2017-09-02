@@ -16,8 +16,10 @@ Currently only tested on Mac OS X (using [Homebrew](https://brew.sh/)). (See `br
 
 To compile, just enter `rock` or `rock -v` while in the `eo` toplevel directory. (This should produce a file `eo-main`, among other things.)
 
-To run the Eo test suite, enter `eor --test` in the toplevel directory.
-(Running the `test` script will produce a few errors.)
+To run the Eo test suite, enter `eor --test` in the toplevel directory.  (Don't
+bother running the `test` script; this will only produce a few errors. It only
+exists to check that the ooc testing framework works, and to see what it does
+in case of failures/errors.)
 
 **Update 2017-09-03:** I worked on this in 2015. Currently it still compiles (using
 macOS Sierra 10.12.6, XCode 8.8.3, Homebrew 1.3.1), but I get a bunch of
